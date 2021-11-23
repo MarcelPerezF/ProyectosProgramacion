@@ -68,5 +68,99 @@ public class Clinica {
 	public void setMisVacunas(ArrayList<Vacuna> misVacunas) {
 		this.misVacunas = misVacunas;
 	}	
-
+	
+	public void insertarUsuario(Usuario usuario) {
+		misUsuarios.add(usuario);
+	}
+	
+	public void insertarPaciente(Paciente paciente) {
+		misPacientes.add(paciente);
+	}
+	
+	public void insertarCitasMedicas(CitaMedica cita) {
+		misCitasMedicas.add(cita);
+	}
+	
+	public void insertarEnfermedades(Enfermedad enfermedad) {
+		misEnfermedades.add(enfermedad);
+	}
+	
+	public void insertarVacuna(Vacuna vacuna) {
+		misVacunas.add(vacuna);
+	}
+	
+	public Usuario buscarUsuario(String cedula) {
+		Usuario usuario = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misUsuarios.size()) {
+			if(misUsuarios.get(indexBuscador).getCedulaUsuario().equalsIgnoreCase(cedula)) {				
+				usuario=misUsuarios.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return usuario;
+	}
+	
+	public Paciente buscarPaciente(String cedula) {
+		Paciente paciente = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misPacientes.size()) {
+			if(misPacientes.get(indexBuscador).getCedula().equalsIgnoreCase(cedula)) {				
+				paciente=misPacientes.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return paciente;
+	}
+	
+	public CitaMedica buscarCitaMedica(String cedulaPaciente) {
+		CitaMedica cita = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misCitasMedicas.size()) {
+			if(misCitasMedicas.get(indexBuscador).getCedulaPersona().equalsIgnoreCase(cedulaPaciente)) {				
+				cita=misCitasMedicas.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return cita;
+	}
+	
+	public Enfermedad buscarEnfermedad(String codigo) {
+		Enfermedad enfermedad = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misEnfermedades.size()) {
+			if(misEnfermedades.get(indexBuscador).getCodigoEnfermedad().equalsIgnoreCase(codigo)) {				
+				enfermedad=misEnfermedades.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return enfermedad;
+	}
+	
+	public Vacuna buscarVacuna(String codigo) {
+		Vacuna vacuna = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misVacunas.size()) {
+			if(misVacunas.get(indexBuscador).getCodigoVacunacion().equalsIgnoreCase(codigo)) {				
+				vacuna=misVacunas.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return vacuna;
+	}
 }

@@ -7,6 +7,7 @@ public abstract class Usuario {
 	 */
 	
 	protected String codigoUsuario;
+	protected String cedulaUsuario;
 	protected int idUsuario;
 	protected String usuario;
 	protected String password;
@@ -16,10 +17,11 @@ public abstract class Usuario {
 	protected String email;
 	protected String genero;
 	
-	public Usuario(String codigoUsuario, int idUsuario, String usuario, String password, String nombre, String telefono,
+	public Usuario(String codigoUsuario, String cedulaUsuario, int idUsuario, String usuario, String password, String nombre, String telefono,
 			String direccion, String email, String genero) {
 		super();
 		this.codigoUsuario = codigoUsuario;
+		this.cedulaUsuario = cedulaUsuario;
 		this.idUsuario = idUsuario;
 		this.usuario = usuario;
 		this.password = password;
@@ -100,6 +102,14 @@ public abstract class Usuario {
 
 	public void setGenero(String genero) {
 		this.genero = genero;
+	}
+
+	public String getCedulaUsuario() {
+		return cedulaUsuario;
+	}
+
+	public void setCedulaUsuario(String cedulaUsuario) {
+		this.cedulaUsuario = cedulaUsuario;
 	}	
 
 }
