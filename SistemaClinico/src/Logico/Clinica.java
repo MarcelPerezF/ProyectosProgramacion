@@ -80,6 +80,12 @@ public class Clinica {
 	public void insertarUsuario(Usuario usuario) {
 		misUsuarios.add(usuario);
 		generadorCodigoUsuario++;
+	}	
+
+
+	public  void modificarUsuario(Usuario usuarioModificar) {
+		int indiceUsuario = buscarIndiceUsuario(usuarioModificar.getCedulaUsuario());
+		misUsuarios.set(indiceUsuario, usuarioModificar);	
 	}
 	
 	public void insertarPaciente(Paciente paciente) {
@@ -111,6 +117,21 @@ public class Clinica {
 			indexBuscador++;
 		}
 		return usuario;
+	}
+	
+	public int buscarIndiceUsuario(String cedula) {
+		int indiceUsuario = -1;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misUsuarios.size()) {
+			if(misUsuarios.get(indexBuscador).getCedulaUsuario().equalsIgnoreCase(cedula)) {				
+				indiceUsuario = indexBuscador;
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return indiceUsuario;
 	}
 	
 	public Paciente buscarPaciente(String cedula) {

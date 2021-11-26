@@ -1,6 +1,5 @@
 package Visual;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
@@ -28,14 +27,22 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 
 import Logico.Clinica;
+import Logico.Empleado;
 import Logico.Medico;
 import Logico.Usuario;
 
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class FrmListadoUsuarios extends JDialog {
 
@@ -51,19 +58,25 @@ public class FrmListadoUsuarios extends JDialog {
 	private static Object[] row;
 	private JTextField txtCantidadUsuarios;
 	private JButton btnSalir;
-	private JPanel pnListadoEnfermedades;
+	private JPanel pnListadoUsuarios;
 	private int opcion;
 	
 	//btnAuxiliar para saber si se quiere ver detallado o si se quiere ver listado para seleccionar.
 	private JButton btnAuxiliar;
 	private Usuario usuarioSeleccionado;
+	private JButton btnBuscar;
+	private JTextField txtBusqueda;
+	private JComboBox cbxTipoBusqueda;
+	private JComboBox cbxBusqueda;
 	
 	
 	public static void main(String[] args) {
 		try {
-			Usuario usuario = new Medico("M1", "402", 1, "1", "2", "Carl", "829", "RD", "", "Masculino", "Cirujano");
+			Usuario usuario = new Medico("U1", "402", 1, "1", "2", "Carl", "849", "RD", "", "Hombre", "Cirujano");
+			Usuario usuario2 = new Empleado("U2", "403", 2, "3", "4", "Sofi", "829", "RD", "", "Mujer", "Administrador");
 			Clinica.getInstance().insertarUsuario(usuario);
-			FrmListadoUsuarios dialog = new FrmListadoUsuarios(1);
+			Clinica.getInstance().insertarUsuario(usuario2);
+			FrmListadoUsuarios dialog = new FrmListadoUsuarios(3);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -76,27 +89,33 @@ public class FrmListadoUsuarios extends JDialog {
 		//El parametro opcion es para saber si se desea ver el listado o si se desea seleccionar
 		//Opcion 1: Ver listado.
 		//Opcion 2: Ver listado (PARA SELECCIONAR).
+		//Opcion 3: Ver listado (PARA SELECCIONAR).
 		
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(opcion!=2) {
+				if(opcion==1) {
 					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
 					if(aux==0) {
 						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.OK_OPTION);
+						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					}else if(aux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
 				}else {
-					JOptionPane.showMessageDialog(null, "Debe seleccionar el usuario", "Seleccionar", JOptionPane.INFORMATION_MESSAGE);
+					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea no desea modificar al usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+					if(aux==0) {
+						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+					}else if(aux==1) {
+						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					}
 				}
 			}
 		});
 		setTitle("Listado de Usuarios");
 		setModalityType(ModalityType.DOCUMENT_MODAL);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setModal(true);
 		setResizable(false);
 		setBounds(100, 100, 780, 650);
@@ -144,37 +163,48 @@ public class FrmListadoUsuarios extends JDialog {
 			bnBotones.setLayout(null);
 			{
 				btnAuxiliar = new JButton("");
+				//Boton de seleccionar o ver mas.
+				
 				btnAuxiliar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						dispose();
-						FrmListadoUsuariosDetallado frmAux = new FrmListadoUsuariosDetallado(usuarioSeleccionado);
-						frmAux.setVisible(true);
+						if(opcion==1) {
+							dispose();
+							FrmListadoUsuariosDetallado frmAux = new FrmListadoUsuariosDetallado(usuarioSeleccionado);
+							frmAux.setVisible(true);
+						}else {
+							dispose();
+							FrmIngresarUsuario frmAux = new FrmIngresarUsuario(opcionListado, usuarioSeleccionado);
+							frmAux.setVisible(true);
+						}
 					}
 				});
 				if(opcion==1) {
 					btnAuxiliar.setText("Ver m\u00e1s");
-				}else if(opcion==2){
+				}else if(opcion!=1){
 					btnAuxiliar.setText("Seleccionar");
 				}
 				btnAuxiliar.setEnabled(false);
-				btnAuxiliar.setBounds(487, 16, 111, 28);
-				btnAuxiliar.setActionCommand("OK");
+				btnAuxiliar.setBounds(500, 16, 111, 28);
 				bnBotones.add(btnAuxiliar);
 				getRootPane().setDefaultButton(btnAuxiliar);
 			}
 			{
 				btnSalir = new JButton("Salir");
 				btnSalir.setBounds(634, 16, 81, 28);
+				if(opcion!=1) {
+					btnSalir.setEnabled(false);
+				}
 				btnSalir.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
-						if(opcion==0) {
-							JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.OK_OPTION);
-							dispose();
+						if(opcionListado==1) {
+							int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
+							if(opcion==0) {
+								JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+								dispose();
+							}
 						}
 					}
 				});
-				btnSalir.setActionCommand("Cancel");
 				bnBotones.add(btnSalir);
 			}
 			{
@@ -185,19 +215,21 @@ public class FrmListadoUsuarios extends JDialog {
 			
 			txtCantidadUsuarios = new JTextField();
 			txtCantidadUsuarios.setEditable(false);
-			txtCantidadUsuarios.setBounds(205, 19, 213, 23);
+			txtCantidadUsuarios.setBounds(205, 19, 146, 23);
 			bnBotones.add(txtCantidadUsuarios);
 			txtCantidadUsuarios.setColumns(10);
 		}
 		
-		pnListadoEnfermedades = new JPanel();
-		pnListadoEnfermedades.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		pnListadoEnfermedades.setBounds(12, 148, 730, 370);
-		getContentPane().add(pnListadoEnfermedades);
-		pnListadoEnfermedades.setLayout(new BorderLayout(0, 0));
+		pnListadoUsuarios = new JPanel();
+		pnListadoUsuarios.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		pnListadoUsuarios.setBounds(12, 148, 730, 370);
+		getContentPane().add(pnListadoUsuarios);
+		pnListadoUsuarios.setLayout(null);
 		{
 			JScrollPane scrlpnListadoUsuarios = new JScrollPane();
-			pnListadoEnfermedades.add(scrlpnListadoUsuarios, BorderLayout.CENTER);
+			scrlpnListadoUsuarios.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+			scrlpnListadoUsuarios.setBounds(1, 97, 728, 272);
+			pnListadoUsuarios.add(scrlpnListadoUsuarios);
 			
 			tblListadoUsuarios = new JTable();
 			tblListadoUsuarios.addMouseListener(new MouseAdapter() {
@@ -217,7 +249,7 @@ public class FrmListadoUsuarios extends JDialog {
 			if(opcion==1) {
 				String[] headers = {"Codigo","Nombre","Cedula", "Genero", "Tipo", "Usuario", "Contrase\u00f1a"};
 				model.setColumnIdentifiers(headers);
-			}else if(opcion==2){
+			}else if(opcion!=1){
 				String[] headers = {"Codigo","Nombre","Cedula", "Genero", "Tipo"};
 				model.setColumnIdentifiers(headers);
 			}
@@ -227,39 +259,194 @@ public class FrmListadoUsuarios extends JDialog {
 			scrlpnListadoUsuarios.setViewportView(tblListadoUsuarios);
 			
 		}
-		loadTablaUsuarios();
+		
+		JPanel pnBusqueda = new JPanel();
+		pnBusqueda.setBorder(new TitledBorder(null, "Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		pnBusqueda.setBounds(15, 10, 700, 75);
+		pnListadoUsuarios.add(pnBusqueda);
+		pnBusqueda.setLayout(null);
+		
+		JLabel lblBusqueda = new JLabel("Tipo de busqueda:");
+		lblBusqueda.setBounds(15, 29, 133, 23);
+		pnBusqueda.add(lblBusqueda);
+		
+		cbxTipoBusqueda = new JComboBox();
+		cbxTipoBusqueda.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "C\u00E9dula", "Tipo Usuario", "Genero"}));
+		cbxTipoBusqueda.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if( cbxTipoBusqueda.getSelectedIndex()==0 || cbxTipoBusqueda.getSelectedIndex()==1 || cbxTipoBusqueda.getSelectedIndex()==2 ) {
+					txtBusqueda.setVisible(true);
+					cbxBusqueda.setVisible(false);
+					txtBusqueda.setText("");
+					btnBuscar.setEnabled(false);
+				}
+				if(cbxTipoBusqueda.getSelectedIndex()==3) {
+					txtBusqueda.setVisible(false);
+					cbxBusqueda.setVisible(true);
+					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Medico", "Administrador", "Secretaria"}));
+					btnBuscar.setEnabled(true);
+				}
+				if(cbxTipoBusqueda.getSelectedIndex()==4) {
+					txtBusqueda.setVisible(false);
+					cbxBusqueda.setVisible(true);
+					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Hombre", "Mujer"}));
+					btnBuscar.setEnabled(true);
+				}
+				loadTablaUsuarios(1, "");
+
+			}
+		});
+		cbxTipoBusqueda.setBounds(150, 29, 140, 23);
+		pnBusqueda.add(cbxTipoBusqueda);
+		
+		txtBusqueda = new JTextField();
+		txtBusqueda.setBounds(330, 29, 202, 23);
+		txtBusqueda.getDocument().addDocumentListener(new DocumentListener() {			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);				
+			}
+		});
+		pnBusqueda.add(txtBusqueda);
+		txtBusqueda.setColumns(10);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcionAux = cbxTipoBusqueda.getSelectedIndex();
+				switch (opcionAux) {
+				case 0:
+					loadTablaUsuarios(2, txtBusqueda.getText());
+					break;
+				case 1:
+					loadTablaUsuarios(3, txtBusqueda.getText());
+					break;
+				case 2:
+					loadTablaUsuarios(4, txtBusqueda.getText());
+					break;
+				case 3:
+					loadTablaUsuarios(5, cbxBusqueda.getSelectedItem().toString());
+					break;
+				case 4:
+					loadTablaUsuarios(6, cbxBusqueda.getSelectedItem().toString());
+					break;
+
+				default:
+					break;
+				}
+			}
+		});
+		btnBuscar.setEnabled(false);
+		btnBuscar.setBounds(545, 25, 140, 30);
+		pnBusqueda.add(btnBuscar);
+		
+		cbxBusqueda = new JComboBox();
+		cbxBusqueda.setVisible(false);
+		cbxBusqueda.setBounds(330, 29, 202, 23);
+		pnBusqueda.add(cbxBusqueda);
+		loadTablaUsuarios(1, "");
 	}
-	public void loadTablaUsuarios() {
+	
+	public void loadTablaUsuarios(int opcionBusqueda, String busqueda) {
 		model.setRowCount(0);
+		int cantidadUsuarios = 0;
+		for (int i = 0; i<Clinica.getInstance().getMisUsuarios().size(); i++) {
+			switch (opcionBusqueda) {
+			case 1:
+				cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+				cantidadUsuarios++;
+				break;
+			
+			case 2:
+				if(Clinica.getInstance().getMisUsuarios().get(i).getCodigoUsuario().equalsIgnoreCase(busqueda)) {
+					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+					cantidadUsuarios++;
+				}
+				break;
+			
+			case 3:
+				if(Clinica.getInstance().getMisUsuarios().get(i).getNombre().equalsIgnoreCase(busqueda)) {
+					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+					cantidadUsuarios++;
+				}
+				break;
+			
+			case 4:
+				if(Clinica.getInstance().getMisUsuarios().get(i).getCedulaUsuario().equalsIgnoreCase(busqueda)) {
+					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+					cantidadUsuarios++;
+				}
+				break;
+			
+			case 5:
+				if(Clinica.getInstance().tipoUsuario(Clinica.getInstance().getMisUsuarios().get(i)).equalsIgnoreCase(busqueda)) {
+					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+					cantidadUsuarios++;
+				}
+				break;
+			
+			case 6:
+				if(Clinica.getInstance().getMisUsuarios().get(i).getGenero().equalsIgnoreCase(busqueda)) {
+					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+					cantidadUsuarios++;
+				}
+				break;
+			}
+		}
+		txtCantidadUsuarios.setText(""+cantidadUsuarios+" usuarios");
+	}
+
+	public void cargarFilas(int opcion2, Usuario usuario) {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
-		for (int i = 0; i<Clinica.getInstance().getMisUsuarios().size(); i++) {
-            row[0] = Clinica.getInstance().getMisUsuarios().get(i).getCodigoUsuario();
-            tblListadoUsuarios.getColumnModel().getColumn(0).setCellRenderer(tcr);
-            
-            row[1] = Clinica.getInstance().getMisUsuarios().get(i).getNombre();
-            tblListadoUsuarios.getColumnModel().getColumn(1).setCellRenderer(tcr);
+		try {
+	        row[0] = usuario.getCodigoUsuario();
+	        tblListadoUsuarios.getColumnModel().getColumn(0).setCellRenderer(tcr);
+	        
+	        row[1] = usuario.getNombre();
+	        tblListadoUsuarios.getColumnModel().getColumn(1).setCellRenderer(tcr);
 
-            row[2] = Clinica.getInstance().getMisUsuarios().get(i).getCedulaUsuario();
-            tblListadoUsuarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
+	        row[2] = usuario.getCedulaUsuario();
+	        tblListadoUsuarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
 
-            row[3] = Clinica.getInstance().getMisUsuarios().get(i).getGenero();
-            tblListadoUsuarios.getColumnModel().getColumn(3).setCellRenderer(tcr);
-            
-            row[4] = Clinica.getInstance().tipoUsuario(Clinica.getInstance().getMisUsuarios().get(i));
-            tblListadoUsuarios.getColumnModel().getColumn(4).setCellRenderer(tcr);
-            
-            if(opcion==1) {
-	            row[5] = Clinica.getInstance().getMisUsuarios().get(i).getUsuario();
+	        row[3] = usuario.getGenero();
+	        tblListadoUsuarios.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        
+	        row[4] = Clinica.getInstance().tipoUsuario(usuario);
+	        tblListadoUsuarios.getColumnModel().getColumn(4).setCellRenderer(tcr);
+	        
+	        if(opcion==1) {
+	            row[5] = usuario.getUsuario();
 	            tblListadoUsuarios.getColumnModel().getColumn(5).setCellRenderer(tcr);
 	            
-	            row[6] = Clinica.getInstance().getMisUsuarios().get(i).getPassword();
+	            row[6] = usuario.getPassword();
 	            tblListadoUsuarios.getColumnModel().getColumn(6).setCellRenderer(tcr);
-            }
-            model.addRow(row);			
+	        }
+	        model.addRow(row);	
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
-		txtCantidadUsuarios.setText(""+Clinica.getInstance().getMisUsuarios().size());
-		
+	
 	}
 }

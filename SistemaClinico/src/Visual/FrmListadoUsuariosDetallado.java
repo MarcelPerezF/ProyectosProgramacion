@@ -73,7 +73,7 @@ public class FrmListadoUsuariosDetallado extends JDialog {
 				int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir de ver la informaci\u00f3n detallada del usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(aux==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de la vista detallada de la informaci\u00f3n del usuario", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de la vista detallada de la informaci\u00f3n del usuario", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(aux==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}

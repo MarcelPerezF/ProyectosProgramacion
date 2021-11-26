@@ -283,7 +283,7 @@ public class FrmPrincipal extends JFrame {
 		mnNuevoUsuario = new JMenuItem("Nuevo Usuario");
 		mnNuevoUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmIngresarUsuario frmAux = new FrmIngresarUsuario();
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null);
 				frmAux.setVisible(true);
 			}
 		});
@@ -295,10 +295,20 @@ public class FrmPrincipal extends JFrame {
 		mnUsuarios.add(spUsuario1);
 		
 		mnModificarUsuario = new JMenuItem("Modificar Usuario");
+		mnModificarUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcion = JOptionPane.showOptionDialog(null, "Seleccione lo que desea modificar del usuario", "Selector de opciones", JOptionPane.YES_NO_OPTION, 
+						JOptionPane.QUESTION_MESSAGE, new ImageIcon(imagenInfoSistema), new Object[] {"informaci\u00f3n personal", "Credenciales"}, "informaci\u00f3nn personal");
+				if(opcion!=-1) {
+					opcion+=2;//Esto porque al listado llegara 2 o 3 si se desea modificar.
+					FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+					frmAux.setVisible(true);
+				}
+			}
+		});
 		mnModificarUsuario.setIcon(new ImageIcon(imagenModificarUsuario));
 		mnModificarUsuario.setBackground(colorSubMenuFondo);
-		mnUsuarios.add(mnModificarUsuario);
-		
+		mnUsuarios.add(mnModificarUsuario);		
 		JSeparator spUsuario2 = new JSeparator();
 		mnUsuarios.add(spUsuario2);
 		
@@ -560,7 +570,7 @@ public class FrmPrincipal extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				FrmIngresarUsuario frmAux = new FrmIngresarUsuario();
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null);
 				frmAux.setVisible(true);
 			}
 		});

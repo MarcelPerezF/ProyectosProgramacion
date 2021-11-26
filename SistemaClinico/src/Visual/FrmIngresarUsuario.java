@@ -77,39 +77,56 @@ public class FrmIngresarUsuario extends JDialog {
 	private String genero = "";
 	private String tipoUsuario = "";
 	private JComboBox cbxTipoEmpleado;
+	private JLabel lblTituloFormulario;
+	private JLabel lblDescripcionFormulario;
+	
+	private Usuario usuarioModificar = null;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmIngresarUsuario dialog = new FrmIngresarUsuario();
+			FrmIngresarUsuario dialog = new FrmIngresarUsuario(1, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Create the dialog.
-	 */
-	public FrmIngresarUsuario() {
+	
+	public FrmIngresarUsuario(int opcion, Usuario usuario) {
 		//Para controlar el boton de close.
+		usuarioModificar = usuario;
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
-				if(opcion==0) {
-					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar usuarios", "Saliendo", JOptionPane.OK_OPTION);
-				}else if(opcion==1) {
-					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				if(opcion==1) {
+					int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+					if(opcionAux==0) {
+						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						JOptionPane.showMessageDialog(null, "Saliendo de ingresar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+					}else if(opcionAux==1) {
+						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					}
+				}else{
+					int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea modificar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+					if(opcionAux==0) {
+						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						JOptionPane.showMessageDialog(null, "Saliendo de modificar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+						FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+						frmAux.setVisible(true);
+					}else if(opcionAux==1) {
+						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					}
 				}
 			}		
 		});
 		setModalityType(ModalityType.DOCUMENT_MODAL);
-		setTitle("Enfermedad");
+		setTitle("Ingreso de Usuarios");
+		if(opcion!=1) {
+			setTitle("Modificaci\u00f3n de Usuarios");
+		}
 		setResizable(false);
 		setModal(true);
 		setBounds(100, 100, 620, 600);
@@ -131,12 +148,12 @@ public class FrmIngresarUsuario extends JDialog {
 		lblImagenEnfermedad.setIcon(new ImageIcon(imagenUsuario2));
 		pnEncabezado.add(lblImagenEnfermedad);
 		
-		JLabel lblTituloFormulario = new JLabel("Ingreso de Usuarios");
+		lblTituloFormulario = new JLabel("Ingreso de Usuarios");
 		lblTituloFormulario.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblTituloFormulario.setBounds(191, 10, 227, 26);
 		pnEncabezado.add(lblTituloFormulario);
 		
-		JLabel lblDescripcionFormulario = new JLabel("Formulario para ingresar usuarios al sistema");
+		lblDescripcionFormulario = new JLabel("Formulario para ingresar usuarios al sistema");
 		lblDescripcionFormulario.setBounds(144, 75, 320, 16);
 		pnEncabezado.add(lblDescripcionFormulario);
 		
@@ -162,25 +179,45 @@ public class FrmIngresarUsuario extends JDialog {
 				btnIngresar.setEnabled(false);
 				btnIngresar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						Usuario usuario=null;
-						if(rdbtnEmpleado.isSelected()) {
-							usuario = new Empleado(txtCodigoUsuario.getText(), txtCedulaUsuario.getText(),
-									Integer.valueOf(txtIdUsuario.getText()), txtUsuario.getText(), txtPassword.getText(), 
-									txtNombreUsuario.getText(), txtTelefonoUsuario.getText(), txtDireccionUsuario.getText(), 
-									txtEmailUsuario.getText(), genero, cbxTipoEmpleado.getSelectedItem().toString());
-						}else if(rdbtnMedico.isSelected()) {
-							usuario = new Medico(txtCodigoUsuario.getText(), txtCedulaUsuario.getText(),
-									Integer.valueOf(txtIdUsuario.getText()), txtUsuario.getText(), txtPassword.getText(), 
-									txtNombreUsuario.getText(), txtTelefonoUsuario.getText(), txtDireccionUsuario.getText(), 
-									txtEmailUsuario.getText(), genero, txtTipoUsuario.getText());
-						}
-						try {
-							Clinica.getInstance().insertarUsuario(usuario);
-							JOptionPane.showMessageDialog(null, "Usuario ingresado correctamente", "INGRESO DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
-							limpiarFormulario();
-						} catch (NullPointerException exception) {
-							JOptionPane.showMessageDialog(null, "No se pudo ingresar el usuario", "ERROR AL INGRESAR EL USUARIO", JOptionPane.OK_OPTION);
-							limpiarFormulario();
+						if(opcion==1) {
+							Usuario usuarioAux = null;
+							if(rdbtnEmpleado.isSelected()) {
+								usuarioAux = new Empleado(txtCodigoUsuario.getText(), txtCedulaUsuario.getText(),
+										Integer.valueOf(txtIdUsuario.getText()), txtUsuario.getText(), txtPassword.getText(), 
+										txtNombreUsuario.getText(), txtTelefonoUsuario.getText(), txtDireccionUsuario.getText(), 
+										txtEmailUsuario.getText(), genero, cbxTipoEmpleado.getSelectedItem().toString());
+							}else if(rdbtnMedico.isSelected()) {
+								usuarioAux = new Medico(txtCodigoUsuario.getText(), txtCedulaUsuario.getText(),
+										Integer.valueOf(txtIdUsuario.getText()), txtUsuario.getText(), txtPassword.getText(), 
+										txtNombreUsuario.getText(), txtTelefonoUsuario.getText(), txtDireccionUsuario.getText(), 
+										txtEmailUsuario.getText(), genero, txtTipoUsuario.getText());
+							}
+							try {
+								Clinica.getInstance().insertarUsuario(usuarioAux);
+								JOptionPane.showMessageDialog(null, "Usuario ingresado correctamente", "INGRESO DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
+								limpiarFormulario();
+							} catch (NullPointerException exception) {
+								JOptionPane.showMessageDialog(null, "No se pudo ingresar el usuario", "ERROR AL INGRESAR EL USUARIO", JOptionPane.OK_OPTION);
+								limpiarFormulario();
+							}
+						}else {
+							if(opcion==2) {
+								usuarioModificar.setNombre(txtNombreUsuario.getText());
+								usuarioModificar.setCedulaUsuario(txtCedulaUsuario.getText());
+								usuarioModificar.setTelefono(txtTelefonoUsuario.getText());
+								usuarioModificar.setDireccion(txtDireccionUsuario.getText());
+								usuarioModificar.setEmail(txtEmailUsuario.getText());
+								usuarioModificar.setGenero(genero);
+							}else if(opcion==3) {
+								usuarioModificar.setUsuario(txtUsuario.getText());
+								usuarioModificar.setPassword(txtPassword.getText());
+							}							
+							Clinica.getInstance().modificarUsuario(usuarioModificar);
+							JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "MODIFICACI\u00d3N DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
+							dispose();
+							FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+							frmAux.setVisible(true);
+							
 						}
 					}
 				});
@@ -197,13 +234,11 @@ public class FrmIngresarUsuario extends JDialog {
 				}
 			});
 			btnNuevo.setEnabled(false);
-			btnNuevo.setActionCommand("OK");
 			btnNuevo.setBounds(15, 14, 94, 30);
 			pnBotones.add(btnNuevo);
 			
 			btnAtras = new JButton("Atras");
-			btnAtras.setEnabled(false);
-			btnAtras.addActionListener(new ActionListener() {
+			btnAtras.setEnabled(false);btnAtras.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					pnInformacionPersonal.setVisible(true);
 					pnCredenciales.setVisible(false);
@@ -213,7 +248,6 @@ public class FrmIngresarUsuario extends JDialog {
 					cambiarPagina(2);
 				}
 			});
-			btnAtras.setActionCommand("OK");
 			btnAtras.setBounds(161, 14, 94, 30);
 			pnBotones.add(btnAtras);
 			
@@ -224,7 +258,6 @@ public class FrmIngresarUsuario extends JDialog {
 					cambiarPagina(1);
 				}
 			});
-			btnSiguiente.setActionCommand("OK");
 			btnSiguiente.setBounds(310, 14, 110, 30);
 			pnBotones.add(btnSiguiente);
 		}
@@ -263,22 +296,38 @@ public class FrmIngresarUsuario extends JDialog {
 		btnComprobar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean correcto = true;
-				if( !(Clinica.getInstance().usuarioRepetido(txtUsuario.getText()))) {
-					JOptionPane.showMessageDialog(null, "El usuario ya existe!", "Usuario Existente", JOptionPane.OK_OPTION);
-					correcto = false;
-				}
-				if( !(txtPassword.getText().equalsIgnoreCase(txtPasswordConfirmar.getText()))) {
-					JOptionPane.showMessageDialog(null, "Las contrase\u00f1as no coinciden!", "Contrase\u00f1as Diferentes", JOptionPane.OK_OPTION);
-					correcto =false;
-				}
-				if(correcto) {
-					JOptionPane.showMessageDialog(null, "Las credenciales ingresadas son correctas!", "Credenciales correctas", JOptionPane.INFORMATION_MESSAGE);
-					txtUsuario.setEnabled(false);
-					txtPassword.setEnabled(false);
-					txtPasswordConfirmar.setEnabled(false);
-					btnComprobar.setEnabled(false);
-					rdbtnEmpleado.setEnabled(true);
-					rdbtnMedico.setEnabled(true);
+
+				if(opcion==1) {
+					if( !(Clinica.getInstance().usuarioRepetido(txtUsuario.getText()))) {
+						JOptionPane.showMessageDialog(null, "El usuario ya existe!", "Usuario Existente", JOptionPane.OK_OPTION);
+						correcto = false;
+					}
+					if( !(txtPassword.getText().equalsIgnoreCase(txtPasswordConfirmar.getText()))) {
+						JOptionPane.showMessageDialog(null, "Las contrase\u00f1as no coinciden!", "Contrase\u00f1as Diferentes", JOptionPane.OK_OPTION);
+						correcto =false;
+					}
+					if(correcto) {
+						JOptionPane.showMessageDialog(null, "Las credenciales ingresadas son correctas!", "Credenciales correctas", JOptionPane.INFORMATION_MESSAGE);
+						txtUsuario.setEnabled(false);
+						txtPassword.setEnabled(false);
+						txtPasswordConfirmar.setEnabled(false);
+						btnComprobar.setEnabled(false);
+						rdbtnEmpleado.setEnabled(true);
+						rdbtnMedico.setEnabled(true);
+						if(opcion==3) {
+							btnIngresar.setEnabled(true);
+						}
+					}
+				}else {
+					if( !(txtPassword.getText().equalsIgnoreCase(txtPasswordConfirmar.getText()))) {
+						JOptionPane.showMessageDialog(null, "Las contrase\u00f1as no coinciden!", "Contrase\u00f1as Diferentes", JOptionPane.OK_OPTION);
+						correcto =false;
+					}
+					if(correcto) {
+						btnIngresar.setEnabled(true);
+					}else {
+						btnIngresar.setEnabled(false);
+					}
 				}
 			}
 		});
@@ -523,60 +572,162 @@ public class FrmIngresarUsuario extends JDialog {
 		lblIdUsuario.setBounds(318, 13, 121, 22);
 		pnCampos.add(lblIdUsuario);
 		
-		txtCodigoUsuario.setText("U"+Clinica.getInstance().getGeneradorCodigoUsuario());
-		txtIdUsuario.setText(""+Clinica.getInstance().getGeneradorCodigoUsuario());
-		
+		if(opcion!=1){
+			modificarUsuario(opcion);
+		}else {
+			txtCodigoUsuario.setText("U"+Clinica.getInstance().getGeneradorCodigoUsuario());
+			txtIdUsuario.setText(""+Clinica.getInstance().getGeneradorCodigoUsuario());
+		}
 	}
 	
+	public void modificarUsuario(int opcion) {
+		btnAtras.setVisible(false);
+		btnSiguiente.setVisible(false);
+		btnNuevo.setVisible(false);
+		pnTipoUsuario.setVisible(false);
+		lblTituloFormulario.setText("Modificaci\u00f3n de Usuarios");
+		lblDescripcionFormulario.setText("Formulario para modificar usuarios en el sistema");
+		btnIngresar.setText("Modificar");
+		txtUsuario.setEditable(false);
+		
+		if(opcion==2) {
+			pnInformacionPersonal.setVisible(true);
+			pnCredenciales.setVisible(false);
+			try {
+				txtCodigoUsuario.setText(usuarioModificar.getCodigoUsuario());
+				txtIdUsuario.setText(""+usuarioModificar.getIdUsuario());
+				txtNombreUsuario.setText(usuarioModificar.getNombre());
+				txtCedulaUsuario.setText(usuarioModificar.getCedulaUsuario());
+				txtTelefonoUsuario.setText(usuarioModificar.getTelefono());
+				txtDireccionUsuario.setText(usuarioModificar.getDireccion());
+				txtEmailUsuario.setText(usuarioModificar.getEmail());
+				if(usuarioModificar.getGenero().equalsIgnoreCase("Hombre")) {
+					rdbtnHombre.setSelected(true);
+					genero="Hombre";
+
+				}else {
+					rdbtnMujer.setSelected(true);
+					genero="Mujer";
+				}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "No se puedo cargar la informaci\u00f3n del usuario", "ERROR", JOptionPane.OK_OPTION);
+			
+			}
+
+		}
+		if(opcion==3) {
+			pnInformacionPersonal.setVisible(false);
+			pnCredenciales.setVisible(true);
+			pnCredenciales.setBounds(15, 100, 546, 143);
+			try {
+				txtCodigoUsuario.setText(usuarioModificar.getCodigoUsuario());
+				txtIdUsuario.setText(""+usuarioModificar.getIdUsuario());
+				txtUsuario.setText(usuarioModificar.getUsuario());
+				txtPassword.setText(usuarioModificar.getPassword());
+				txtPasswordConfirmar.setText(usuarioModificar.getPassword());
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "No se puedo cargar la informaci\u00f3n del usuario", "ERROR", JOptionPane.OK_OPTION);
+			}
+		}
+	}
+
 	private void comprobarCampos(JTextField text, int opcion) {
 		text.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				if(opcion==1) {					
-					if(camposLlenos(1)) {
-						btnSiguiente.setEnabled(true);
-					}else {
-						btnSiguiente.setEnabled(false);
+				if(usuarioModificar==null) {
+					if(opcion==1) {					
+						if(camposLlenos(1)) {
+							btnSiguiente.setEnabled(true);
+						}else {
+							btnSiguiente.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}else if(opcion==2) {
-					if(camposLlenos(2)) {
-						btnComprobar.setEnabled(true);
-					}else {
-						btnComprobar.setEnabled(false);
+				}else {
+					if(opcion==1) {
+						if(camposLlenos(1)) {
+							btnIngresar.setEnabled(true);
+						}else {
+							btnIngresar.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}				
+				}
 			}			
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				if(opcion==1) {					
-					if(camposLlenos(1)) {
-						btnSiguiente.setEnabled(true);
-					}else {
-						btnSiguiente.setEnabled(false);
+				if(usuarioModificar==null) {
+					if(opcion==1) {					
+						if(camposLlenos(1)) {
+							btnSiguiente.setEnabled(true);
+						}else {
+							btnSiguiente.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}else if(opcion==2) {
-					if(camposLlenos(2)) {
-						btnComprobar.setEnabled(true);
-					}else {
-						btnComprobar.setEnabled(false);
+				}else {
+					if(opcion==1) {
+						if(camposLlenos(1)) {
+							btnIngresar.setEnabled(true);
+						}else {
+							btnIngresar.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}		
+				}	
 			}
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				if(opcion==1) {					
-					if(camposLlenos(1)) {
-						btnSiguiente.setEnabled(true);
-					}else {
-						btnSiguiente.setEnabled(false);
+				if(usuarioModificar==null) {
+					if(opcion==1) {					
+						if(camposLlenos(1)) {
+							btnSiguiente.setEnabled(true);
+						}else {
+							btnSiguiente.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}else if(opcion==2) {
-					if(camposLlenos(2)) {
-						btnComprobar.setEnabled(true);
-					}else {
-						btnComprobar.setEnabled(false);
+				}else {
+					if(opcion==1) {
+						if(camposLlenos(1)) {
+							btnIngresar.setEnabled(true);
+						}else {
+							btnIngresar.setEnabled(false);
+						}
+					}else if(opcion==2) {
+						if(camposLlenos(2)) {
+							btnComprobar.setEnabled(true);
+						}else {
+							btnComprobar.setEnabled(false);
+						}
 					}
-				}			
+				}	
 			}
 		});
 		
@@ -584,7 +735,7 @@ public class FrmIngresarUsuario extends JDialog {
 
 	public boolean camposLlenos(int opcion) {
 		boolean aux = false;
-		if(opcion==1) {			
+		if(opcion==1) {	
 			if( !(txtCedulaUsuario.getText().equalsIgnoreCase("")) && !(txtNombreUsuario.getText().equalsIgnoreCase("")) 
 					&& !(txtTelefonoUsuario.getText().equalsIgnoreCase("")) && !(txtDireccionUsuario.getText().equalsIgnoreCase("")) 
 					&& !(genero.equals(""))) {
