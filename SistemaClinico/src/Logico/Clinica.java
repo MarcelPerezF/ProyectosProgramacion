@@ -221,5 +221,9 @@ public class Clinica {
 		return tipoUsuario;
 	}
 
-
+	public String generarCodigoEnfermedad() {
+		String codigo="";
+		codigo = "E-"+(misEnfermedades.size()+1);
+		return codigo;
+	}
 }

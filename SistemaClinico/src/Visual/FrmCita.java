@@ -10,6 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import Logico.Usuario;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -59,7 +62,7 @@ public class FrmCita extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmCita dialog = new FrmCita();
+			FrmCita dialog = new FrmCita(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			
@@ -71,7 +74,7 @@ public class FrmCita extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmCita() {
+	public FrmCita(Usuario usuarioCreador) {
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override

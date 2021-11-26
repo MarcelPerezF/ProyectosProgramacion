@@ -28,6 +28,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import Logico.Clinica;
+
 import javax.swing.JTextField;
 
 public class FrmListadoEnfermedad extends JDialog {
@@ -188,16 +191,16 @@ public class FrmListadoEnfermedad extends JDialog {
 		row = new Object[model.getColumnCount()];
 		int i=0;
 		for (i = 0; i < 5; i++) {
-            row[0] = "E"+(i+1);
+            row[0] = Clinica.getInstance().getMisEnfermedades().get(i).getCodigoEnfermedad();
             tblListadoEnfermedades.getColumnModel().getColumn(0).setCellRenderer(tcr);
             
-            row[1] = "Covid";
+            row[1] = Clinica.getInstance().getMisEnfermedades().get(i).getNombreEnfermedad();
             tblListadoEnfermedades.getColumnModel().getColumn(1).setCellRenderer(tcr);
 
-            row[2] = "Contagioso";
+            row[2] = Clinica.getInstance().getMisEnfermedades().get(i).getTipoEnfermedad();
             tblListadoEnfermedades.getColumnModel().getColumn(2).setCellRenderer(tcr);
 
-            row[3] = "Covid-19";
+            row[3] = Clinica.getInstance().getMisEnfermedades().get(i).getDescripcionEnfermedad();
             tblListadoEnfermedades.getColumnModel().getColumn(3).setCellRenderer(tcr);
             model.addRow(row);
 		}

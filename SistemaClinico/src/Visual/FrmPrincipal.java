@@ -384,6 +384,12 @@ public class FrmPrincipal extends JFrame {
 		mnIngresarEnfermedades.setIcon(new ImageIcon(imagenIngresarEnfermedad));
 		mnIngresarEnfermedades.setBackground(colorSubMenuFondo);
 		mnEnfermedades.add(mnIngresarEnfermedades);
+		mnIngresarEnfermedades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmIngresarEnfermedad aux = new FrmIngresarEnfermedad();
+				aux.setVisible(true);
+			}
+		});
 		
 		JSeparator spEnfermedades1 = new JSeparator();
 		mnEnfermedades.add(spEnfermedades1);

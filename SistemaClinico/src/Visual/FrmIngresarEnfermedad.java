@@ -8,6 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
+import Logico.Clinica;
+import Logico.Enfermedad;
+
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -28,6 +32,8 @@ import javax.swing.JTextField;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FrmIngresarEnfermedad extends JDialog {
 
@@ -43,21 +49,14 @@ public class FrmIngresarEnfermedad extends JDialog {
 	private JTextField txtNombreEnfermedad;
 	private JTextField txtTipoEnfermedad;
 	private JEditorPane txtDescripcion;
-	private JButton btnNuevo;
+	private JButton btnLimpiar;
+	private boolean b1=false;
+	private boolean b2=false;
+	private boolean b3=false;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			FrmIngresarEnfermedad dialog = new FrmIngresarEnfermedad();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Create the dialog.
 	 */
@@ -66,7 +65,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.OK_OPTION);
@@ -127,6 +126,15 @@ public class FrmIngresarEnfermedad extends JDialog {
 			pnBotones.setLayout(null);
 			{
 				btnIngresar = new JButton("Ingresar");
+				btnIngresar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Enfermedad auxEnf = new Enfermedad(txtCodigoEnfermedad.getText(),txtNombreEnfermedad.getText()
+								,txtTipoEnfermedad.getText(),txtDescripcion.getText());
+						Clinica.getInstance().insertarEnfermedades(auxEnf);
+						clean();
+					}
+				});
+				btnIngresar.setEnabled(false);
 				btnIngresar.setBounds(180, 16, 94, 30);
 				btnIngresar.setActionCommand("OK");
 				pnBotones.add(btnIngresar);
@@ -137,7 +145,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 				btnSalir.setBounds(346, 16, 94, 30);
 				btnSalir.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						if(opcion==0) {
 							JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.OK_OPTION);
 							dispose();
@@ -148,10 +156,16 @@ public class FrmIngresarEnfermedad extends JDialog {
 				pnBotones.add(btnSalir);
 			}
 			
-			btnNuevo = new JButton("Nuevo");
-			btnNuevo.setActionCommand("OK");
-			btnNuevo.setBounds(15, 14, 94, 30);
-			pnBotones.add(btnNuevo);
+			btnLimpiar = new JButton("Limpiar");
+			btnLimpiar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					clean();
+				}
+			});
+			btnLimpiar.setEnabled(false);
+			btnLimpiar.setActionCommand("OK");
+			btnLimpiar.setBounds(15, 14, 94, 30);
+			pnBotones.add(btnLimpiar);
 		}
 		
 		JPanel pnCampos = new JPanel();
@@ -167,6 +181,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 		txtCodigoEnfermedad = new JTextField();
 		txtCodigoEnfermedad.setEditable(false);
 		txtCodigoEnfermedad.setBounds(192, 13, 116, 22);
+		txtCodigoEnfermedad.setText(Clinica.getInstance().generarCodigoEnfermedad());
 		pnCampos.add(txtCodigoEnfermedad);
 		txtCodigoEnfermedad.setColumns(10);
 		
@@ -175,6 +190,16 @@ public class FrmIngresarEnfermedad extends JDialog {
 		pnCampos.add(lblNombreEnfermedad);
 		
 		txtNombreEnfermedad = new JTextField();
+		txtNombreEnfermedad.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b1=true;
+				if(b1&&b2&&b3) {
+					btnIngresar.setEnabled(true);
+				}
+			}
+		});
 		txtNombreEnfermedad.setColumns(10);
 		txtNombreEnfermedad.setBounds(192, 57, 251, 22);
 		pnCampos.add(txtNombreEnfermedad);
@@ -184,6 +209,16 @@ public class FrmIngresarEnfermedad extends JDialog {
 		pnCampos.add(lblTipoEnfermedad);
 		
 		txtTipoEnfermedad = new JTextField();
+		txtTipoEnfermedad.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b2=true;
+				if(b1&&b2&&b3) {
+					btnIngresar.setEnabled(true);
+				}
+			}
+		});
 		txtTipoEnfermedad.setColumns(10);
 		txtTipoEnfermedad.setBounds(192, 103, 251, 22);
 		pnCampos.add(txtTipoEnfermedad);
@@ -203,7 +238,29 @@ public class FrmIngresarEnfermedad extends JDialog {
 		pnDescripcionEnfermedad.add(scrlpnDescripcionEnfermedad, BorderLayout.CENTER);
 		
 		txtDescripcion = new JEditorPane();
+		txtDescripcion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b3=true;
+				if(b1&&b2&&b3) {
+					btnIngresar.setEnabled(true);
+				}
+			}
+		});
 		txtDescripcion.setSize(201, 80);
 		scrlpnDescripcionEnfermedad.setViewportView(txtDescripcion);
+	}
+	
+	public void clean() {
+		txtCodigoEnfermedad.setText(Clinica.getInstance().generarCodigoEnfermedad());
+		txtDescripcion.setText("");
+		txtNombreEnfermedad.setText("");
+		txtTipoEnfermedad.setText("");
+		b1=false;
+		b2=false;
+		b3=false;
+		btnIngresar.setEnabled(false);
+		btnLimpiar.setEnabled(false);
 	}
 }
