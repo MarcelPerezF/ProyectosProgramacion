@@ -89,7 +89,7 @@ public class FrmPrincipal extends JFrame {
 	
 	private JMenu mnEnfermedades;
 	private JMenuItem mnIngresarEnfermedades;
-	private JMenuItem mnModificarEnfermedad;
+	private JMenuItem mnActualizarEnfermedad;
 	private JMenuItem mnListadoEnfermedades;
 
 	private JMenu mnVacunas;
@@ -386,7 +386,7 @@ public class FrmPrincipal extends JFrame {
 		mnEnfermedades.add(mnIngresarEnfermedades);
 		mnIngresarEnfermedades.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmIngresarEnfermedad aux = new FrmIngresarEnfermedad();
+				FrmIngresarEnfermedad aux = new FrmIngresarEnfermedad(null);
 				aux.setVisible(true);
 			}
 		});
@@ -394,10 +394,16 @@ public class FrmPrincipal extends JFrame {
 		JSeparator spEnfermedades1 = new JSeparator();
 		mnEnfermedades.add(spEnfermedades1);
 		
-		mnModificarEnfermedad = new JMenuItem("Modificar Enfermedad");
-		mnModificarEnfermedad.setIcon(new ImageIcon(imagenModificar));
-		mnModificarEnfermedad.setBackground(colorSubMenuFondo);
-		mnEnfermedades.add(mnModificarEnfermedad);
+		mnActualizarEnfermedad = new JMenuItem("Actualizar Enfermedad");
+		mnActualizarEnfermedad.setIcon(new ImageIcon(imagenModificar));
+		mnActualizarEnfermedad.setBackground(colorSubMenuFondo);
+		mnEnfermedades.add(mnActualizarEnfermedad);
+		mnActualizarEnfermedad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(true);
+				aux.setVisible(true);
+			}
+		});
 		
 		JSeparator spEnfermedad2 = new JSeparator();
 		mnEnfermedades.add(spEnfermedad2);
@@ -406,6 +412,12 @@ public class FrmPrincipal extends JFrame {
 		mnListadoEnfermedades.setIcon(new ImageIcon(imagenListados));
 		mnListadoEnfermedades.setBackground(colorSubMenuFondo);
 		mnEnfermedades.add(mnListadoEnfermedades);
+		mnListadoEnfermedades.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(false);
+				aux.setVisible(true);
+			}
+		});
 		
 		mnVacunas = new JMenu("   Vacunas   ");
 		mnVacunas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

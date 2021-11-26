@@ -226,4 +226,15 @@ public class Clinica {
 		codigo = "E-"+(misEnfermedades.size()+1);
 		return codigo;
 	}
+	
+	public void actualizarEnfermedad(Enfermedad auxEnf) {
+		int y=0, i=0;
+		for(Enfermedad enfermedad : misEnfermedades) {
+			if(enfermedad.getCodigoEnfermedad().equalsIgnoreCase(auxEnf.getCodigoEnfermedad())) {
+				y=i;
+			}
+			i++;
+		}
+		misEnfermedades.set(y, auxEnf);
+	}
 }

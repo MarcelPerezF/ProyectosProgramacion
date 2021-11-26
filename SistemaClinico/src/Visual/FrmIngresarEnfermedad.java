@@ -53,6 +53,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 	private boolean b1=false;
 	private boolean b2=false;
 	private boolean b3=false;
+	private Enfermedad nuevo=null;
 
 	/**
 	 * Launch the application.
@@ -60,7 +61,9 @@ public class FrmIngresarEnfermedad extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmIngresarEnfermedad() {
+	//se ingresa una enfermedad para modificar
+	public FrmIngresarEnfermedad(Enfermedad ne) {
+		nuevo=ne;
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -98,12 +101,22 @@ public class FrmIngresarEnfermedad extends JDialog {
 		lblImagenEnfermedad.setIcon(new ImageIcon(imagenEnfermedad2));
 		pnEncabezado.add(lblImagenEnfermedad);
 		
-		JLabel lblNewLabel = new JLabel("Ingreso de Enfermedades");
+		JLabel lblNewLabel = new JLabel("");
+		if(nuevo==null) {
+			lblNewLabel = new JLabel("Ingreso de Enfermedades");
+		}else {
+			lblNewLabel = new JLabel("Actualizacion de Enfermedades");
+		}
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(168, 19, 227, 26);
+		lblNewLabel.setBounds(168, 19, 262, 26);
 		pnEncabezado.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Formulario para ingresar enfermedades al sistema");
+		JLabel lblNewLabel_1 = new JLabel("");
+		if(nuevo==null) {
+			lblNewLabel_1 = new JLabel("Formulario para ingresar enfermedades al sistema");
+		}else {
+			lblNewLabel_1 = new JLabel("Formulario para actualizar enfermedades al sistema");
+		}
 		lblNewLabel_1.setBounds(131, 83, 299, 16);
 		pnEncabezado.add(lblNewLabel_1);
 		
@@ -125,13 +138,27 @@ public class FrmIngresarEnfermedad extends JDialog {
 			getContentPane().add(pnBotones);
 			pnBotones.setLayout(null);
 			{
-				btnIngresar = new JButton("Ingresar");
+				btnIngresar = new JButton("");
+				if(nuevo==null) {
+					btnIngresar = new JButton("Ingresar");
+				}else {
+					btnIngresar = new JButton("Actualizar");
+				}
 				btnIngresar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Enfermedad auxEnf = new Enfermedad(txtCodigoEnfermedad.getText(),txtNombreEnfermedad.getText()
 								,txtTipoEnfermedad.getText(),txtDescripcion.getText());
-						Clinica.getInstance().insertarEnfermedades(auxEnf);
-						clean();
+						if(nuevo==null) {
+							Clinica.getInstance().insertarEnfermedades(auxEnf);
+							clean();
+							JOptionPane.showMessageDialog(null, "La enfermedad se ingreso", "Información",JOptionPane.INFORMATION_MESSAGE);
+						}else {
+							Clinica.getInstance().actualizarEnfermedad(auxEnf);
+							JOptionPane.showMessageDialog(null, "La enfermedad se actualizo", "Información",JOptionPane.INFORMATION_MESSAGE);
+							FrmListadoEnfermedad auxLis = new FrmListadoEnfermedad(true);
+							dispose();
+							auxLis.setVisible(true);
+						}
 					}
 				});
 				btnIngresar.setEnabled(false);
@@ -145,7 +172,12 @@ public class FrmIngresarEnfermedad extends JDialog {
 				btnSalir.setBounds(346, 16, 94, 30);
 				btnSalir.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						int opcion=0;
+						if(nuevo==null) {
+							opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						}else {
+							opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea actualizar la enfermedad?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						}
 						if(opcion==0) {
 							JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.OK_OPTION);
 							dispose();
@@ -195,7 +227,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 			public void keyTyped(KeyEvent e) {
 				btnLimpiar.setEnabled(true);
 				b1=true;
-				if(b1&&b2&&b3) {
+				if((b1&&b2&&b3)||nuevo!=null) {
 					btnIngresar.setEnabled(true);
 				}
 			}
@@ -214,7 +246,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 			public void keyTyped(KeyEvent e) {
 				btnLimpiar.setEnabled(true);
 				b2=true;
-				if(b1&&b2&&b3) {
+				if(b1&&b2&&b3||nuevo!=null) {
 					btnIngresar.setEnabled(true);
 				}
 			}
@@ -243,17 +275,34 @@ public class FrmIngresarEnfermedad extends JDialog {
 			public void keyTyped(KeyEvent e) {
 				btnLimpiar.setEnabled(true);
 				b3=true;
-				if(b1&&b2&&b3) {
+				if(b1&&b2&&b3||nuevo!=null) {
 					btnIngresar.setEnabled(true);
 				}
 			}
 		});
 		txtDescripcion.setSize(201, 80);
 		scrlpnDescripcionEnfermedad.setViewportView(txtDescripcion);
+		if(nuevo !=null) {
+			loadEnfermedad();
+		}
 	}
 	
+	private void loadEnfermedad() {
+		txtCodigoEnfermedad.setText(nuevo.getCodigoEnfermedad());
+		txtDescripcion.setText(nuevo.getDescripcionEnfermedad());
+		txtNombreEnfermedad.setText(nuevo.getNombreEnfermedad());
+		txtTipoEnfermedad.setText(nuevo.getTipoEnfermedad());
+		btnIngresar.setEnabled(false);
+		btnLimpiar.setEnabled(false);
+		
+	}
+
 	public void clean() {
-		txtCodigoEnfermedad.setText(Clinica.getInstance().generarCodigoEnfermedad());
+		if(nuevo !=null) {
+			txtCodigoEnfermedad.setText(nuevo.getCodigoEnfermedad());
+		}else {
+			txtCodigoEnfermedad.setText(Clinica.getInstance().generarCodigoEnfermedad());
+		}
 		txtDescripcion.setText("");
 		txtNombreEnfermedad.setText("");
 		txtTipoEnfermedad.setText("");

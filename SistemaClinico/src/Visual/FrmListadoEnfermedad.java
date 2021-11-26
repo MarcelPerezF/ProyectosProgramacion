@@ -30,8 +30,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import Logico.Clinica;
+import Logico.Enfermedad;
 
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FrmListadoEnfermedad extends JDialog {
 
@@ -48,23 +51,18 @@ public class FrmListadoEnfermedad extends JDialog {
 	private JButton btnSeleccionar;
 	private JButton btnCancelar;
 	private JPanel pnListadoEnfermedades;
+	private boolean lista = false;
+	private String code="";
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			FrmListadoEnfermedad dialog = new FrmListadoEnfermedad();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public FrmListadoEnfermedad() {
+	//el parametro listado es falso cuando solo quiere ver la lista, de lo contrario es verdadero
+	public FrmListadoEnfermedad(boolean listado) {
+		lista=listado;
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -128,6 +126,14 @@ public class FrmListadoEnfermedad extends JDialog {
 			bnBotones.setLayout(null);
 			{
 				btnSeleccionar = new JButton("Seleccionar");
+				btnSeleccionar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Enfermedad aux = Clinica.getInstance().buscarEnfermedad(code);
+						FrmIngresarEnfermedad auxAct = new FrmIngresarEnfermedad(aux);
+						dispose();
+						auxAct.setVisible(true);
+					}
+				});
 				btnSeleccionar.setEnabled(false);
 				btnSeleccionar.setBounds(487, 16, 111, 28);
 				btnSeleccionar.setActionCommand("OK");
@@ -158,7 +164,7 @@ public class FrmListadoEnfermedad extends JDialog {
 			txtCantEnfermedades = new JTextField();
 			txtCantEnfermedades.setEditable(false);
 			txtCantEnfermedades.setBounds(205, 19, 213, 23);
-			txtCantEnfermedades.setText("4 enfermedades en el sistema");
+			txtCantEnfermedades.setText(""+Clinica.getInstance().getMisEnfermedades().size()+" enfermedades en el sistema");
 			bnBotones.add(txtCantEnfermedades);
 			txtCantEnfermedades.setColumns(10);
 		}
@@ -173,6 +179,19 @@ public class FrmListadoEnfermedad extends JDialog {
 			pnListadoEnfermedades.add(scrlpnListadoEnfermedades, BorderLayout.CENTER);
 			
 			tblListadoEnfermedades = new JTable();
+			tblListadoEnfermedades.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(lista == true) {
+						int aux = tblListadoEnfermedades.getSelectedRow();
+						if(aux!=-1){
+							btnSeleccionar.setEnabled(true);
+							code = (String) tblListadoEnfermedades.getValueAt(aux, 0);
+						}
+					}
+				}
+			});
+			
 			model = new DefaultTableModel();
 			String[] headers = {"Codigo","Nombre","Tipo","Decripcion"};
 			model.setColumnIdentifiers(headers);
@@ -189,20 +208,16 @@ public class FrmListadoEnfermedad extends JDialog {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
-		int i=0;
-		for (i = 0; i < 5; i++) {
-            row[0] = Clinica.getInstance().getMisEnfermedades().get(i).getCodigoEnfermedad();
-            tblListadoEnfermedades.getColumnModel().getColumn(0).setCellRenderer(tcr);
-            
-            row[1] = Clinica.getInstance().getMisEnfermedades().get(i).getNombreEnfermedad();
-            tblListadoEnfermedades.getColumnModel().getColumn(1).setCellRenderer(tcr);
-
-            row[2] = Clinica.getInstance().getMisEnfermedades().get(i).getTipoEnfermedad();
-            tblListadoEnfermedades.getColumnModel().getColumn(2).setCellRenderer(tcr);
-
-            row[3] = Clinica.getInstance().getMisEnfermedades().get(i).getDescripcionEnfermedad();
-            tblListadoEnfermedades.getColumnModel().getColumn(3).setCellRenderer(tcr);
-            model.addRow(row);
+		for(Enfermedad enfermedad : Clinica.getInstance().getMisEnfermedades()) {
+			row[0] = enfermedad.getCodigoEnfermedad();
+			tblListadoEnfermedades.getColumnModel().getColumn(0).setCellRenderer(tcr);
+			row[1] = enfermedad.getNombreEnfermedad();
+			tblListadoEnfermedades.getColumnModel().getColumn(1).setCellRenderer(tcr);
+			row[2] = enfermedad.getTipoEnfermedad();
+			tblListadoEnfermedades.getColumnModel().getColumn(2).setCellRenderer(tcr);
+			row[3] = enfermedad.getDescripcionEnfermedad();
+			tblListadoEnfermedades.getColumnModel().getColumn(3).setCellRenderer(tcr);
+			model.addRow(row);
 		}
 		
 	}
