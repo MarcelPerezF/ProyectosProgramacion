@@ -180,7 +180,7 @@ public class FrmPrincipal extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -239,6 +239,12 @@ public class FrmPrincipal extends JFrame {
 		mnArchivo.add(spArchivo3);
 		
 		mnSalisSistema = new JMenuItem("Salir del sistema");
+		mnSalisSistema.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.INFORMATION_MESSAGE);
+				dispose();
+			}
+		});
 		mnSalisSistema.setBackground(colorSubMenuFondo);
 		mnSalisSistema.setIcon(new ImageIcon(imagenSalir));
 		mnArchivo.add(mnSalisSistema);
@@ -297,6 +303,12 @@ public class FrmPrincipal extends JFrame {
 		mnUsuarios.add(spUsuario2);
 		
 		mnListadoUsuarios = new JMenuItem("Listado Usuarios");
+		mnListadoUsuarios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoUsuarios frmAux = new FrmListadoUsuarios(1);
+				frmAux.setVisible(true);
+			}
+		});
 		mnListadoUsuarios.setIcon(new ImageIcon(imagenListadoUsuarios));
 		mnListadoUsuarios.setBackground(colorSubMenuFondo);
 		mnUsuarios.add(mnListadoUsuarios);
@@ -584,20 +596,6 @@ public class FrmPrincipal extends JFrame {
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		ArrayList<String> misPacientes = new ArrayList<String>();
 		misPacientes.add("Carlos");
-		misPacientes.add("Jose");
-		misPacientes.add("Marcos");
-		misPacientes.add("Luis");
-		misPacientes.add("Andres");
-		misPacientes.add("Carlos");
-		misPacientes.add("Jose");
-		misPacientes.add("Marcos");
-		misPacientes.add("Luis");
-		misPacientes.add("Andres");
-		misPacientes.add("Carlos");
-		misPacientes.add("Jose");
-		misPacientes.add("Marcos");
-		misPacientes.add("Luis");
-		misPacientes.add("Andres");
 		int hora = 8;
 		
 		int codigoCita=1;
@@ -606,7 +604,7 @@ public class FrmPrincipal extends JFrame {
 			tblCitasHoy.getColumnModel().getColumn(0).setCellRenderer(tcr);
 
 			codigoCita++;
-			row[1] = misPacientes.get(i);
+			row[1] = misPacientes.get(0);
 			tblCitasHoy.getColumnModel().getColumn(1).setCellRenderer(tcr);
 
 			row[2] = hora+"AM";
@@ -622,9 +620,6 @@ public class FrmPrincipal extends JFrame {
 			row[4] = "En espera";
 			tblCitasHoy.getColumnModel().getColumn(4).setCellRenderer(tcr);
 			modeloTabla.addRow(row);
-			if(hora>16) {
-				hora=8;
-			}
 		}
 		
 	}

@@ -188,5 +188,17 @@ public class Clinica {
 		return aux;
 	}
 
+	public String tipoUsuario(Usuario usuario) {
+		String tipoUsuario = "";
+		if(usuario instanceof Empleado) {
+			Empleado empleado = (Empleado)usuario;
+			tipoUsuario = empleado.getPuestoLaboral();
+		}
+		if(usuario instanceof Medico) {
+			tipoUsuario = "Medico";
+		}
+		return tipoUsuario;
+	}
+
 
 }

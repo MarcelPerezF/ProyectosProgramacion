@@ -164,7 +164,6 @@ public class FrmIngresarUsuario extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						Usuario usuario=null;
 						if(rdbtnEmpleado.isSelected()) {
-							JOptionPane.showMessageDialog(null, cbxTipoEmpleado.getSelectedItem().toString());
 							usuario = new Empleado(txtCodigoUsuario.getText(), txtCedulaUsuario.getText(),
 									Integer.valueOf(txtIdUsuario.getText()), txtUsuario.getText(), txtPassword.getText(), 
 									txtNombreUsuario.getText(), txtTelefonoUsuario.getText(), txtDireccionUsuario.getText(), 
@@ -246,9 +245,9 @@ public class FrmIngresarUsuario extends JDialog {
 		pnCredenciales.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Credenciales", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		pnCredenciales.setLayout(null);
 		
-		JLabel lblCdulaDelUsuario = new JLabel("Usuario:");
-		lblCdulaDelUsuario.setBounds(15, 34, 68, 22);
-		pnCredenciales.add(lblCdulaDelUsuario);
+		JLabel lblUsuario = new JLabel("Usuario:");
+		lblUsuario.setBounds(15, 34, 68, 22);
+		pnCredenciales.add(lblUsuario);
 		
 		JLabel lblPassword = new JLabel("Contrase\u00F1a:");
 		lblPassword.setBounds(15, 72, 85, 22);
