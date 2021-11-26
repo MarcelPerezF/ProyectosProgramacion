@@ -10,6 +10,8 @@ public class Clinica {
 	private ArrayList<Enfermedad> misEnfermedades;
 	private ArrayList<Vacuna> misVacunas;
 	public static Clinica instanciaGlobal = null;
+	
+	public int generadorCodigoUsuario;
 
 	
 	private Clinica() {
@@ -19,6 +21,8 @@ public class Clinica {
 		this.misCitasMedicas = new ArrayList<CitaMedica>();
 		this.misEnfermedades = new ArrayList<Enfermedad>();
 		this.misVacunas = new ArrayList<Vacuna>();
+		
+		this.generadorCodigoUsuario = 1;
 	}
 	
 	//Metodo del patron Singleton
@@ -67,10 +71,15 @@ public class Clinica {
 
 	public void setMisVacunas(ArrayList<Vacuna> misVacunas) {
 		this.misVacunas = misVacunas;
-	}	
+	}
+	
+	public int getGeneradorCodigoUsuario() {
+		return generadorCodigoUsuario;
+	}
 	
 	public void insertarUsuario(Usuario usuario) {
 		misUsuarios.add(usuario);
+		generadorCodigoUsuario++;
 	}
 	
 	public void insertarPaciente(Paciente paciente) {
@@ -163,4 +172,21 @@ public class Clinica {
 		}
 		return vacuna;
 	}
+
+	public boolean usuarioRepetido(String usuario) {
+		boolean aux = true;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misUsuarios.size()) {
+			if(misUsuarios.get(indexBuscador).getUsuario().equalsIgnoreCase(usuario)) {				
+				aux = false;
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return aux;
+	}
+
+
 }

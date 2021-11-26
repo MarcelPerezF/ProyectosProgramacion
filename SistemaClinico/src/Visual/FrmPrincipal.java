@@ -275,6 +275,12 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnUsuarios);
 		
 		mnNuevoUsuario = new JMenuItem("Nuevo Usuario");
+		mnNuevoUsuario.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario();
+				frmAux.setVisible(true);
+			}
+		});
 		mnNuevoUsuario.setIcon(new ImageIcon(imagenNuevoUsuario));
 		mnNuevoUsuario.setBackground(colorSubMenuFondo);
 		mnUsuarios.add(mnNuevoUsuario);
@@ -539,6 +545,11 @@ public class FrmPrincipal extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				pnAccesoDirectoUsuario.setBorder(null);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario();
+				frmAux.setVisible(true);
 			}
 		});
 		pnAccesoDirectoUsuario.setLayout(null);
