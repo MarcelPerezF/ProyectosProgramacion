@@ -264,4 +264,16 @@ public class Clinica {
 		}
 		misEnfermedades.set(y, auxEnf);
 	}
+	
+	public String generarCodigoCita() {
+		String codigo="";
+		codigo = "C-"+(misCitasMedicas.size()+1);
+		return codigo;
+	}
+	
+	public String generarCodigoVacuna() {
+		String codigo="";
+		codigo = "V-"+(misVacunas.size()+1);
+		return codigo;
+	}
 }

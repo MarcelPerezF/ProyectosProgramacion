@@ -8,6 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import Logico.Clinica;
+import Logico.Vacuna;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -31,6 +35,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class FrmIngresarVacuna extends JDialog {
 
@@ -46,7 +56,9 @@ public class FrmIngresarVacuna extends JDialog {
 	private JSpinner spnCantidadVacunas;
 	private JButton btnSalir;
 	private JButton btnGuardar;
-	private JButton btnNuevo;
+	private JButton btnLimpiar;
+	private JTextArea txtDescripcionVacuna;
+	private boolean b1=false,b2=false,b3=false,b4=false;
 
 	/**
 	 * Launch the application.
@@ -136,6 +148,7 @@ public class FrmIngresarVacuna extends JDialog {
 		panelBody.add(lblCodigoVacuna);
 		
 		txtCodigoVacuna = new JTextField();
+		txtCodigoVacuna.setText(Clinica.getInstance().generarCodigoVacuna());
 		txtCodigoVacuna.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		txtCodigoVacuna.setEditable(false);
 		txtCodigoVacuna.setBounds(164, 16, 165, 23);
@@ -147,6 +160,16 @@ public class FrmIngresarVacuna extends JDialog {
 		panelBody.add(lblNombreVacuna);
 		
 		txtNombreVacuna = new JTextField();
+		txtNombreVacuna.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b1=true;
+				if(b1&&b2&&b3&&b4) {
+					btnGuardar.setEnabled(true);
+				}
+			}
+		});
 		txtNombreVacuna.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		txtNombreVacuna.setColumns(10);
 		txtNombreVacuna.setBounds(164, 52, 284, 23);
@@ -157,6 +180,16 @@ public class FrmIngresarVacuna extends JDialog {
 		panelBody.add(lblEnfermedad);
 		
 		txtTipoVacuna = new JTextField();
+		txtTipoVacuna.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b3=true;
+				if(b1&&b2&&b3&&b4) {
+					btnGuardar.setEnabled(true);
+				}
+			}
+		});
 		txtTipoVacuna.setColumns(10);
 		txtTipoVacuna.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		txtTipoVacuna.setBounds(164, 127, 284, 23);
@@ -167,6 +200,15 @@ public class FrmIngresarVacuna extends JDialog {
 		panelBody.add(lblCantidad);
 		
 		spnCantidadVacunas = new JSpinner();
+		spnCantidadVacunas.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				btnLimpiar.setEnabled(true);
+				b2=true;
+				if(b1&&b2&&b3&&b4) {
+					btnGuardar.setEnabled(true);
+				}
+			}
+		});
 		spnCantidadVacunas.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		spnCantidadVacunas.setBounds(164, 90, 284, 23);
 		panelBody.add(spnCantidadVacunas);
@@ -179,7 +221,17 @@ public class FrmIngresarVacuna extends JDialog {
 		scrlpDescripcion.setBounds(164, 165, 284, 100);
 		panelBody.add(scrlpDescripcion);
 		
-		JTextArea txtDescripcionVacuna = new JTextArea();
+		txtDescripcionVacuna = new JTextArea();
+		txtDescripcionVacuna.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnLimpiar.setEnabled(true);
+				b4=true;
+				if(b1&&b2&&b3&&b4) {
+					btnGuardar.setEnabled(true);
+				}
+			}
+		});
 		scrlpDescripcion.setViewportView(txtDescripcionVacuna);
 		
 		JPanel panelFooter = new JPanel();
@@ -189,14 +241,29 @@ public class FrmIngresarVacuna extends JDialog {
 		contentPanel.add(panelFooter);
 		panelFooter.setLayout(null);
 		
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setEnabled(false);
-		btnNuevo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNuevo.setBackground(UIManager.getColor("Button.light"));
-		btnNuevo.setBounds(15, 17, 122, 29);
-		panelFooter.add(btnNuevo);
+		btnLimpiar = new JButton("Limpiar");
+		btnLimpiar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clean();
+			}
+		});
+		btnLimpiar.setEnabled(false);
+		btnLimpiar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnLimpiar.setBackground(UIManager.getColor("Button.light"));
+		btnLimpiar.setBounds(15, 17, 122, 29);
+		panelFooter.add(btnLimpiar);
 		
 		btnGuardar = new JButton("Guardar");
+		btnGuardar.setEnabled(false);
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Vacuna aux = new Vacuna(txtCodigoVacuna.getText(),txtNombreVacuna.getText()
+						,Integer.valueOf(spnCantidadVacunas.getValue().toString()),txtTipoVacuna.getText(),txtDescripcionVacuna.getText());
+				Clinica.getInstance().insertarVacuna(aux);
+				JOptionPane.showMessageDialog(null, "La vacuna se guardo", "Información",JOptionPane.INFORMATION_MESSAGE);
+				clean();
+			}
+		});
 		btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGuardar.setBackground(UIManager.getColor("Button.light"));
 		btnGuardar.setBounds(170, 17, 122, 29);
@@ -216,6 +283,20 @@ public class FrmIngresarVacuna extends JDialog {
 		btnSalir.setBackground(UIManager.getColor("Button.light"));
 		btnSalir.setBounds(326, 17, 122, 29);
 		panelFooter.add(btnSalir);
-		
 	}
+
+	private void clean() {
+		txtCodigoVacuna.setText(Clinica.getInstance().generarCodigoVacuna());
+		txtNombreVacuna.setText("");
+		txtTipoVacuna.setText("");
+		txtDescripcionVacuna.setText("");
+		spnCantidadVacunas.setValue(1);
+		btnGuardar.setEnabled(false);
+		btnLimpiar.setEnabled(false);
+		b1=false;
+		b2=false;
+		b3=false;
+		b4=false;
+	}
+	
 }

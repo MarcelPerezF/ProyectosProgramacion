@@ -355,6 +355,12 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnCitas);
 		
 		mnNuevaCita = new JMenuItem("Nueva Cita");
+		mnNuevaCita.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmCita aux = new FrmCita(null);
+				aux.setVisible(true);
+			}
+		});
 		mnNuevaCita.setIcon(new ImageIcon(imagenNuevaCita));
 		mnNuevaCita.setBackground(colorSubMenuFondo);
 		mnCitas.add(mnNuevaCita);
@@ -425,6 +431,12 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnVacunas);
 		
 		mnVacunar = new JMenuItem("Vacunar Paciente");
+		mnVacunar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmVacunar aux = new FrmVacunar();
+				aux.setVisible(true);
+			}
+		});
 		mnVacunar.setIcon(new ImageIcon(imagenVacunar));
 		mnVacunar.setBackground(colorSubMenuFondo);
 		mnVacunas.add(mnVacunar);
@@ -433,6 +445,12 @@ public class FrmPrincipal extends JFrame {
 		mnVacunas.add(spVacunas1);
 		
 		mnIngresarVacunas = new JMenuItem("Ingresar Vacuna");
+		mnIngresarVacunas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmIngresarVacuna aux = new FrmIngresarVacuna();
+				aux.setVisible(true);
+			}
+		});
 		mnIngresarVacunas.setIcon(new ImageIcon(imagenIngresarVacuna));
 		mnIngresarVacunas.setBackground(colorSubMenuFondo);
 		mnVacunas.add(mnIngresarVacunas);
@@ -441,6 +459,12 @@ public class FrmPrincipal extends JFrame {
 		mnVacunas.add(spVacunas2);
 		
 		mnListadoVacunas = new JMenuItem("Listado Vacunas");
+		mnListadoVacunas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoVacuna aux = new FrmListadoVacuna(false);
+				aux.setVisible(true);
+			}
+		});
 		mnListadoVacunas.setIcon(new ImageIcon(imagenListados));
 		mnListadoVacunas.setBackground(colorSubMenuFondo);
 		mnVacunas.add(mnListadoVacunas);
