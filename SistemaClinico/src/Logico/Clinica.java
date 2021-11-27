@@ -12,6 +12,7 @@ public class Clinica {
 	public static Clinica instanciaGlobal = null;
 	
 	public int generadorCodigoUsuario;
+	public int generadorCodigoPaciente;
 
 	
 	private Clinica() {
@@ -23,6 +24,7 @@ public class Clinica {
 		this.misVacunas = new ArrayList<Vacuna>();
 		
 		this.generadorCodigoUsuario = 1;
+		this.generadorCodigoPaciente = 1;
 	}
 	
 	//Metodo del patron Singleton
@@ -76,6 +78,10 @@ public class Clinica {
 	public int getGeneradorCodigoUsuario() {
 		return generadorCodigoUsuario;
 	}
+
+	public int getGeneradorCodigoPaciente() {
+		return generadorCodigoPaciente;
+	}
 	
 	public void insertarUsuario(Usuario usuario) {
 		misUsuarios.add(usuario);
@@ -90,8 +96,14 @@ public class Clinica {
 	
 	public void insertarPaciente(Paciente paciente) {
 		misPacientes.add(paciente);
+		generadorCodigoPaciente++;
 	}
 	
+	public void modificarPaciente(Paciente pacienteModificar) {
+		int indicePaciente  = buscarIndicePaciente(pacienteModificar.getCedula());
+		misPacientes.set(indicePaciente, pacienteModificar);	
+	}
+
 	public void insertarCitasMedicas(CitaMedica cita) {
 		misCitasMedicas.add(cita);
 	}
@@ -132,6 +144,21 @@ public class Clinica {
 			indexBuscador++;
 		}
 		return indiceUsuario;
+	}
+	
+	private int buscarIndicePaciente(String cedulaPaciente) {
+		int indicePaciente = -1;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misPacientes.size()) {
+			if(misPacientes.get(indexBuscador).getCedula().equalsIgnoreCase(cedulaPaciente)) {				
+				indicePaciente = indexBuscador;
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return indicePaciente;
 	}
 	
 	public Paciente buscarPaciente(String cedula) {

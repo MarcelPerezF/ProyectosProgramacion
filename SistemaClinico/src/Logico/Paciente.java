@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Paciente {
+	private String codigoPaciente;
 	private String cedula;
 	private String nombre;
 	private String genero;
@@ -20,10 +21,11 @@ public class Paciente {
 	private HistorialClinico historial;
 	private ArrayList<Consulta> misConsultas;
 	
-	public Paciente(String cedula, String nombre, String genero, Date diaNacimiento, String direccion, String telefono,
+	public Paciente(String codigoPaciente, String cedula, String nombre, String genero, Date diaNacimiento, String direccion, String telefono,
 			String email, String alergia, String nacionalidad, String estadoCivil, String religion, String tipoSangre,
-			String profesion, HistorialClinico historial, ArrayList<Consulta> misConsultas) {
+			String profesion) {
 		super();
+		this.codigoPaciente = codigoPaciente;
 		this.cedula = cedula;
 		this.nombre = nombre;
 		this.genero = genero;
@@ -37,8 +39,8 @@ public class Paciente {
 		this.religion = religion;
 		this.tipoSangre = tipoSangre;
 		this.profesion = profesion;
-		this.historial = historial;
-		this.misConsultas = misConsultas;
+		this.historial = null;
+		this.misConsultas = null;
 	}
 	public String getCedula() {
 		return cedula;
@@ -129,6 +131,12 @@ public class Paciente {
 	}
 	public void setMisConsultas(ArrayList<Consulta> misConsultas) {
 		this.misConsultas = misConsultas;
+	}
+	public String getCodigoPaciente() {
+		return codigoPaciente;
+	}
+	public void setCodigoPaciente(String codigoPaciente) {
+		this.codigoPaciente = codigoPaciente;
 	}
 	
 }
