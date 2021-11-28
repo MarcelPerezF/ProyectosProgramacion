@@ -20,9 +20,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import Logico.Clinica;
-import Logico.Paciente;
-
 import java.awt.Insets;
 
 import javax.swing.JLabel;
@@ -170,12 +167,12 @@ public class FrmPrincipal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-							"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-					Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
-							"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
-					Clinica.getInstance().insertarPaciente(paciente1);
-					Clinica.getInstance().insertarPaciente(paciente2);
+//					Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
+//							"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
+//					Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
+//							"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
+//					Clinica.getInstance().insertarPaciente(paciente1);
+//					Clinica.getInstance().insertarPaciente(paciente2);
 					FrmPrincipal frame = new FrmPrincipal();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -503,6 +500,12 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnAcercaSistema);
 		
 		mnInformacionSistema = new JMenuItem("Informacion del Sistema");
+		mnInformacionSistema.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmInformacionSistema frmAux = new FrmInformacionSistema();
+				frmAux.setVisible(true);
+			}
+		});
 		mnInformacionSistema.setIcon(new ImageIcon(imagenInfoSistema));
 		mnInformacionSistema.setBackground(colorSubMenuFondo);
 		mnAcercaSistema.add(mnInformacionSistema);
