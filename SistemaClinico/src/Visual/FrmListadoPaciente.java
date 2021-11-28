@@ -3,6 +3,8 @@ package Visual;
 import java.awt.Image;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Period;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +15,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -37,6 +41,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JSpinner;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FrmListadoPaciente extends JDialog {
 
@@ -55,15 +62,23 @@ public class FrmListadoPaciente extends JDialog {
 	private JButton cancelButton;
 	private int opcionListado;
 	private JPanel pnFiltroBusqueda;
-	private JTextField textField;
+	private JTextField txtBusqueda;
 	private int cantidadPacientes;
+	private JSpinner spnBusqueda;
+	private JComboBox cbxFiltro;
+	private JButton btnBuscar;
+	private JComboBox cbxBusqueda;
+	Paciente pacienteSeleccionado;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
-			FrmListadoPaciente dialog = new FrmListadoPaciente(1);
+			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
+					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
+			Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
+					"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
+			Clinica.getInstance().insertarPaciente(paciente1);
+			Clinica.getInstance().insertarPaciente(paciente2);
+			FrmListadoPaciente dialog = new FrmListadoPaciente(2);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -85,8 +100,16 @@ public class FrmListadoPaciente extends JDialog {
 					}else if(aux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
-				}else {
+				}else if(opcionListado==2){
 					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea no desea modificar el paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+					if(aux==0) {
+						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+					}else if(aux==1) {
+						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+					}
+				}else {
+					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea no desea ver el historial del paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
 					if(aux==0) {
 						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
@@ -132,12 +155,12 @@ public class FrmListadoPaciente extends JDialog {
 			int year = LocalDate.now().getYear();
 			
 			JLabel FechaFormulario = new JLabel(dia+" de "+nombreMes+" del "+year);
-			FechaFormulario.setBounds(322, 41, 158, 26);
+			FechaFormulario.setBounds(303, 41, 158, 26);
 			pnEncabezadoFormulario.add(FechaFormulario);
 		}
 		
 		JLabel lblDetalleFormulario = new JLabel("Listado de Pacientes ingresados en el sistema");
-		lblDetalleFormulario.setBounds(216, 70, 332, 26);
+		lblDetalleFormulario.setBounds(240, 70, 332, 26);
 		pnEncabezadoFormulario.add(lblDetalleFormulario);
 		{
 			pnBotones = new JPanel();
@@ -147,6 +170,27 @@ public class FrmListadoPaciente extends JDialog {
 			pnBotones.setLayout(null);
 			{
 				btnAuxiliar = new JButton("Ver m\u00E1s");
+				btnAuxiliar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(opcionListado==1) {
+							dispose();
+							FrmListadoPacientesDetallado frmAux = new FrmListadoPacientesDetallado(pacienteSeleccionado);
+							frmAux.setVisible(true);
+						}
+						if(opcionListado==2) {
+							dispose();
+							FrmIngresarPaciente frmAux = new FrmIngresarPaciente(pacienteSeleccionado);
+							frmAux.setVisible(true);
+						}
+						if(opcionListado==3) {
+							FrmHistorialPaciente frmAux =  new FrmHistorialPaciente(pacienteSeleccionado);
+							frmAux.setVisible(true);
+						}
+					}
+				});
+				if(opcionListado==2 || opcionListado==3) {
+					btnAuxiliar.setText("Seleccionar");
+				}
 				btnAuxiliar.setEnabled(false);
 				if(opcion==2) {
 					btnAuxiliar.setText("Seleccionar");
@@ -156,13 +200,17 @@ public class FrmListadoPaciente extends JDialog {
 				getRootPane().setDefaultButton(btnAuxiliar);
 			}
 			{
-				cancelButton = new JButton("Salir");
+				cancelButton = new JButton("Aceptar");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						dispose();
+						int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de pacientes?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						if(aux==0) {
+							JOptionPane.showMessageDialog(null, "Saliendo del listado de pacientes", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+							dispose();
+						}
 					}
 				});
-				cancelButton.setBounds(644, 16, 71, 25);
+				cancelButton.setBounds(617, 16, 98, 25);
 				pnBotones.add(cancelButton);
 			}
 			
@@ -188,6 +236,19 @@ public class FrmListadoPaciente extends JDialog {
 			pnListadoPacientes.add(scrlListadoPacientes);
 			
 			tblListadoPacientes = new JTable();
+			tblListadoPacientes.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					int selectRow = tblListadoPacientes.getSelectedRow();
+					pacienteSeleccionado = null;
+					if(selectRow!=-1) {
+						pacienteSeleccionado = Clinica.getInstance().buscarPaciente(String.valueOf(tblListadoPacientes.getValueAt(selectRow, 2)));
+					}
+					if(pacienteSeleccionado!=null) {
+						btnAuxiliar.setEnabled(true);
+					}
+				}
+			});
 			model = new DefaultTableModel();
 			String[] headers = {"C\u00f3digo", "Nombre", "C\u00e9dula", "Edad", "Genero", "Tipo de Sangre"};
 			model.setColumnIdentifiers(headers);
@@ -205,38 +266,179 @@ public class FrmListadoPaciente extends JDialog {
 		label.setBounds(15, 31, 133, 23);
 		pnFiltroBusqueda.add(label);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "C\u00E9dula", "Edad", "Genero", "Tipo de Sangre"}));
-		comboBox.setBounds(150, 31, 140, 23);
-		pnFiltroBusqueda.add(comboBox);
+		cbxFiltro = new JComboBox();
+		cbxFiltro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadPacientes(1, "");
+				txtBusqueda.setText("");
+				spnBusqueda.setValue(1);
+				if(cbxFiltro.getSelectedIndex()==3) {
+					btnBuscar.setEnabled(true);
+					spnBusqueda.setVisible(true);
+					txtBusqueda.setVisible(false);
+					cbxBusqueda.setVisible(false);
+				}else if(cbxFiltro.getSelectedIndex()==4) {
+					btnBuscar.setEnabled(true);
+					spnBusqueda.setVisible(false);
+					txtBusqueda.setVisible(false);
+					cbxBusqueda.setVisible(true);
+					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Hombre", "Mujer"}));
+				}else if(cbxFiltro.getSelectedIndex()==5){
+					btnBuscar.setEnabled(true);
+					spnBusqueda.setVisible(false);
+					txtBusqueda.setVisible(false);
+					cbxBusqueda.setVisible(true);
+					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"A+", "O+", "B+", "AB+", "A-", "O-", "B-", "AB-"}));
+				}else {
+					btnBuscar.setEnabled(false);
+					spnBusqueda.setVisible(false);
+					txtBusqueda.setVisible(true);
+					cbxBusqueda.setVisible(false);
+				}
+			}
+		});
+		cbxFiltro.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "C\u00E9dula", "Edad", "Genero", "Tipo de Sangre"}));
+		cbxFiltro.setBounds(150, 31, 140, 23);
+		pnFiltroBusqueda.add(cbxFiltro);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(330, 31, 202, 23);
-		pnFiltroBusqueda.add(textField);
+		txtBusqueda = new JTextField();
+		txtBusqueda.getDocument().addDocumentListener(new DocumentListener() {					
+				@Override
+				public void removeUpdate(DocumentEvent e) {
+					if( !(txtBusqueda.getText().equalsIgnoreCase(""))) {
+						btnBuscar.setEnabled(true);
+					}else {
+						btnBuscar.setEnabled(false);
+					}
+				}					
+				@Override
+				public void insertUpdate(DocumentEvent e) {
+					if( !(txtBusqueda.getText().equalsIgnoreCase(""))) {
+						btnBuscar.setEnabled(true);
+					}else {
+						btnBuscar.setEnabled(false);
+					}					
+				}
+				
+				@Override
+				public void changedUpdate(DocumentEvent e) {
+					if( !(txtBusqueda.getText().equalsIgnoreCase(""))) {
+						btnBuscar.setEnabled(true);
+					}else {
+						btnBuscar.setEnabled(false);
+					}						
+				}
+		});
+		txtBusqueda.setColumns(10);
+		txtBusqueda.setBounds(330, 31, 202, 23);
+		pnFiltroBusqueda.add(txtBusqueda);
 		
-		JButton button = new JButton("Buscar");
-		button.setEnabled(false);
-		button.setBounds(545, 27, 140, 30);
-		pnFiltroBusqueda.add(button);
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcionAux = cbxFiltro.getSelectedIndex();
+				switch (opcionAux) {
+				case 0:
+					loadPacientes(2, txtBusqueda.getText());
+					break;
+					
+				case 1:
+					loadPacientes(3, txtBusqueda.getText());
+					break;
+					
+				case 2:
+					loadPacientes(4, txtBusqueda.getText());
+					break;
+					
+				case 3:
+					loadPacientes(5, spnBusqueda.getValue().toString());
+					break;
+					
+				case 4:
+					loadPacientes(6, cbxBusqueda.getSelectedItem().toString());
+					break;
+					
+				case 5:
+					loadPacientes(7, cbxBusqueda.getSelectedItem().toString());
+					break;
+				}
+				
+			}
+		});
+		btnBuscar.setEnabled(false);
+		btnBuscar.setBounds(545, 27, 140, 30);
+		pnFiltroBusqueda.add(btnBuscar);
+		
+		spnBusqueda = new JSpinner();
+		spnBusqueda.setVisible(false);
+		spnBusqueda.setBounds(330, 31, 202, 23);
+		pnFiltroBusqueda.add(spnBusqueda);
+		
+		cbxBusqueda = new JComboBox();
+		cbxBusqueda.setVisible(false);
+		cbxBusqueda.setBounds(330, 31, 202, 23);
+		pnFiltroBusqueda.add(cbxBusqueda);
 		loadPacientes(1, "");
 	}
 
 	public void loadPacientes(int opcionLista, String busqueda) {
 		model.setRowCount(0);
 		cantidadPacientes = 0;
-		row = new Object[model.getColumnCount()];
-		int i=0;
-		for (i = 0; i <5; i++) {
-            row[0] = "";
-            row[1] = "";
-            row[2] = "";
-            row[3] = "";
-            row[4] = "";
-            row[5] = "";
-            model.addRow(row);
-		}
-		
+		for (int i = 0; i < Clinica.getInstance().getMisPacientes().size(); i++) {
+			switch (opcionLista) {
+			case 1:
+				cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+				cantidadPacientes++;
+				break;
+			
+			case 2:
+				if(Clinica.getInstance().getMisPacientes().get(i).getCodigoPaciente().equalsIgnoreCase(busqueda)) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+				
+			case 3:
+				if(Clinica.getInstance().getMisPacientes().get(i).getNombre().equalsIgnoreCase(busqueda)) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+				
+			case 4:
+				if(Clinica.getInstance().getMisPacientes().get(i).getCedula().equalsIgnoreCase(busqueda)) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+				
+			case 5:
+				LocalDate fechaNacimiento = Clinica.getInstance().getMisPacientes().get(i).getDiaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				Period periodo = Period.between(fechaNacimiento, LocalDate.now());
+				int edad = periodo.getYears();
+				int edadBusqueda = Integer.valueOf(busqueda);
+				if(edad==edadBusqueda) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+				
+			case 6:
+				if(Clinica.getInstance().getMisPacientes().get(i).getGenero().equalsIgnoreCase(busqueda)) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+				
+			case 7:
+				if(Clinica.getInstance().getMisPacientes().get(i).getTipoSangre().equalsIgnoreCase(busqueda)) {
+					cargarFilas(Clinica.getInstance().getMisPacientes().get(i));	
+					cantidadPacientes++;
+				}
+				break;
+			}
+			txtCantidadPacientes.setText(cantidadPacientes+" pacientes");
+		}		
 	}
 	
 	public void cargarFilas(Paciente paciente) {
@@ -253,8 +455,9 @@ public class FrmListadoPaciente extends JDialog {
 	        row[2] = paciente.getCedula();
 	        tblListadoPacientes.getColumnModel().getColumn(2).setCellRenderer(tcr);
 	        
-	        int edad=0;
-	        row[3] = edad;
+			LocalDate fechaNacimiento = paciente.getDiaNacimiento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			Period edad = Period.between(fechaNacimiento, LocalDate.now());
+	        row[3] = edad.getYears();
 	        tblListadoPacientes.getColumnModel().getColumn(3).setCellRenderer(tcr);
 	        
 	        row[4] = paciente.getGenero();
@@ -270,6 +473,4 @@ public class FrmListadoPaciente extends JDialog {
 		}
 	
 	}
-	
-	
 }

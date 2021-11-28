@@ -147,11 +147,11 @@ public class FrmIngresarUsuario extends JDialog {
 		
 		lblTituloFormulario = new JLabel("Ingreso de Usuarios");
 		lblTituloFormulario.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblTituloFormulario.setBounds(191, 10, 227, 26);
+		lblTituloFormulario.setBounds(229, 10, 162, 26);
 		pnEncabezado.add(lblTituloFormulario);
 		
 		lblDescripcionFormulario = new JLabel("Formulario para ingresar usuarios al sistema");
-		lblDescripcionFormulario.setBounds(144, 75, 320, 16);
+		lblDescripcionFormulario.setBounds(180, 74, 320, 16);
 		pnEncabezado.add(lblDescripcionFormulario);
 		
 		Date fechaActual = new Date();
@@ -163,7 +163,7 @@ public class FrmIngresarUsuario extends JDialog {
 		int year = LocalDate.now().getYear();
 		
 		JLabel lblFechaFormulario = new JLabel(dia+" de "+nombreMes+" del "+year);
-		lblFechaFormulario.setBounds(196, 45, 216, 16);
+		lblFechaFormulario.setBounds(230, 42, 216, 16);
 		pnEncabezado.add(lblFechaFormulario);
 		{
 			JPanel pnBotones = new JPanel();

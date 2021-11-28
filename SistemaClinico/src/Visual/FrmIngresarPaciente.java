@@ -115,7 +115,10 @@ public class FrmIngresarPaciente extends JDialog {
 		
 		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setTitle("Paciente");
+		setTitle("Ingreso de Paciente");
+		if(paciente!=null) {
+			setTitle("Modificacion de pacientes");
+		}
 		setModal(true);
 		setResizable(false);
 		setIconImage(imagenPaciente);
@@ -135,8 +138,11 @@ public class FrmIngresarPaciente extends JDialog {
 		}
 		{
 			lblTituloFormulario = new JLabel("Ingreso de Pacientes");
+			if(pacienteModificar!=null) {
+				lblTituloFormulario.setText("Modificaci\u00f3n de Pacientes");
+			}
 			lblTituloFormulario.setFont(new Font("Tahoma", Font.BOLD, 16));
-			lblTituloFormulario.setBounds(310, 19, 196, 26);
+			lblTituloFormulario.setBounds(305, 19, 217, 26);
 			pnCabezeraFormulario.add(lblTituloFormulario);
 		}
 		{
@@ -154,6 +160,9 @@ public class FrmIngresarPaciente extends JDialog {
 		}
 		{
 			lblDescripcionFormulario = new JLabel("Formulario para ingresar pacientes al sistema");
+			if(pacienteModificar!=null) {
+				lblDescripcionFormulario.setText("Formulario para modificar pacientes en el sistema");
+			}
 			lblDescripcionFormulario.setBounds(259, 83, 299, 16);
 			pnCabezeraFormulario.add(lblDescripcionFormulario);
 		}
@@ -218,8 +227,11 @@ public class FrmIngresarPaciente extends JDialog {
 								Clinica.getInstance().modificarPaciente(paciente);
 								JOptionPane.showMessageDialog(null, "El Paciente se modifico correctamente", "MODIFICACI\u00d3N DE PACIENTE", JOptionPane.INFORMATION_MESSAGE);
 								dispose();
+								FrmListadoPaciente frmAux = new FrmListadoPaciente(2);
+								frmAux.setVisible(true);
 							} catch (Exception e2) {
-								// TODO: handle exception
+								JOptionPane.showMessageDialog(null, "El Paciente no se pudo modificar correctamente", "MODIFICACI\u00d3N DE PACIENTE", JOptionPane.OK_OPTION);
+								dispose();
 							}
 						}
 					}
@@ -453,6 +465,9 @@ public class FrmIngresarPaciente extends JDialog {
 			comprobarCampos(txtReligion);
 			comprobarCampos(txtDireccion);
 			comprobarCampos(txtAlergia);
+			if(paciente!=null) {
+				cargarDatosModificar();
+			}
 		}
 	}
 	
@@ -518,6 +533,31 @@ public class FrmIngresarPaciente extends JDialog {
 		btnNuevo.setEnabled(false);
 		btnRegistrar.setEnabled(false);
 		
+	}
+	
+	public void cargarDatosModificar() {
+		txtCodigoPaciente.setText(pacienteModificar.getCodigoPaciente());
+		txtNombre.setText(pacienteModificar.getNombre());
+		txtCedula.setText(pacienteModificar.getCedula());
+		txtReligion.setText(pacienteModificar.getReligion());
+		txtAlergia.setText(pacienteModificar.getAlergia());
+		txtTelefono.setText(pacienteModificar.getTelefono());
+		txtNacionalidad.setText(pacienteModificar.getNacionalidad());
+		txtEmail.setText(pacienteModificar.getEmail());
+		txtProfesion.setText(pacienteModificar.getProfesion());
+		txtDireccion.setText(pacienteModificar.getDireccion());
+		cbxEstadoCivil.setSelectedItem(pacienteModificar.getEstadoCivil());
+		cbxTipoSangre.setSelectedItem(pacienteModificar.getTipoSangre());
+		if(pacienteModificar.getGenero().equalsIgnoreCase("Hombre")) {
+			rdbtnHombre.setSelected(true);
+			rdbtnMujer.setSelected(false);
+			genero = "Hombre";
+		}else {
+			rdbtnHombre.setSelected(false);
+			rdbtnMujer.setSelected(true);
+			genero = "Mujer";
+		}
+		calNacimiento.setEnabled(false);
 	}
 
 }

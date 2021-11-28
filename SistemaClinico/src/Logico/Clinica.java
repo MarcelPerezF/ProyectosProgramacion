@@ -2,6 +2,7 @@ package Logico;
 
 import java.util.ArrayList;
 
+
 public class Clinica {
 	
 	private ArrayList<Paciente> misPacientes;
@@ -13,7 +14,6 @@ public class Clinica {
 	
 	public int generadorCodigoUsuario;
 	public int generadorCodigoPaciente;
-
 	
 	private Clinica() {
 		super();
@@ -86,7 +86,7 @@ public class Clinica {
 	public void insertarUsuario(Usuario usuario) {
 		misUsuarios.add(usuario);
 		generadorCodigoUsuario++;
-	}	
+	}
 
 
 	public  void modificarUsuario(Usuario usuarioModificar) {
@@ -276,4 +276,17 @@ public class Clinica {
 		codigo = "V-"+(misVacunas.size()+1);
 		return codigo;
 	}
+	
+	public void ingresarConsultaPaciente(Paciente paciente, Consulta consulta) {
+		paciente.insertarConsulta(consulta);
+	}
+	
+	public void ingresarConsultaPacienteHistorial(Paciente paciente, Consulta consulta) {
+		paciente.getHistorial().ingresarConsulta(consulta);
+	}
+	
+	public void ingresarVacunaPacienteHistorial(Paciente paciente, Vacuna vacuna) {
+		paciente.getHistorial().ingresarVacuna(vacuna);
+	}
+	
 }

@@ -10,8 +10,8 @@ public class HistorialClinico {
 	public HistorialClinico(String codigoHistorial) {
 		super();
 		this.codigoHistorial = codigoHistorial;
-		this.misConsultas = null;
-		this.misVacunas = null;
+		this.misConsultas = new ArrayList<Consulta>();
+		this.misVacunas = new ArrayList<Vacuna>();
 	}
 
 	public String getCodigoHistorial() {
@@ -36,6 +36,14 @@ public class HistorialClinico {
 
 	public void setMisVacunas(ArrayList<Vacuna> misVacunas) {
 		this.misVacunas = misVacunas;
-	}	
+	}
+	
+	public void ingresarVacuna(Vacuna vacuna) {
+		misVacunas.add(vacuna);
+	}
+	
+	public void ingresarConsulta(Consulta consulta) {
+		misConsultas.add(consulta);
+	}
 
 }

@@ -39,8 +39,9 @@ public class Paciente {
 		this.religion = religion;
 		this.tipoSangre = tipoSangre;
 		this.profesion = profesion;
-		this.historial = null;
-		this.misConsultas = null;
+		this.historial = new HistorialClinico("H-"+codigoPaciente);
+		//Ejemplo: H-P-2//Historial Paciente 2		
+		this.misConsultas = new ArrayList<Consulta>();
 	}
 	public String getCedula() {
 		return cedula;
@@ -137,6 +138,10 @@ public class Paciente {
 	}
 	public void setCodigoPaciente(String codigoPaciente) {
 		this.codigoPaciente = codigoPaciente;
+	}
+	
+	public void insertarConsulta(Consulta consulta) {
+		misConsultas.add(consulta);
 	}
 	
 }

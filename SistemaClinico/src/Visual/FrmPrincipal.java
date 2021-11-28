@@ -20,6 +20,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import Logico.Clinica;
+import Logico.Paciente;
+
 import java.awt.Insets;
 
 import javax.swing.JLabel;
@@ -35,6 +38,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -166,6 +170,12 @@ public class FrmPrincipal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
+							"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
+					Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
+							"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
+					Clinica.getInstance().insertarPaciente(paciente1);
+					Clinica.getInstance().insertarPaciente(paciente2);
 					FrmPrincipal frame = new FrmPrincipal();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -329,6 +339,12 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnPacientes);
 		
 		mnHistorialPacientes = new JMenuItem("Historial Pacientes");
+		mnHistorialPacientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoPaciente frmAux = new FrmListadoPaciente(3);
+				frmAux.setVisible(true);
+			}
+		});
 		mnHistorialPacientes.setIcon(new ImageIcon(imagenHistorialPacientes));
 		mnHistorialPacientes.setBackground(colorSubMenuFondo);
 		mnPacientes.add(mnHistorialPacientes);
@@ -337,6 +353,12 @@ public class FrmPrincipal extends JFrame {
 		mnPacientes.add(spPaciente1);
 		
 		mnModificarPacientes = new JMenuItem("Modificar Pacientes");
+		mnModificarPacientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoPaciente frmAux = new FrmListadoPaciente(2);
+				frmAux.setVisible(true);
+			}
+		});
 		mnModificarPacientes.setIcon(new ImageIcon(imagenModificar));
 		mnModificarPacientes.setBackground(colorSubMenuFondo);
 		mnPacientes.add(mnModificarPacientes);
@@ -345,6 +367,12 @@ public class FrmPrincipal extends JFrame {
 		mnPacientes.add(spPaciente2);
 		
 		mnListadoPacientes = new JMenuItem("Listado Pacientes");
+		mnListadoPacientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoPaciente frmAux = new FrmListadoPaciente(1);
+				frmAux.setVisible(true);
+			}
+		});
 		mnListadoPacientes.setIcon(new ImageIcon(imagenListados));
 		mnListadoPacientes.setBackground(colorSubMenuFondo);
 		mnPacientes.add(mnListadoPacientes);
