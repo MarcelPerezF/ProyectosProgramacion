@@ -7,17 +7,19 @@ public class CitaMedica {
 	private String codigoCita;
 	private Date fechaCita;
 	private String nombrePersona;
+	private String telefonoPersona;
 	private String cedulaPersona;
 	private String estadoCita;
 	private Usuario medico;
 	private Usuario creadorCita;
 	
-	public CitaMedica(String codigoCita, String nombrePersona, String cedulaPersona, Usuario medico,
-			Usuario creadorCita) {
+	public CitaMedica(String codigoCita, String nombrePersona, String cedulaPersona, String telefonoPersona, Usuario medico,
+			Usuario creadorCita, Date fechaCita) {
 		super();
 		this.codigoCita = codigoCita;
-		this.fechaCita = new Date();
+		this.fechaCita = fechaCita;
 		this.nombrePersona = nombrePersona;
+		this.telefonoPersona = telefonoPersona;
 		this.cedulaPersona = cedulaPersona;
 		this.estadoCita = "En espera";
 		this.medico = medico;
@@ -78,6 +80,14 @@ public class CitaMedica {
 
 	public void setCreadorCita(Usuario creadorCita) {
 		this.creadorCita = creadorCita;
+	}
+
+	public String getTelefonoPersona() {
+		return telefonoPersona;
+	}
+
+	public void setTelefonoPersona(String telefonoPersona) {
+		this.telefonoPersona = telefonoPersona;
 	}
 		
 }

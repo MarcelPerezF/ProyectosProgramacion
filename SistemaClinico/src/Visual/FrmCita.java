@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,6 +14,7 @@ import javax.swing.border.LineBorder;
 
 import Logico.CitaMedica;
 import Logico.Clinica;
+import Logico.Medico;
 import Logico.Paciente;
 import Logico.Usuario;
 
@@ -40,6 +42,8 @@ import java.awt.event.MouseEvent;
 import java.awt.SystemColor;
 import javax.swing.border.MatteBorder;
 import java.awt.FlowLayout;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.DefaultComboBoxModel;
 
 public class FrmCita extends JDialog {
 
@@ -56,8 +60,6 @@ public class FrmCita extends JDialog {
 	private JTextField txtNombrePaciente;
 	private JTextField txtCedulaPaciente;
 	private JTextField txtNombreMedico;
-	private JTextField txtHorarioCita;
-	private JTextField txtFechaCita;
 	private JComboBox cbxEspecialidad;
 	private JButton btnGuardarCita;
 	private JButton btnMedico;
@@ -67,13 +69,18 @@ public class FrmCita extends JDialog {
 	private JButton btnBuscar;
 	private JButton btnRegistrar;
 	private JLabel lblInformacion;
+	private Medico medico;
+	private String especialidad;
+	private JDateChooser dcFecha;
+	private JComboBox cbxTiempo;
+	private Usuario creador;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmCita dialog = new FrmCita(null);
+			FrmCita dialog = new FrmCita(null,null,1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			
@@ -85,7 +92,9 @@ public class FrmCita extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmCita(Usuario usuarioCreador) {
+	public FrmCita(Usuario usuarioCreador, Usuario medic,int opcion) {
+		medico=(Medico) medic;
+		creador = usuarioCreador;
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -94,6 +103,7 @@ public class FrmCita extends JDialog {
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.OK_OPTION);
+					Clinica.getInstance().eliminarCita();
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -102,14 +112,23 @@ public class FrmCita extends JDialog {
 		
 		misEspecialidades = new ArrayList<String>();
 		misEspecialidades.add("<<Selecciona>>");
-		misEspecialidades.add("Ginecologia");
-		misEspecialidades.add("Hematologia");
-		misEspecialidades.add("Pediatria");
-		misEspecialidades.add("Oncologia");
-		misEspecialidades.add("Cardiologia");
-		misEspecialidades.add("Ortopedia");
-		misEspecialidades.add("Medicina Interna");
-		misEspecialidades.add("Medicina Intensiva");
+		String nuevo="";
+		Medico aux=null;
+		boolean agregar=true;
+		for(Usuario usuario: Clinica.getInstance().getMisUsuarios()) {
+			if(usuario instanceof Medico) {
+				aux=(Medico) usuario;
+				nuevo = aux.getEspecialidad();
+				for(String especial:misEspecialidades) {
+					if(especial.equalsIgnoreCase(nuevo)) {
+						agregar=false;
+					}
+				}
+				if(agregar) {
+					misEspecialidades.add(nuevo);
+				}
+			}
+		}
 		
 		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setResizable(false);
@@ -208,28 +227,13 @@ public class FrmCita extends JDialog {
 		lblHorarioCita.setBounds(15, 311, 138, 20);
 		panelBody.add(lblHorarioCita);
 		
-		txtHorarioCita = new JTextField();
-		txtHorarioCita.setForeground(Color.BLACK);
-		txtHorarioCita.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtHorarioCita.setEditable(false);
-		txtHorarioCita.setColumns(10);
-		txtHorarioCita.setBounds(154, 310, 394, 23);
-		panelBody.add(txtHorarioCita);
-		
-		txtFechaCita = new JTextField();
-		txtFechaCita.setForeground(Color.BLACK);
-		txtFechaCita.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtFechaCita.setEditable(false);
-		txtFechaCita.setColumns(10);
-		txtFechaCita.setBounds(154, 274, 394, 23);
-		panelBody.add(txtFechaCita);
-		
 		cbxEspecialidad = new JComboBox(misEspecialidades.toArray());
 		cbxEspecialidad.setEnabled(false);
 		cbxEspecialidad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(cbxEspecialidad.getSelectedIndex()!=0) {
 					btnMedico.setEnabled(true);
+					especialidad = cbxEspecialidad.getSelectedItem().toString();
 				}else {
 					btnMedico.setEnabled(false);
 				}
@@ -307,6 +311,18 @@ public class FrmCita extends JDialog {
 		lblInformacion.setBounds(339, 29, 170, 16);
 		panelBody.add(lblInformacion);
 		
+		Date sd = new Date();
+		dcFecha = new JDateChooser();
+		dcFecha.setDate(sd);
+		dcFecha.setBounds(154, 274, 138, 23);
+		panelBody.add(dcFecha);
+		
+		cbxTiempo = new JComboBox();
+		cbxTiempo.setEditable(true);
+		cbxTiempo.setModel(new DefaultComboBoxModel(new String[] {"08:00 am", "09:00 am", "10:00 am", "11:00 am", "12:00 pm", "03:00 pm", "04:00 pm", "05:00 pm", "06:00 pm"}));
+		cbxTiempo.setBounds(154, 310, 138, 23);
+		panelBody.add(cbxTiempo);
+		
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelFooter.setBackground(UIManager.getColor("CheckBox.light"));
@@ -329,10 +345,32 @@ public class FrmCita extends JDialog {
 		btnGuardarCita = new JButton("Guardar");
 		btnGuardarCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombreMedico.getText(),txtCedulaPaciente.getText(),null,usuarioCreador);
-				Clinica.getInstance().insertarCitasMedicas(aux);
-				JOptionPane.showMessageDialog(null, "La cita se registro", "Información",JOptionPane.INFORMATION_MESSAGE);
-				clean();
+				boolean aprobado=true;
+				int hora=0;
+				String tiempo=cbxTiempo.getSelectedItem().toString();
+				Date de = dcFecha.getDate();
+				if(tiempo.substring(6,8).equalsIgnoreCase("am")||tiempo.substring(0,2).equalsIgnoreCase("12")) {
+					hora=Integer.valueOf(tiempo.substring(0,2));
+				}else {
+					hora=Integer.valueOf(tiempo.substring(0,2));
+					hora+=12;
+				}
+				de.setHours(hora);
+				de.setMinutes(0);
+				de.setSeconds(0);
+				for(CitaMedica cita : Clinica.getInstance().getMisCitasMedicas()) {
+					if(cita.getFechaCita()==de&&cita.getEstadoCita().equalsIgnoreCase("En espera")) {
+						aprobado=false;
+					}
+				}
+				if(aprobado) {
+					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medico,creador,de);
+					Clinica.getInstance().actualizarCita(aux);
+					JOptionPane.showMessageDialog(null, "La cita se registro", "Información",JOptionPane.INFORMATION_MESSAGE);
+					clean();
+				}else {
+					JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		btnGuardarCita.setEnabled(false);
@@ -344,7 +382,11 @@ public class FrmCita extends JDialog {
 		btnMedico = new JButton("Medico");
 		btnMedico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnGuardarCita.setEnabled(true);
+				CitaMedica auxPart1 = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),null,creador,null);
+				Clinica.getInstance().insertarCitasMedicas(auxPart1);
+				dispose();
+				FrmListadoUsuarios aux = new FrmListadoUsuarios(4,especialidad);
+				aux.setVisible(true);
 			}
 		});
 		btnMedico.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -359,6 +401,7 @@ public class FrmCita extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar la cita?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.OK_OPTION);
+					Clinica.getInstance().eliminarCita();
 					dispose();
 				}
 			}
@@ -367,21 +410,39 @@ public class FrmCita extends JDialog {
 		btnSalir.setBackground(UIManager.getColor("Button.light"));
 		btnSalir.setBounds(445, 16, 103, 29);
 		panelFooter.add(btnSalir);
+		if(opcion==2) {
+			loaddata();
+		}
+	}
+
+	private void loaddata() {
+		String codigo = "C-"+Clinica.getInstance().getMisCitasMedicas().size(); 
+		CitaMedica aux = Clinica.getInstance().buscarCitaMedicaPorCodigo(codigo);
+		creador = aux.getCreadorCita();
+		txtCodigoCita.setText(codigo);
+		txtCedulaPaciente.setText(aux.getCedulaPersona());
+		txtNombreMedico.setText(medico.getNombre());
+		txtNombrePaciente.setText(aux.getNombrePersona());
+		txtTelefonoPaciente.setText(aux.getTelefonoPersona());
+		cbxEspecialidad.setSelectedItem(medico.getEspecialidad());
+		btnLimpiar.setEnabled(true);
+		btnMedico.setEnabled(false);
+		btnGuardarCita.setEnabled(true);
 	}
 
 	private void clean() {
+		Date sd = new Date();
 		txtCedulaPaciente.setText("");
 		txtCodigoCita.setText(Clinica.getInstance().generarCodigoCita());
-		txtFechaCita.setText("");
-		txtHorarioCita.setText("");
+		cbxTiempo.setSelectedIndex(0);
 		txtNombreMedico.setText("");
 		txtNombrePaciente.setText("");
 		txtTelefonoPaciente.setText("");
+		dcFecha.setDate(sd);
 		cbxEspecialidad.setSelectedIndex(0);
 		btnLimpiar.setEnabled(false);
 		btnGuardarCita.setEnabled(false);
 		btnMedico.setEnabled(false);
 		btnRegistrar.setEnabled(false);
 	}
-	
 }

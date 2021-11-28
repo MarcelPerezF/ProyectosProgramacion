@@ -111,7 +111,7 @@ public class FrmIngresarUsuario extends JDialog {
 					if(opcionAux==0) {
 						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						JOptionPane.showMessageDialog(null, "Saliendo de modificar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-						FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+						FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
 						frmAux.setVisible(true);
 					}else if(opcionAux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -212,7 +212,7 @@ public class FrmIngresarUsuario extends JDialog {
 							Clinica.getInstance().modificarUsuario(usuarioModificar);
 							JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "MODIFICACI\u00d3N DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
-							FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+							FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
 							frmAux.setVisible(true);
 							
 						}

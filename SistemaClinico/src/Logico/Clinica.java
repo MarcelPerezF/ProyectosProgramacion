@@ -289,4 +289,43 @@ public class Clinica {
 		paciente.getHistorial().ingresarVacuna(vacuna);
 	}
 	
+	public Usuario buscarUsuarioPorCodigo(String codigo) {
+		Usuario usuario = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misUsuarios.size()) {
+			if(misUsuarios.get(indexBuscador).getCodigoUsuario().equalsIgnoreCase(codigo)) {				
+				usuario=misUsuarios.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return usuario;
+	}
+	
+	public CitaMedica buscarCitaMedicaPorCodigo(String codigo) {
+		CitaMedica cita = null;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misCitasMedicas.size()) {
+			if(misCitasMedicas.get(indexBuscador).getCodigoCita().equalsIgnoreCase(codigo)) {				
+				cita=misCitasMedicas.get(indexBuscador);
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return cita;
+	}
+	
+	public void actualizarCita(CitaMedica auxCita) {
+		misCitasMedicas.set(misCitasMedicas.size()-1, auxCita);
+	}
+	
+	public void eliminarCita() {
+		if(misCitasMedicas.size()>1) {
+			misCitasMedicas.remove(misCitasMedicas.size()-1);
+		}
+	}
 }

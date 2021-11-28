@@ -308,7 +308,7 @@ public class FrmPrincipal extends JFrame {
 						JOptionPane.QUESTION_MESSAGE, new ImageIcon(imagenInfoSistema), new Object[] {"informaci\u00f3n personal", "Credenciales"}, "informaci\u00f3nn personal");
 				if(opcion!=-1) {
 					opcion+=2;//Esto porque al listado llegara 2 o 3 si se desea modificar.
-					FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion);
+					FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
 					frmAux.setVisible(true);
 				}
 			}
@@ -322,7 +322,7 @@ public class FrmPrincipal extends JFrame {
 		mnListadoUsuarios = new JMenuItem("Listado Usuarios");
 		mnListadoUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoUsuarios frmAux = new FrmListadoUsuarios(1);
+				FrmListadoUsuarios frmAux = new FrmListadoUsuarios(1,"");
 				frmAux.setVisible(true);
 			}
 		});
@@ -382,7 +382,7 @@ public class FrmPrincipal extends JFrame {
 		mnNuevaCita = new JMenuItem("Nueva Cita");
 		mnNuevaCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmCita aux = new FrmCita(null);
+				FrmCita aux = new FrmCita(null,null,1);
 				aux.setVisible(true);
 			}
 		});

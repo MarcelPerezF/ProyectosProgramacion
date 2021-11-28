@@ -68,6 +68,7 @@ public class FrmListadoUsuarios extends JDialog {
 	private JTextField txtBusqueda;
 	private JComboBox cbxTipoBusqueda;
 	private JComboBox cbxBusqueda;
+	private String especialidad;
 	
 	
 	public static void main(String[] args) {
@@ -76,7 +77,7 @@ public class FrmListadoUsuarios extends JDialog {
 			Usuario usuario2 = new Empleado("U2", "403", 2, "3", "4", "Sofi", "829", "RD", "", "Mujer", "Administrador");
 			Clinica.getInstance().insertarUsuario(usuario);
 			Clinica.getInstance().insertarUsuario(usuario2);
-			FrmListadoUsuarios dialog = new FrmListadoUsuarios(3);
+			FrmListadoUsuarios dialog = new FrmListadoUsuarios(4,"Cirujano");
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -84,22 +85,28 @@ public class FrmListadoUsuarios extends JDialog {
 		}
 	}
 
-	public FrmListadoUsuarios(int opcionListado) {
+	public FrmListadoUsuarios(int opcionListado, String especial) {
 		opcion = opcionListado;
+		especialidad = especial;
+		//El parametro especialidad es para buscar el medico
 		//El parametro opcion es para saber si se desea ver el listado o si se desea seleccionar
 		//Opcion 1: Ver listado.
 		//Opcion 2: Ver listado (PARA SELECCIONAR).
 		//Opcion 3: Ver listado (PARA SELECCIONAR).
+		//Opcion 4: Ver listado (PARA SELECCIONAR MEDICO).
 		
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(opcion==1) {
+				if(opcion==1||opcion==4) {
 					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
 					if(aux==0) {
 						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+						if(opcion==4) {
+							Clinica.getInstance().eliminarCita();
+						}
 					}else if(aux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
@@ -164,20 +171,24 @@ public class FrmListadoUsuarios extends JDialog {
 			{
 				btnAuxiliar = new JButton("");
 				//Boton de seleccionar o ver mas.
-				
 				btnAuxiliar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(opcion==1) {
 							dispose();
 							FrmListadoUsuariosDetallado frmAux = new FrmListadoUsuariosDetallado(usuarioSeleccionado);
 							frmAux.setVisible(true);
-						}else {
+						}else if(opcion==4){
+							dispose();
+							FrmCita aux = new FrmCita(null,usuarioSeleccionado,2);
+							aux.setVisible(true);
+						}else{
 							dispose();
 							FrmIngresarUsuario frmAux = new FrmIngresarUsuario(opcionListado, usuarioSeleccionado);
 							frmAux.setVisible(true);
 						}
 					}
 				});
+				
 				if(opcion==1) {
 					btnAuxiliar.setText("Ver m\u00e1s");
 				}else if(opcion!=1){
@@ -191,15 +202,18 @@ public class FrmListadoUsuarios extends JDialog {
 			{
 				btnSalir = new JButton("Salir");
 				btnSalir.setBounds(634, 16, 81, 28);
-				if(opcion!=1) {
+				if(opcion!=1&&opcion!=4) {
 					btnSalir.setEnabled(false);
 				}
 				btnSalir.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(opcionListado==1) {
-							int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
-							if(opcion==0) {
+						if(opcion==1||opcion==4) {
+							int opcion2 = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
+							if(opcion2==0) {
 								JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+								if(opcion==4) {
+									Clinica.getInstance().eliminarCita();
+								}
 								dispose();
 							}
 						}
@@ -238,7 +252,11 @@ public class FrmListadoUsuarios extends JDialog {
 					int selectRow = tblListadoUsuarios.getSelectedRow();
 					usuarioSeleccionado = null;
 					if(selectRow!=-1) {
-						usuarioSeleccionado = Clinica.getInstance().buscarUsuario(String.valueOf(tblListadoUsuarios.getValueAt(selectRow, 2)));
+						if(opcion!=4) {
+							usuarioSeleccionado = Clinica.getInstance().buscarUsuario(String.valueOf(tblListadoUsuarios.getValueAt(selectRow, 2)));
+						}else {
+							usuarioSeleccionado = Clinica.getInstance().buscarUsuarioPorCodigo(String.valueOf(tblListadoUsuarios.getValueAt(selectRow, 0)));
+						}
 					}
 					if(usuarioSeleccionado!=null) {
 						btnAuxiliar.setEnabled(true);
@@ -248,6 +266,9 @@ public class FrmListadoUsuarios extends JDialog {
 			model = new DefaultTableModel();
 			if(opcion==1) {
 				String[] headers = {"Codigo","Nombre","Cedula", "Genero", "Tipo", "Usuario", "Contrase\u00f1a"};
+				model.setColumnIdentifiers(headers);
+			}else if(opcion==4) {
+				String[] headers = {"Codigo","Nombre","Especialidad","Telefono", "Genero"};
 				model.setColumnIdentifiers(headers);
 			}else if(opcion!=1){
 				String[] headers = {"Codigo","Nombre","Cedula", "Genero", "Tipo"};
@@ -271,31 +292,52 @@ public class FrmListadoUsuarios extends JDialog {
 		pnBusqueda.add(lblBusqueda);
 		
 		cbxTipoBusqueda = new JComboBox();
-		cbxTipoBusqueda.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "C\u00E9dula", "Tipo Usuario", "Genero"}));
-		cbxTipoBusqueda.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if( cbxTipoBusqueda.getSelectedIndex()==0 || cbxTipoBusqueda.getSelectedIndex()==1 || cbxTipoBusqueda.getSelectedIndex()==2 ) {
-					txtBusqueda.setVisible(true);
-					cbxBusqueda.setVisible(false);
-					txtBusqueda.setText("");
-					btnBuscar.setEnabled(false);
-				}
-				if(cbxTipoBusqueda.getSelectedIndex()==3) {
-					txtBusqueda.setVisible(false);
-					cbxBusqueda.setVisible(true);
-					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Medico", "Administrador", "Secretaria"}));
-					btnBuscar.setEnabled(true);
-				}
-				if(cbxTipoBusqueda.getSelectedIndex()==4) {
-					txtBusqueda.setVisible(false);
-					cbxBusqueda.setVisible(true);
-					cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Hombre", "Mujer"}));
-					btnBuscar.setEnabled(true);
-				}
-				loadTablaUsuarios(1, "");
+		if(opcion!=4) {
+			cbxTipoBusqueda.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "C\u00E9dula", "Tipo Usuario", "Genero"}));
+			cbxTipoBusqueda.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if( cbxTipoBusqueda.getSelectedIndex()==0 || cbxTipoBusqueda.getSelectedIndex()==1 || cbxTipoBusqueda.getSelectedIndex()==2 ) {
+						txtBusqueda.setVisible(true);
+						cbxBusqueda.setVisible(false);
+						txtBusqueda.setText("");
+						btnBuscar.setEnabled(false);
+					}
+					if(cbxTipoBusqueda.getSelectedIndex()==3) {
+						txtBusqueda.setVisible(false);
+						cbxBusqueda.setVisible(true);
+						cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Medico", "Administrador", "Secretaria"}));
+						btnBuscar.setEnabled(true);
+					}
+					if(cbxTipoBusqueda.getSelectedIndex()==4) {
+						txtBusqueda.setVisible(false);
+						cbxBusqueda.setVisible(true);
+						cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Hombre", "Mujer"}));
+						btnBuscar.setEnabled(true);
+					}
+					loadTablaUsuarios(1, "");
 
-			}
-		});
+				}
+			});
+		}else {
+			cbxTipoBusqueda.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nombre", "Genero"}));
+			cbxTipoBusqueda.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if( cbxTipoBusqueda.getSelectedIndex()==0 || cbxTipoBusqueda.getSelectedIndex()==1) {
+						txtBusqueda.setVisible(true);
+						cbxBusqueda.setVisible(false);
+						txtBusqueda.setText("");
+						btnBuscar.setEnabled(false);
+					}
+					if(cbxTipoBusqueda.getSelectedIndex()==2) {
+						txtBusqueda.setVisible(false);
+						cbxBusqueda.setVisible(true);
+						cbxBusqueda.setModel(new DefaultComboBoxModel(new String[] {"Hombre", "Mujer"}));
+						btnBuscar.setEnabled(true);
+					}
+					loadTablaUsuarios(1, "");
+				}
+			});
+		}
 		cbxTipoBusqueda.setBounds(150, 29, 140, 23);
 		pnBusqueda.add(cbxTipoBusqueda);
 		
@@ -330,31 +372,50 @@ public class FrmListadoUsuarios extends JDialog {
 		txtBusqueda.setColumns(10);
 		
 		btnBuscar = new JButton("Buscar");
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int opcionAux = cbxTipoBusqueda.getSelectedIndex();
-				switch (opcionAux) {
-				case 0:
-					loadTablaUsuarios(2, txtBusqueda.getText());
-					break;
-				case 1:
-					loadTablaUsuarios(3, txtBusqueda.getText());
-					break;
-				case 2:
-					loadTablaUsuarios(4, txtBusqueda.getText());
-					break;
-				case 3:
-					loadTablaUsuarios(5, cbxBusqueda.getSelectedItem().toString());
-					break;
-				case 4:
-					loadTablaUsuarios(6, cbxBusqueda.getSelectedItem().toString());
-					break;
+		if(opcion!=4) {
+			btnBuscar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int opcionAux = cbxTipoBusqueda.getSelectedIndex();
+					switch (opcionAux) {
+					case 0:
+						loadTablaUsuarios(2, txtBusqueda.getText());
+						break;
+					case 1:
+						loadTablaUsuarios(3, txtBusqueda.getText());
+						break;
+					case 2:
+						loadTablaUsuarios(4, txtBusqueda.getText());
+						break;
+					case 3:
+						loadTablaUsuarios(5, cbxBusqueda.getSelectedItem().toString());
+						break;
+					case 4:
+						loadTablaUsuarios(6, cbxBusqueda.getSelectedItem().toString());
+						break;
 
-				default:
-					break;
+					default:
+						break;
+					}
 				}
-			}
-		});
+			});
+		}else {
+			btnBuscar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int opcionAux = cbxTipoBusqueda.getSelectedIndex();
+					switch (opcionAux) {
+					case 0:
+						loadTablaUsuarios(2, txtBusqueda.getText());
+						break;
+					case 1:
+						loadTablaUsuarios(3, txtBusqueda.getText());
+						break;
+					case 2:
+						loadTablaUsuarios(4, cbxBusqueda.getSelectedItem().toString());
+						break;
+					}
+				}
+			});
+		}
 		btnBuscar.setEnabled(false);
 		btnBuscar.setBounds(545, 25, 140, 30);
 		pnBusqueda.add(btnBuscar);
@@ -369,47 +430,100 @@ public class FrmListadoUsuarios extends JDialog {
 	public void loadTablaUsuarios(int opcionBusqueda, String busqueda) {
 		model.setRowCount(0);
 		int cantidadUsuarios = 0;
-		for (int i = 0; i<Clinica.getInstance().getMisUsuarios().size(); i++) {
-			switch (opcionBusqueda) {
-			case 1:
-				cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
-				cantidadUsuarios++;
-				break;
-			
-			case 2:
-				if(Clinica.getInstance().getMisUsuarios().get(i).getCodigoUsuario().equalsIgnoreCase(busqueda)) {
-					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
+		Medico aux = null;
+		if(opcion!=4) {
+			for (Usuario usuario : Clinica.getInstance().getMisUsuarios()) {
+				switch (opcionBusqueda) {
+				case 1:
+					cargarFilas(opcion, usuario);	
 					cantidadUsuarios++;
+					break;
+				
+				case 2:
+					if(usuario.getCodigoUsuario().equalsIgnoreCase(busqueda)) {
+						cargarFilas(opcion, usuario);	
+						cantidadUsuarios++;
+					}
+					break;
+				
+				case 3:
+					if(usuario.getNombre().equalsIgnoreCase(busqueda)) {
+						cargarFilas(opcion, usuario);	
+						cantidadUsuarios++;
+					}
+					break;
+				
+				case 4:
+					if(usuario.getCedulaUsuario().equalsIgnoreCase(busqueda)) {
+						cargarFilas(opcion, usuario);	
+						cantidadUsuarios++;
+					}
+					break;
+				
+				case 5:
+					if(Clinica.getInstance().tipoUsuario(usuario).equalsIgnoreCase(busqueda)) {
+						cargarFilas(opcion, usuario);	
+						cantidadUsuarios++;
+					}
+					break;
+				
+				case 6:
+					if(usuario.getGenero().equalsIgnoreCase(busqueda)) {
+						cargarFilas(opcion, usuario);	
+						cantidadUsuarios++;
+					}
+					break;
 				}
-				break;
-			
-			case 3:
-				if(Clinica.getInstance().getMisUsuarios().get(i).getNombre().equalsIgnoreCase(busqueda)) {
-					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
-					cantidadUsuarios++;
+			}
+		}else {
+			for (Usuario usuario : Clinica.getInstance().getMisUsuarios()) {
+				if(usuario instanceof Medico) {
+					aux = (Medico) usuario;
+					switch (opcionBusqueda) {
+					case 1:
+						if(Clinica.getInstance().tipoUsuario(usuario).equalsIgnoreCase("medico")) {
+							if(aux.getEspecialidad().equalsIgnoreCase(especialidad)) {
+								cargarFilas(opcion, usuario);	
+								cantidadUsuarios++;
+							}
+						}
+						break;
+					
+					case 2:
+						if(Clinica.getInstance().tipoUsuario(usuario).equalsIgnoreCase("medico")) {
+							if(aux.getEspecialidad().equalsIgnoreCase(especialidad)) {
+								if(usuario.getCodigoUsuario().equalsIgnoreCase(busqueda)) {
+									cargarFilas(opcion, usuario);	
+									cantidadUsuarios++;
+								}
+							}
+							break;
+						}
+						break;
+						
+					case 3:
+						if(Clinica.getInstance().tipoUsuario(usuario).equalsIgnoreCase("medico")) {
+							if(aux.getEspecialidad().equalsIgnoreCase(especialidad)) {
+								if(usuario.getNombre().equalsIgnoreCase(busqueda)) {
+									cargarFilas(opcion, usuario);	
+									cantidadUsuarios++;
+								}
+							}
+						}
+						break;
+						
+					case 4:
+						if(Clinica.getInstance().tipoUsuario(usuario).equalsIgnoreCase("medico")) {
+							if(aux.getEspecialidad().equalsIgnoreCase(especialidad)) {
+								if(usuario.getGenero().equalsIgnoreCase(busqueda)) {
+									cargarFilas(opcion, usuario);	
+									cantidadUsuarios++;
+								}
+							}
+						}
+						break;
+					}
 				}
-				break;
-			
-			case 4:
-				if(Clinica.getInstance().getMisUsuarios().get(i).getCedulaUsuario().equalsIgnoreCase(busqueda)) {
-					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
-					cantidadUsuarios++;
-				}
-				break;
-			
-			case 5:
-				if(Clinica.getInstance().tipoUsuario(Clinica.getInstance().getMisUsuarios().get(i)).equalsIgnoreCase(busqueda)) {
-					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
-					cantidadUsuarios++;
-				}
-				break;
-			
-			case 6:
-				if(Clinica.getInstance().getMisUsuarios().get(i).getGenero().equalsIgnoreCase(busqueda)) {
-					cargarFilas(opcion, Clinica.getInstance().getMisUsuarios().get(i));	
-					cantidadUsuarios++;
-				}
-				break;
 			}
 		}
 		txtCantidadUsuarios.setText(""+cantidadUsuarios+" usuarios");
@@ -419,29 +533,48 @@ public class FrmListadoUsuarios extends JDialog {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
+		Medico aux = null; 
 		try {
-	        row[0] = usuario.getCodigoUsuario();
-	        tblListadoUsuarios.getColumnModel().getColumn(0).setCellRenderer(tcr);
-	        
-	        row[1] = usuario.getNombre();
-	        tblListadoUsuarios.getColumnModel().getColumn(1).setCellRenderer(tcr);
+			if(opcion!=4) {
+				row[0] = usuario.getCodigoUsuario();
+		        tblListadoUsuarios.getColumnModel().getColumn(0).setCellRenderer(tcr);
+		        
+		        row[1] = usuario.getNombre();
+		        tblListadoUsuarios.getColumnModel().getColumn(1).setCellRenderer(tcr);
 
-	        row[2] = usuario.getCedulaUsuario();
-	        tblListadoUsuarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
+		        row[2] = usuario.getCedulaUsuario();
+		        tblListadoUsuarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
 
-	        row[3] = usuario.getGenero();
-	        tblListadoUsuarios.getColumnModel().getColumn(3).setCellRenderer(tcr);
-	        
-	        row[4] = Clinica.getInstance().tipoUsuario(usuario);
-	        tblListadoUsuarios.getColumnModel().getColumn(4).setCellRenderer(tcr);
-	        
-	        if(opcion==1) {
-	            row[5] = usuario.getUsuario();
-	            tblListadoUsuarios.getColumnModel().getColumn(5).setCellRenderer(tcr);
-	            
-	            row[6] = usuario.getPassword();
-	            tblListadoUsuarios.getColumnModel().getColumn(6).setCellRenderer(tcr);
-	        }
+		        row[3] = usuario.getGenero();
+		        tblListadoUsuarios.getColumnModel().getColumn(3).setCellRenderer(tcr);
+		        
+		        row[4] = Clinica.getInstance().tipoUsuario(usuario);
+		        tblListadoUsuarios.getColumnModel().getColumn(4).setCellRenderer(tcr);
+		        
+		        if(opcion==1) {
+		            row[5] = usuario.getUsuario();
+		            tblListadoUsuarios.getColumnModel().getColumn(5).setCellRenderer(tcr);
+		            
+		            row[6] = usuario.getPassword();
+		            tblListadoUsuarios.getColumnModel().getColumn(6).setCellRenderer(tcr);
+		        }
+			}else {
+				aux = (Medico) usuario;
+				row[0] = aux.getCodigoUsuario();
+		        tblListadoUsuarios.getColumnModel().getColumn(0).setCellRenderer(tcr);
+		        
+		        row[1] = aux.getNombre();
+		        tblListadoUsuarios.getColumnModel().getColumn(1).setCellRenderer(tcr);
+
+		        row[2] = aux.getEspecialidad();
+		        tblListadoUsuarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
+
+		        row[3] = aux.getTelefono();
+		        tblListadoUsuarios.getColumnModel().getColumn(3).setCellRenderer(tcr);
+		        
+		        row[4] = usuario.getGenero();
+		        tblListadoUsuarios.getColumnModel().getColumn(4).setCellRenderer(tcr);
+			}
 	        model.addRow(row);	
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);

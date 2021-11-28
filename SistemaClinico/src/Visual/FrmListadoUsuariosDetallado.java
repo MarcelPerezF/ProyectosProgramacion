@@ -255,7 +255,7 @@ public class FrmListadoUsuariosDetallado extends JDialog {
 				if(aux==0) {
 					JOptionPane.showMessageDialog(null, "Saliendo de la vista detallada de la informaci\u00f3n del usuario", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
-					FrmListadoUsuarios frmAux = new FrmListadoUsuarios(1);
+					FrmListadoUsuarios frmAux = new FrmListadoUsuarios(1,"");
 					frmAux.setVisible(true);
 				}
 			}
