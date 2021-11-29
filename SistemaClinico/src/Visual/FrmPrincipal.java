@@ -20,6 +20,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import Logico.Clinica;
+import Logico.Usuario;
+
 import java.awt.Insets;
 
 import javax.swing.JLabel;
@@ -50,6 +53,7 @@ public class FrmPrincipal extends JFrame {
 	//Variables publicas importantes:
 	public static String nombreUsuario;
 	public static String rolUsuario;
+	public static Usuario usuario;
 	
 	//Constantes:
 	private final int sizeIcon = 35;
@@ -70,7 +74,6 @@ public class FrmPrincipal extends JFrame {
 
 	private JMenu mnConsulta;
 	private JMenuItem mnConsultar;
-	private JMenuItem mnPosponerConsulta;
 	private JMenuItem mnListadoConsultas;
 	
 	private JMenu mnUsuarios;
@@ -221,7 +224,8 @@ public class FrmPrincipal extends JFrame {
 		mnListadoCitasHoy.setIcon(new ImageIcon(imagenInicio));
 		mnListadoCitasHoy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				pnListadoCitasHoy.setVisible(true);
+				FrmListadoCitas frmAux = new FrmListadoCitas(null, null);
+				frmAux.setVisible(true);
 			}
 		});
 		mnArchivo.add(mnListadoCitasHoy);
@@ -262,17 +266,16 @@ public class FrmPrincipal extends JFrame {
 		menuBar.add(mnConsulta);
 		
 		mnConsultar = new JMenuItem("Nueva Consulta");
+		mnConsultar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				usuario = Clinica.getInstance().buscarUsuario("402");
+				FrmListadoCitas frmAux = new FrmListadoCitas(usuario, new Date());
+				frmAux.setVisible(true);
+			}
+		});
 		mnConsultar.setBackground(colorSubMenuFondo);
 		mnConsultar.setIcon(new ImageIcon(imagenConsultar));
 		mnConsulta.add(mnConsultar);
-		
-		JSeparator spConsulta1 = new JSeparator();
-		mnConsulta.add(spConsulta1);
-		
-		mnPosponerConsulta = new JMenuItem("Posponer Consulta");
-		mnPosponerConsulta.setBackground(colorSubMenuFondo);
-		mnPosponerConsulta.setIcon(new ImageIcon(imagenPosponerConsulta));
-		mnConsulta.add(mnPosponerConsulta);
 		
 		JSeparator spConsulta2 = new JSeparator();
 		mnConsulta.add(spConsulta2);
@@ -431,7 +434,7 @@ public class FrmPrincipal extends JFrame {
 		mnEnfermedades.add(mnActualizarEnfermedad);
 		mnActualizarEnfermedad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(true);
+				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(true, 1);
 				aux.setVisible(true);
 			}
 		});
@@ -445,7 +448,7 @@ public class FrmPrincipal extends JFrame {
 		mnEnfermedades.add(mnListadoEnfermedades);
 		mnListadoEnfermedades.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(false);
+				FrmListadoEnfermedad aux = new FrmListadoEnfermedad(false, 1);
 				aux.setVisible(true);
 			}
 		});

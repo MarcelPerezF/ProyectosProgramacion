@@ -53,16 +53,13 @@ public class FrmListadoEnfermedad extends JDialog {
 	private JPanel pnListadoEnfermedades;
 	private boolean lista = false;
 	private String code="";
-	/**
-	 * Launch the application.
-	 */
-
-	/**
-	 * Create the dialog.
-	 */
+	
+	
 	//el parametro listado es falso cuando solo quiere ver la lista, de lo contrario es verdadero
-	public FrmListadoEnfermedad(boolean listado) {
-		lista=listado;
+	public FrmListadoEnfermedad(boolean listado, int opcion) {
+		lista = listado;
+		//Si la opcion es 2 es porque desde la consulta se diagnosticara
+		
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -129,9 +126,14 @@ public class FrmListadoEnfermedad extends JDialog {
 				btnSeleccionar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Enfermedad aux = Clinica.getInstance().buscarEnfermedad(code);
-						FrmIngresarEnfermedad auxAct = new FrmIngresarEnfermedad(aux);
-						dispose();
-						auxAct.setVisible(true);
+						if(opcion==1) {
+							FrmIngresarEnfermedad auxAct = new FrmIngresarEnfermedad(aux);
+							dispose();
+							auxAct.setVisible(true);
+						}else if(opcion==2) {
+							FrmConsulta.enfermedad = aux;
+							dispose();
+						}
 					}
 				});
 				btnSeleccionar.setEnabled(false);

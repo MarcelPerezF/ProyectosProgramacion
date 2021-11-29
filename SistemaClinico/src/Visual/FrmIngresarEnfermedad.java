@@ -155,7 +155,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 						}else {
 							Clinica.getInstance().actualizarEnfermedad(auxEnf);
 							JOptionPane.showMessageDialog(null, "La enfermedad se actualizo", "Información",JOptionPane.INFORMATION_MESSAGE);
-							FrmListadoEnfermedad auxLis = new FrmListadoEnfermedad(true);
+							FrmListadoEnfermedad auxLis = new FrmListadoEnfermedad(true, 1);
 							dispose();
 							auxLis.setVisible(true);
 						}

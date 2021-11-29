@@ -8,6 +8,16 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import Logico.Clinica;
+import Logico.Consulta;
+import Logico.Enfermedad;
+import Logico.Medico;
+import Logico.Paciente;
+import Logico.Usuario;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -27,6 +37,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FrmConsulta extends JDialog {
 
@@ -39,10 +51,22 @@ public class FrmConsulta extends JDialog {
 	private JTextField txtCodigoConsulta;
 	private JTextField txtNombrePaciente;
 	private JTextField txtEnfermedad;
+	public static Enfermedad enfermedad;
+	private JTextArea txtSintomas;
+	private JTextArea txtDiagnostico;
+	private JButton btnHistorial;
+	private JButton btnDiagnosticar;
+	private JButton btnGuardar;
 
 	public static void main(String[] args) {
 		try {
-			FrmConsulta dialog = new FrmConsulta();
+			Enfermedad enfermedad = new Enfermedad("E-1", "Covid", "Contagiosa", "Virus contagioso covid");
+			Clinica.getInstance().insertarEnfermedades(enfermedad);
+			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
+					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
+			Medico medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
+			Clinica.getInstance().insertarUsuario(medico);
+			FrmConsulta dialog = new FrmConsulta(paciente1, medico);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			
@@ -54,8 +78,9 @@ public class FrmConsulta extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmConsulta() {
+	public FrmConsulta(Paciente paciente, Usuario medico) {
 		//Para controlar el boton de close.
+		enfermedad = null;
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -124,7 +149,6 @@ public class FrmConsulta extends JDialog {
 		panelBody.add(lblCodigoConsulta);
 		
 		txtCodigoConsulta = new JTextField();
-		txtCodigoConsulta.setText("CO1");
 		txtCodigoConsulta.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		txtCodigoConsulta.setEditable(false);
 		txtCodigoConsulta.setBounds(154, 26, 165, 23);
@@ -150,14 +174,14 @@ public class FrmConsulta extends JDialog {
 		scrlpSintomas.setBounds(154, 102, 394, 100);
 		panelBody.add(scrlpSintomas);
 		
-		JTextArea txtSintomas = new JTextArea();
+		txtSintomas = new JTextArea();
 		scrlpSintomas.setViewportView(txtSintomas);
 		
 		JScrollPane scrlpDiagnostico = new JScrollPane();
 		scrlpDiagnostico.setBounds(154, 218, 394, 100);
 		panelBody.add(scrlpDiagnostico);
 		
-		JTextArea txtDiagnostico = new JTextArea();
+		txtDiagnostico = new JTextArea();
 		scrlpDiagnostico.setViewportView(txtDiagnostico);
 		
 		JLabel lblDiagnostico = new JLabel("Diagnostico:");
@@ -182,24 +206,96 @@ public class FrmConsulta extends JDialog {
 		contentPanel.add(panelFooter);
 		panelFooter.setLayout(null);
 		
-		JButton btnHistorial = new JButton("Historial");
+		btnHistorial = new JButton("Historial");
+		btnHistorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmHistorialPaciente frmAux = new FrmHistorialPaciente(paciente);
+				frmAux.setVisible(true);
+			}
+		});
 		btnHistorial.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnHistorial.setBackground(UIManager.getColor("Button.light"));
 		btnHistorial.setBounds(29, 16, 142, 29);
 		panelFooter.add(btnHistorial);
 		
-		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Consulta consulta = new Consulta(txtCodigoConsulta.getText(), txtSintomas.getText(), txtDiagnostico.getText(),
+						enfermedad, (Medico)medico);
+				Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta);
+
+				if(enfermedad!=null) {
+					Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente, consulta);
+				}
+				JOptionPane.showMessageDialog(null, "Se ha ingresado de manera correcta la consulta", "INGRESO DE CONSULTA", JOptionPane.INFORMATION_MESSAGE);
+				dispose();
+			}
+		});
 		btnGuardar.setEnabled(false);
 		btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGuardar.setBackground(UIManager.getColor("Button.light"));
 		btnGuardar.setBounds(393, 17, 142, 29);
 		panelFooter.add(btnGuardar);
 		
-		JButton btnDiagnosticar = new JButton("Diagnosticar");
+		btnDiagnosticar = new JButton("Diagnosticar");
+		btnDiagnosticar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoEnfermedad frmAux = new FrmListadoEnfermedad(true, 2);
+				frmAux.setVisible(true);
+				if(enfermedad!=null) {
+					txtEnfermedad.setText(enfermedad.getNombreEnfermedad());
+				}
+			}
+		});
 		btnDiagnosticar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDiagnosticar.setBackground(UIManager.getColor("Button.light"));
 		btnDiagnosticar.setBounds(216, 16, 142, 29);
 		panelFooter.add(btnDiagnosticar);
 		
+		txtCodigoConsulta.setText("C-P-"+ (paciente.getMisConsultas().size()+1) );
+		txtNombrePaciente.setText(paciente.getNombre());
+		comprobarCampos(txtDiagnostico);
+		comprobarCampos(txtSintomas);
+		
+	}
+	
+	private void comprobarCampos(JTextArea text) {
+		text.getDocument().addDocumentListener(new DocumentListener() {			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if( comprobarCampos() ) {
+					btnGuardar.setEnabled(true);
+				}else {
+					btnGuardar.setEnabled(false);
+				}
+			}	
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if( comprobarCampos() ) {
+					btnGuardar.setEnabled(true);
+				}else {
+					btnGuardar.setEnabled(false);
+				}
+			}
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				if( comprobarCampos() ) {
+					btnGuardar.setEnabled(true);
+				}else {
+					btnGuardar.setEnabled(false);
+				}
+			}
+		});		
+	}
+	
+	public boolean comprobarCampos() {
+		boolean aux = false;
+
+		if ( !(txtSintomas.getText().equalsIgnoreCase("")) && !(txtDiagnostico.getText().equalsIgnoreCase(""))) {
+			aux = true;
+		}
+		
+		return aux;
 	}
 }
