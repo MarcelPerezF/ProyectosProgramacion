@@ -99,11 +99,10 @@ public class FrmListadoCitaModificar extends JDialog {
 		setModal(true);
 		setResizable(false);
 		setTitle("Listado de Citas");
-		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setIconImage(imagenCitas);
 		setBounds(100, 100, 859, 681);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		contentPanel.setBackground(Color.WHITE);
 		contentPanel.setBounds(23, 13, 799, 113);

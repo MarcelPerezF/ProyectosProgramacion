@@ -225,8 +225,9 @@ public class FrmVacunar extends JDialog {
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Clinica.getInstance().ingresarVacunaPacienteHistorial(pacienteVacunar, vacunaAplicar);
 				if(vacunaAplicar.getCantidadVacunas()>1) {
+					Clinica.getInstance().ingresarVacunaPacienteHistorial(pacienteVacunar, vacunaAplicar);
+
 					JOptionPane.showMessageDialog(null, "Se ha ingresado la vacuna al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
 							JOptionPane.INFORMATION_MESSAGE);
 					dispose();

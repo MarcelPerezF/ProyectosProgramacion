@@ -140,12 +140,10 @@ public class FrmPrincipal extends JFrame {
 	private Image imagenPaciente= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Paciente.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
 	
 	//Submenus:
-	private Image imagenInicio = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Inicio.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenClinica = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Clinica.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenCerrarSesion = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/CerrarSesion.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenSalir = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Salir.jpg")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenConsultar = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/ConsultaMedica.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
-	private Image imagenPosponerConsulta = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Posponer.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenListados = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Listados.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenNuevoUsuario = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/NuevoUsuario.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenModificarUsuario = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/ModificarUsuario.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
@@ -221,7 +219,7 @@ public class FrmPrincipal extends JFrame {
 		
 		mnListadoCitasHoy = new JMenuItem("Listado Citas");
 		mnListadoCitasHoy.setBackground(colorSubMenuFondo);
-		mnListadoCitasHoy.setIcon(new ImageIcon(imagenInicio));
+		mnListadoCitasHoy.setIcon(new ImageIcon(imagenListados));
 		mnListadoCitasHoy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FrmListadoCitas frmAux = new FrmListadoCitas(null, null);
@@ -234,6 +232,12 @@ public class FrmPrincipal extends JFrame {
 		mnArchivo.add(spArchivo1);
 		
 		mnInfoClinica = new JMenuItem("Informaci\u00F3n Clinica");
+		mnInfoClinica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmInformacionClinica frmAux = new FrmInformacionClinica();
+				frmAux.setVisible(true);
+			}
+		});
 		mnInfoClinica.setBackground(colorSubMenuFondo);
 		mnInfoClinica.setIcon(new ImageIcon(imagenClinica));
 		mnArchivo.add(mnInfoClinica);
@@ -586,6 +590,11 @@ public class FrmPrincipal extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				pnAccesoDirectoCita.setBorder(null);
 			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				FrmCita aux = new FrmCita(null);
+				aux.setVisible(true);
+			}
 		});
 		pnAccesoDirectoCita.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		pnAccesoDirectoCita.setBounds(15, 5, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
@@ -610,6 +619,12 @@ public class FrmPrincipal extends JFrame {
 			public void mouseExited(MouseEvent e) {
 				if(lblImagenAccesoDirectoConsulta.isEnabled()) 
 					pnAccesoDirectoConsulta.setBorder(null);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				usuario = Clinica.getInstance().buscarUsuario("402");
+				FrmListadoCitas frmAux = new FrmListadoCitas(usuario, new Date());
+				frmAux.setVisible(true);
 			}
 		});
 		pnAccesoDirectoConsulta.setLayout(null);

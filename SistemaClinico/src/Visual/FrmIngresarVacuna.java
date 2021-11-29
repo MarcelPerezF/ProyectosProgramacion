@@ -85,7 +85,7 @@ public class FrmIngresarVacuna extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar vacunas", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de ingresar vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -274,7 +274,7 @@ public class FrmIngresarVacuna extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar vacunas", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de ingresar vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 				}
 			}

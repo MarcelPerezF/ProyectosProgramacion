@@ -104,10 +104,9 @@ public class FrmModifcarCita extends JDialog {
 		}
 		setModal(true);
 		setResizable(false);
-		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setBounds(100, 100, 593, 484);
+		setLocationRelativeTo(null);
 		setIconImage(imagenCitas);
 		getContentPane().setLayout(null);
 		contentPanel.setBackground(Color.WHITE);
