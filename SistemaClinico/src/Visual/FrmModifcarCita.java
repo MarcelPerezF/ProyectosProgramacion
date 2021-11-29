@@ -36,6 +36,12 @@ import com.toedter.calendar.JDateChooser;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class FrmModifcarCita extends JDialog {
 
@@ -249,6 +255,18 @@ public class FrmModifcarCita extends JDialog {
 		panel.add(lblNombreDelMedico);
 		
 		dcFecha = new JDateChooser();
+		dcFecha.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				btnGuardar.setEnabled(true);
+			}
+		});
+		dcFecha.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				btnGuardar.setEnabled(true);
+			}
+		});
 		dcFecha.setEnabled(false);
 		dcFecha.setBounds(160, 115, 114, 22);
 		panel.add(dcFecha);
@@ -268,6 +286,11 @@ public class FrmModifcarCita extends JDialog {
 		hora.add("06:00 pm");
 		
 		cbxHora = new JComboBox(hora.toArray());
+		cbxHora.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				btnGuardar.setEnabled(true);
+			}
+		});
 		cbxHora.setEnabled(false);
 		cbxHora.setBounds(160, 150, 160, 22);
 		panel.add(cbxHora);
