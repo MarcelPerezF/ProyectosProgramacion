@@ -119,14 +119,8 @@ public class FrmPrincipal extends JFrame {
 	//Panel de pie de footer:
 	private JPanel pnFooter;
 	private JLabel lblFooter;
-	
-	//Listado de citas para hoy:
-	private JPanel pnListadoCitasHoy;
-	private JTable tblCitasHoy;
 	private static DefaultTableModel modeloTabla;
 	private static Object[] row;
-	private JScrollPane scrlpTblCitasHoy;
-	private JButton btnCerrarCitasHoy;
 	
 	//Imagenes a utilizar
 	//Menus:
@@ -540,40 +534,9 @@ public class FrmPrincipal extends JFrame {
 		Frmbody.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(Frmbody);
 		Frmbody.setLayout(null);
-		
-		pnListadoCitasHoy = new JPanel();
-		pnListadoCitasHoy.setBackground(Color.WHITE);
-		pnListadoCitasHoy.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Citas Hoy", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		pnListadoCitasHoy.setBounds(dimension.width-(dimension.width)/2-400, 66, 800, 385);
-		pnListadoCitasHoy.setVisible(false);
-		Frmbody.add(pnListadoCitasHoy);
-		pnListadoCitasHoy.setLayout(null);
-		
-		scrlpTblCitasHoy = new JScrollPane();
-		scrlpTblCitasHoy.setBounds(6, 25, 788, 312);
-		pnListadoCitasHoy.add(scrlpTblCitasHoy);
-		
-		tblCitasHoy = new JTable();
-		tblCitasHoy.setEnabled(false);
-		tblCitasHoy.setForeground(Color.BLACK);
-//		tblCitasHoy.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		tblCitasHoy.setRowHeight(25);
 		modeloTabla =  new DefaultTableModel();
 		String[] columnas = {"Codigo Cita", "Paciente", "Hora", "Medico", "Estado Cita"};
 		modeloTabla.setColumnIdentifiers(columnas);
-		tblCitasHoy.setModel(modeloTabla);
-		scrlpTblCitasHoy.setViewportView(tblCitasHoy);
-		
-		btnCerrarCitasHoy = new JButton("");
-		btnCerrarCitasHoy.setBackground(Color.WHITE);
-		btnCerrarCitasHoy.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				pnListadoCitasHoy.setVisible(false);
-			}
-		});
-		btnCerrarCitasHoy.setBounds(385, 345, 30, 29);
-		btnCerrarCitasHoy.setIcon(new ImageIcon(imagenSalir));
-		pnListadoCitasHoy.add(btnCerrarCitasHoy);
 		
 		panelAccesoDirecto = new JPanel();
 		panelAccesoDirecto.setBounds(0, 0, 1920, 40);
@@ -709,42 +672,6 @@ public class FrmPrincipal extends JFrame {
 		lblFooter = new JLabel("Sistema Clinico -  @Todos los derechos son reservados");
 		lblFooter.setBounds(dimension.width-(dimension.width/2)-200, 10, 500, 30);
 		pnFooter.add(lblFooter);
-		
-		llenarTabla();
-	}
-
-	private void llenarTabla() {
-		modeloTabla.setRowCount(0);
-		row = new Object[modeloTabla.getColumnCount()];
-		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
-		tcr.setHorizontalAlignment(SwingConstants.CENTER);
-		ArrayList<String> misPacientes = new ArrayList<String>();
-		misPacientes.add("Carlos");
-		int hora = 8;
-		
-		int codigoCita=1;
-		for (int i = 0; i <15; i++) {
-			row[0] = "C"+codigoCita;
-			tblCitasHoy.getColumnModel().getColumn(0).setCellRenderer(tcr);
-
-			codigoCita++;
-			row[1] = misPacientes.get(0);
-			tblCitasHoy.getColumnModel().getColumn(1).setCellRenderer(tcr);
-
-			row[2] = hora+"AM";
-			hora++;
-			tblCitasHoy.getColumnModel().getColumn(2).setCellRenderer(tcr);
-
-			row[3] = "Carlos Rodriguez";
-			if(i%2==0) {
-				row[3] = "Marcel Perez";
-			}
-			tblCitasHoy.getColumnModel().getColumn(3).setCellRenderer(tcr);
-
-			row[4] = "En espera";
-			tblCitasHoy.getColumnModel().getColumn(4).setCellRenderer(tcr);
-			modeloTabla.addRow(row);
-		}
 		
 	}
 }
