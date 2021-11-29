@@ -336,4 +336,18 @@ public class Clinica {
 		}
 		return cita;
 	}
+	
+	public void modificarCitaMedica(CitaMedica citaMed) {
+		int i=0;
+		boolean encontrado=false;
+		for(CitaMedica cita : misCitasMedicas) {
+			if(cita.getCodigoCita().equalsIgnoreCase(citaMed.getCodigoCita())) {
+				encontrado=true;
+			}
+			if(!encontrado) {
+				i++;
+			}
+		}
+		misCitasMedicas.set(i, citaMed);
+	}
 }

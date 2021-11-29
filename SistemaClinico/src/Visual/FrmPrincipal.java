@@ -405,6 +405,8 @@ public class FrmPrincipal extends JFrame {
 		mnPosponerCita = new JMenuItem("Posponer Cita");
 		mnPosponerCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				FrmListadoCitaModificar aux = new FrmListadoCitaModificar(1);
+				aux.setVisible(true);
 			}
 		});
 		mnPosponerCita.setIcon(new ImageIcon(imagenPosponerCita));
@@ -415,6 +417,12 @@ public class FrmPrincipal extends JFrame {
 		mnCitas.add(spCita2);
 		
 		mnCancelarCita = new JMenuItem("Cancelar Cita");
+		mnCancelarCita.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoCitaModificar aux = new FrmListadoCitaModificar(2);
+				aux.setVisible(true);
+			}
+		});
 		mnCancelarCita.setIcon(new ImageIcon(imagenCancelarCita));
 		mnCancelarCita.setBackground(colorSubMenuFondo);
 		mnCitas.add(mnCancelarCita);

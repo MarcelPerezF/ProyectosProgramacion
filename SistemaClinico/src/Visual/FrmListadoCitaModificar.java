@@ -63,6 +63,7 @@ public class FrmListadoCitaModificar extends JDialog {
 	private String code;
 	private JTextField txtBusqueda;
 	private JButton btnBuscar;
+	private CitaMedica citaMed;
 
 	/**
 	 * Launch the application.
@@ -102,10 +103,10 @@ public class FrmListadoCitaModificar extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setIconImage(imagenCitas);
-		setBounds(100, 100, 747, 681);
+		setBounds(100, 100, 859, 681);
 		getContentPane().setLayout(null);
 		contentPanel.setBackground(Color.WHITE);
-		contentPanel.setBounds(23, 13, 689, 113);
+		contentPanel.setBounds(23, 13, 799, 113);
 		contentPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
@@ -117,12 +118,12 @@ public class FrmListadoCitaModificar extends JDialog {
 		{
 			JLabel label = new JLabel("Listado de Citas");
 			label.setFont(new Font("Tahoma", Font.BOLD, 16));
-			label.setBounds(284, 13, 138, 26);
+			label.setBounds(330, 13, 138, 26);
 			contentPanel.add(label);
 		}
 		{
 			JLabel label = new JLabel("Listado de citas");
-			label.setBounds(303, 82, 101, 26);
+			label.setBounds(349, 82, 101, 26);
 			contentPanel.add(label);
 		}
 		{
@@ -135,19 +136,26 @@ public class FrmListadoCitaModificar extends JDialog {
 			int year = LocalDate.now().getYear();
 			
 			JLabel lblFechaFormulario = new JLabel(dia+" de "+nombreMes+" del "+year);
-			lblFechaFormulario.setBounds(274, 52, 158, 26);
+			lblFechaFormulario.setBounds(320, 52, 158, 26);
 			contentPanel.add(lblFechaFormulario);
 		}
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-			buttonPane.setBounds(23, 567, 689, 53);
+			buttonPane.setBounds(23, 567, 799, 53);
 			getContentPane().add(buttonPane);
 			buttonPane.setLayout(null);
 			{
 				btnSeleccionar = new JButton("Seleccionar");
+				btnSeleccionar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						FrmModifcarCita aux = new FrmModifcarCita(opcion,citaMed);
+						aux.setVisible(true);
+						dispose();
+					}
+				});
 				btnSeleccionar.setEnabled(false);
-				btnSeleccionar.setBounds(415, 11, 115, 30);
+				btnSeleccionar.setBounds(546, 11, 115, 30);
 				btnSeleccionar.setActionCommand("OK");
 				buttonPane.add(btnSeleccionar);
 				getRootPane().setDefaultButton(btnSeleccionar);
@@ -163,7 +171,7 @@ public class FrmListadoCitaModificar extends JDialog {
 						}
 					}
 				});
-				btnSalir.setBounds(581, 11, 82, 30);
+				btnSalir.setBounds(705, 11, 82, 30);
 				btnSalir.setActionCommand("Cancel");
 				buttonPane.add(btnSalir);
 			}
@@ -182,12 +190,12 @@ public class FrmListadoCitaModificar extends JDialog {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		panel.setBounds(23, 139, 689, 415);
+		panel.setBounds(23, 139, 799, 415);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(1, 107, 687, 308);
+		scrollPane.setBounds(1, 107, 798, 308);
 		panel.add(scrollPane);
 		
 		tblListaCitas = new JTable();
@@ -198,11 +206,17 @@ public class FrmListadoCitaModificar extends JDialog {
 				if(aux!=-1){
 					btnSeleccionar.setEnabled(true);
 					code = (String) tblListaCitas.getValueAt(aux, 0);
+					citaMed = Clinica.getInstance().buscarCitaMedicaPorCodigo(code);
+					if(citaMed.getEstadoCita().equalsIgnoreCase("En espera")) {
+						btnSeleccionar.setEnabled(true);
+					}else {
+						btnSeleccionar.setEnabled(false);
+					}
 				}
 			}
 		});
 		model = new DefaultTableModel();
-		String[] headers = {"Codigo","Nombre","Cedula","Medico","Fecha","Hora"};
+		String[] headers = {"Codigo","Nombre","Cedula","Medico","Fecha","Hora","Estado"};
 		model.setColumnIdentifiers(headers);
 		tblListaCitas.setRowHeight(25);
 		tblListaCitas.setModel(model);
@@ -211,7 +225,7 @@ public class FrmListadoCitaModificar extends JDialog {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_1.setBounds(12, 13, 665, 81);
+		panel_1.setBounds(12, 13, 775, 81);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -226,7 +240,7 @@ public class FrmListadoCitaModificar extends JDialog {
 		
 		txtBusqueda = new JTextField();
 		txtBusqueda.setColumns(10);
-		txtBusqueda.setBounds(315, 29, 202, 23);
+		txtBusqueda.setBounds(407, 29, 202, 23);
 		txtBusqueda.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
 			public void removeUpdate(DocumentEvent e) {
@@ -261,7 +275,7 @@ public class FrmListadoCitaModificar extends JDialog {
 			}
 		});
 		btnBuscar.setEnabled(false);
-		btnBuscar.setBounds(529, 25, 124, 30);
+		btnBuscar.setBounds(639, 25, 124, 30);
 		panel_1.add(btnBuscar);
 		
 		loadCitas(1,"");
@@ -332,6 +346,9 @@ public class FrmListadoCitaModificar extends JDialog {
 		        
 		        row[5] = sf.format(cita.getFechaCita());
 		        tblListaCitas.getColumnModel().getColumn(5).setCellRenderer(tcr);
+		        
+		        row[6] = cita.getEstadoCita();
+		        tblListaCitas.getColumnModel().getColumn(6).setCellRenderer(tcr);
 		        model.addRow(row);	
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
