@@ -71,7 +71,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar m\u00e1s enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -179,7 +179,7 @@ public class FrmIngresarEnfermedad extends JDialog {
 							opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea actualizar la enfermedad?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						}
 						if(opcion==0) {
-							JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.OK_OPTION);
+							JOptionPane.showMessageDialog(null, "Saliendo de ingresar enfermedades", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
 						}
 					}

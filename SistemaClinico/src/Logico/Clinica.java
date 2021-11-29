@@ -318,14 +318,4 @@ public class Clinica {
 		}
 		return cita;
 	}
-	
-	public void actualizarCita(CitaMedica auxCita) {
-		misCitasMedicas.set(misCitasMedicas.size()-1, auxCita);
-	}
-	
-	public void eliminarCita() {
-		if(misCitasMedicas.size()>1) {
-			misCitasMedicas.remove(misCitasMedicas.size()-1);
-		}
-	}
 }

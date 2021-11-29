@@ -69,18 +69,20 @@ public class FrmCita extends JDialog {
 	private JButton btnBuscar;
 	private JButton btnRegistrar;
 	private JLabel lblInformacion;
-	private Medico medico;
 	private String especialidad;
 	private JDateChooser dcFecha;
 	private JComboBox cbxTiempo;
 	private Usuario creador;
+	
+	//variable estatica publica
+	public static Medico medicoCita;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmCita dialog = new FrmCita(null,null,1);
+			FrmCita dialog = new FrmCita(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			
@@ -92,8 +94,7 @@ public class FrmCita extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmCita(Usuario usuarioCreador, Usuario medic,int opcion) {
-		medico=(Medico) medic;
+	public FrmCita(Usuario usuarioCreador) {
 		creador = usuarioCreador;
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
@@ -102,8 +103,7 @@ public class FrmCita extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar la cita?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.OK_OPTION);
-					Clinica.getInstance().eliminarCita();
+					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -364,8 +364,8 @@ public class FrmCita extends JDialog {
 					}
 				}
 				if(aprobado) {
-					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medico,creador,de);
-					Clinica.getInstance().actualizarCita(aux);
+					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medicoCita,creador,de);
+					Clinica.getInstance().insertarCitasMedicas(aux);
 					JOptionPane.showMessageDialog(null, "La cita se registro", "Información",JOptionPane.INFORMATION_MESSAGE);
 					clean();
 				}else {
@@ -382,11 +382,10 @@ public class FrmCita extends JDialog {
 		btnMedico = new JButton("Medico");
 		btnMedico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CitaMedica auxPart1 = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),null,creador,null);
-				Clinica.getInstance().insertarCitasMedicas(auxPart1);
-				dispose();
 				FrmListadoUsuarios aux = new FrmListadoUsuarios(4,especialidad);
 				aux.setVisible(true);
+				btnGuardarCita.setEnabled(true);
+				txtNombreMedico.setText(medicoCita.getNombre());
 			}
 		});
 		btnMedico.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -400,8 +399,7 @@ public class FrmCita extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar la cita?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
-					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.OK_OPTION);
-					Clinica.getInstance().eliminarCita();
+					JOptionPane.showMessageDialog(null, "Saliendo de ingresar citas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 				}
 			}
@@ -410,24 +408,6 @@ public class FrmCita extends JDialog {
 		btnSalir.setBackground(UIManager.getColor("Button.light"));
 		btnSalir.setBounds(445, 16, 103, 29);
 		panelFooter.add(btnSalir);
-		if(opcion==2) {
-			loaddata();
-		}
-	}
-
-	private void loaddata() {
-		String codigo = "C-"+Clinica.getInstance().getMisCitasMedicas().size(); 
-		CitaMedica aux = Clinica.getInstance().buscarCitaMedicaPorCodigo(codigo);
-		creador = aux.getCreadorCita();
-		txtCodigoCita.setText(codigo);
-		txtCedulaPaciente.setText(aux.getCedulaPersona());
-		txtNombreMedico.setText(medico.getNombre());
-		txtNombrePaciente.setText(aux.getNombrePersona());
-		txtTelefonoPaciente.setText(aux.getTelefonoPersona());
-		cbxEspecialidad.setSelectedItem(medico.getEspecialidad());
-		btnLimpiar.setEnabled(true);
-		btnMedico.setEnabled(false);
-		btnGuardarCita.setEnabled(true);
 	}
 
 	private void clean() {

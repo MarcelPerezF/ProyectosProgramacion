@@ -104,9 +104,6 @@ public class FrmListadoUsuarios extends JDialog {
 					if(aux==0) {
 						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-						if(opcion==4) {
-							Clinica.getInstance().eliminarCita();
-						}
 					}else if(aux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
@@ -178,9 +175,8 @@ public class FrmListadoUsuarios extends JDialog {
 							FrmListadoUsuariosDetallado frmAux = new FrmListadoUsuariosDetallado(usuarioSeleccionado);
 							frmAux.setVisible(true);
 						}else if(opcion==4){
+							FrmCita.medicoCita = (Medico) usuarioSeleccionado;
 							dispose();
-							FrmCita aux = new FrmCita(null,usuarioSeleccionado,2);
-							aux.setVisible(true);
 						}else{
 							dispose();
 							FrmIngresarUsuario frmAux = new FrmIngresarUsuario(opcionListado, usuarioSeleccionado);
@@ -211,9 +207,6 @@ public class FrmListadoUsuarios extends JDialog {
 							int opcion2 = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de usuarios?", "Confirmar", JOptionPane.YES_NO_OPTION);
 							if(opcion2==0) {
 								JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-								if(opcion==4) {
-									Clinica.getInstance().eliminarCita();
-								}
 								dispose();
 							}
 						}

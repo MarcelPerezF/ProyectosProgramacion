@@ -67,7 +67,7 @@ public class FrmListadoEnfermedad extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo del listado de enfermedades", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo del listado de enfermedades", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -149,7 +149,7 @@ public class FrmListadoEnfermedad extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de enfermedades?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						if(opcion==0) {
-							JOptionPane.showMessageDialog(null, "Saliendo del listado de enfermedades", "Saliendo", JOptionPane.OK_OPTION);
+							JOptionPane.showMessageDialog(null, "Saliendo del listado de enfermedades", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
 						}
 					}
