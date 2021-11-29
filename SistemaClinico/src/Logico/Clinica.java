@@ -277,15 +277,18 @@ public class Clinica {
 		return codigo;
 	}
 	
-	public void ingresarConsultaPaciente(Paciente paciente, Consulta consulta) {
+	public void ingresarConsultaPaciente(Paciente paciente, Consulta consulta, CitaMedica cita) {
 		paciente.insertarConsulta(consulta);
+		int indiceCita = buscarIndiceCita(cita);
+		misCitasMedicas.get(indiceCita).setEstadoCita("Realizada");
 	}
-	
+
 	public void ingresarConsultaPacienteHistorial(Paciente paciente, Consulta consulta) {
 		paciente.getHistorial().ingresarConsulta(consulta);
 	}
 	
 	public void ingresarVacunaPacienteHistorial(Paciente paciente, Vacuna vacuna) {
+		vacuna.setCantidadVacunas((vacuna.getCantidadVacunas()-1));
 		paciente.getHistorial().ingresarVacuna(vacuna);
 	}
 	
@@ -302,6 +305,21 @@ public class Clinica {
 			indexBuscador++;
 		}
 		return usuario;
+	}
+	
+	public int buscarIndiceCita(CitaMedica cita) {
+		int indice = -1;
+		boolean encontrado = false;
+		int indexBuscador=0;
+		
+		while (!encontrado && indexBuscador<misCitasMedicas.size()) {
+			if(misCitasMedicas.get(indexBuscador).getCodigoCita().equalsIgnoreCase(cita.getCodigoCita())) {				
+				indice = indexBuscador;
+				encontrado = true;				
+			}
+			indexBuscador++;
+		}
+		return indice;
 	}
 	
 	public CitaMedica buscarCitaMedicaPorCodigo(String codigo) {

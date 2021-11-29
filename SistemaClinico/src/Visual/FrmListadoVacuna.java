@@ -1,9 +1,6 @@
 package Visual;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Image;
-import java.awt.Dialog.ModalityType;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
@@ -18,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.MatteBorder;
@@ -41,23 +37,20 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.AncestorEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FrmListadoVacuna extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private int sizeIcon = 35;
-	private Image imagenVacuna= new ImageIcon(FrmListadoEnfermedad.class.getResource("Imagenes/Vacuna.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
-	private Image imagenVacuna2= new ImageIcon(FrmListadoEnfermedad.class.getResource("Imagenes/Vacuna.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+	private Image imagenVacuna= new ImageIcon(FrmListadoVacuna.class.getResource("Imagenes/Vacuna.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
+	private Image imagenVacuna2= new ImageIcon(FrmListadoVacuna.class.getResource("Imagenes/Vacuna.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 	private boolean lista;
 	private JTextField txtNumeroVacunas;
 	private JTextField txtBusqueda;
@@ -66,6 +59,9 @@ public class FrmListadoVacuna extends JDialog {
 	private static DefaultTableModel model;
 	private static Object[] row;
 	private JButton btnBuscar;
+	private Vacuna vacunaSeleccionada;
+	private JButton btnSelecciona;
+	private JButton btnSalir;
 
 	/**
 	 * Launch the application.
@@ -86,6 +82,7 @@ public class FrmListadoVacuna extends JDialog {
 	//el parametro listado es falso cuando solo quiere ver la lista, de lo contrario es verdadero
 	public FrmListadoVacuna(boolean listado) {
 		lista=listado;
+		vacunaSeleccionada=null;
 		//Para controlar el boton de close.
 				addWindowListener(new WindowAdapter() {
 					@Override
@@ -93,7 +90,7 @@ public class FrmListadoVacuna extends JDialog {
 						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						if(opcion==0) {
 							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.OK_OPTION);
+							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 						}else if(opcion==1) {
 							setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 						}
@@ -101,11 +98,10 @@ public class FrmListadoVacuna extends JDialog {
 				});
 		setModal(true);
 		setResizable(false);
-		setLocationRelativeTo(null);
-		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Listado de Vacuna");
 		setBounds(100, 100, 754, 587);
+		setLocationRelativeTo(null);
 		setIconImage(imagenVacuna);
 		getContentPane().setLayout(null);
 		contentPanel.setBackground(Color.WHITE);
@@ -150,7 +146,15 @@ public class FrmListadoVacuna extends JDialog {
 			getContentPane().add(buttonPane);
 			buttonPane.setLayout(null);
 			{
-				JButton btnSelecciona = new JButton("Selecciona");
+				btnSelecciona = new JButton("Selecciona");
+				btnSelecciona.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(vacunaSeleccionada!=null) {
+							dispose();
+							FrmVacunar.vacunaAplicar = vacunaSeleccionada;
+						}
+					}
+				});
 				if(lista==true) {
 					btnSelecciona.setEnabled(true);
 				}else {
@@ -162,18 +166,17 @@ public class FrmListadoVacuna extends JDialog {
 				getRootPane().setDefaultButton(btnSelecciona);
 			}
 			{
-				JButton btnSalir = new JButton("Salir");
+				btnSalir = new JButton("Salir");
 				btnSalir.setBounds(574, 11, 111, 28);
 				btnSalir.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						if(opcion==0) {
-							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.OK_OPTION);
+							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 							dispose();
 						}
 					}
 				});
-				btnSalir.setActionCommand("Cancel");
 				buttonPane.add(btnSalir);
 			}
 			{
@@ -265,6 +268,19 @@ public class FrmListadoVacuna extends JDialog {
 			panel.add(scrollPane);
 			
 			tblListadoVacuna = new JTable();
+			tblListadoVacuna.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					
+					int selectRow = tblListadoVacuna.getSelectedRow();
+					if(selectRow!=-1) {
+						vacunaSeleccionada = Clinica.getInstance().buscarVacuna(String.valueOf(tblListadoVacuna.getValueAt(selectRow, 0)));
+					}
+					if(vacunaSeleccionada!=null) {
+						btnSelecciona.setEnabled(true);
+					}
+				}
+			});
 			tblListadoVacuna.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			scrollPane.setViewportView(tblListadoVacuna);
 			model = new DefaultTableModel();
@@ -274,6 +290,7 @@ public class FrmListadoVacuna extends JDialog {
 			tblListadoVacuna.setModel(model);
 		}
 		loadVacuna(0,"");
+
 	}
 
 	private void loadVacuna(int opcion, String busqueda) {

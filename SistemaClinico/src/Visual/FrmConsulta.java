@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import Logico.CitaMedica;
 import Logico.Clinica;
 import Logico.Consulta;
 import Logico.Enfermedad;
@@ -66,7 +67,9 @@ public class FrmConsulta extends JDialog {
 					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
 			Medico medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
 			Clinica.getInstance().insertarUsuario(medico);
-			FrmConsulta dialog = new FrmConsulta(paciente1, medico);
+			CitaMedica cita = new CitaMedica("C-1", "Marc", "402", "829", medico, medico, new Date());
+			Clinica.getInstance().insertarCitasMedicas(cita);
+			FrmConsulta dialog = new FrmConsulta(paciente1, medico, cita);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			
@@ -78,7 +81,7 @@ public class FrmConsulta extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmConsulta(Paciente paciente, Usuario medico) {
+	public FrmConsulta(Paciente paciente, Usuario medico, CitaMedica cita) {
 		//Para controlar el boton de close.
 		enfermedad = null;
 		addWindowListener(new WindowAdapter() {
@@ -223,7 +226,7 @@ public class FrmConsulta extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				Consulta consulta = new Consulta(txtCodigoConsulta.getText(), txtSintomas.getText(), txtDiagnostico.getText(),
 						enfermedad, (Medico)medico);
-				Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta);
+				Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta, cita);
 
 				if(enfermedad!=null) {
 					Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente, consulta);

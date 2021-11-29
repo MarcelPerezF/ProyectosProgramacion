@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,34 +32,28 @@ import javax.swing.table.DefaultTableModel;
 
 import Logico.CitaMedica;
 import Logico.Clinica;
+import Logico.Consulta;
 import Logico.Enfermedad;
 import Logico.Medico;
 import Logico.Paciente;
 import Logico.Usuario;
 
 import javax.swing.JTextField;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class FrmListadoCitas extends JDialog {
+public class FrmListadoConsultas extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
 	private final JPanel contentPanel = new JPanel();
 	private int sizeIcon = 35;
-	private Image imagenCitas = new ImageIcon(FrmListadoCitas.class.getResource("Imagenes/Listados.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
-	private Image imagenCitas2 = new ImageIcon(FrmListadoCitas.class.getResource("Imagenes/Listados.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+	private Image imagenConsultas = new ImageIcon(FrmListadoConsultas.class.getResource("Imagenes/Listados.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
+	private Image imagenConsultas2 = new ImageIcon(FrmListadoConsultas.class.getResource("Imagenes/Listados.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 	private JTable tblListado;
 	private static DefaultTableModel model;
 	private static Object[] row;
 	private JTextField txtCantidad;
-	private JButton btnSeleccionar;
 	private JButton btnCancelar;
 	private JPanel pnListado;
-	private Usuario medico;
-	private Paciente paciente;
-	private CitaMedica cita;
-	private Date fechaCita;
 	private int cantidadConsultas;
 	
 	public static void main(String[] args) {
@@ -87,7 +80,11 @@ public class FrmListadoCitas extends JDialog {
 			Clinica.getInstance().insertarCitasMedicas(cita2);
 			Clinica.getInstance().insertarCitasMedicas(cita3);
 			Clinica.getInstance().insertarCitasMedicas(cita4);
-			FrmListadoCitas dialog = new FrmListadoCitas(medico, fecha); 
+			Consulta consulta = new Consulta("C-P-1", "NINGUNO", "SI", new Enfermedad("1", "Covid", "", ""), (Medico) medico);
+			Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente1, consulta);
+			Clinica.getInstance().ingresarConsultaPaciente(paciente1, consulta, cita1);
+			
+			FrmListadoConsultas dialog = new FrmListadoConsultas(); 
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
 			dialog.setVisible(true); 
 		} catch (Exception e) { 
@@ -96,18 +93,15 @@ public class FrmListadoCitas extends JDialog {
 	}
 
 	
-	public FrmListadoCitas(Usuario medicoOpc, Date fechaCitaOpc) {
-		medico = medicoOpc;
-		fechaCita = fechaCitaOpc;
-		cantidadConsultas = 0;
+	public FrmListadoConsultas() {
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de citas?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de consultas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo del listado de citas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Saliendo del listado de consultas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -119,7 +113,7 @@ public class FrmListadoCitas extends JDialog {
 		setModal(true);
 		setResizable(false);
 		setBounds(100, 100, 648, 650);
-		setIconImage(imagenCitas);
+		setIconImage(imagenConsultas);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		contentPanel.setBackground(Color.WHITE);
@@ -130,12 +124,12 @@ public class FrmListadoCitas extends JDialog {
 		
 		JLabel lblImagenPaciente = new JLabel("");
 		lblImagenPaciente.setBounds(33, 13, 88, 86);
-		lblImagenPaciente.setIcon(new ImageIcon(imagenCitas2));
+		lblImagenPaciente.setIcon(new ImageIcon(imagenConsultas2));
 		contentPanel.add(lblImagenPaciente);
 		{
-			JLabel lblListaDePacientes = new JLabel("Listado de Citas");
+			JLabel lblListaDePacientes = new JLabel("Listado de Consultas");
 			lblListaDePacientes.setFont(new Font("Tahoma", Font.BOLD, 16));
-			lblListaDePacientes.setBounds(260, 13, 138, 26);
+			lblListaDePacientes.setBounds(260, 13, 168, 26);
 			contentPanel.add(lblListaDePacientes);
 		}
 		{
@@ -148,12 +142,12 @@ public class FrmListadoCitas extends JDialog {
 			int year = LocalDate.now().getYear();
 			
 			JLabel FechaFormulario = new JLabel(dia+" de "+nombreMes+" del "+year);
-			FechaFormulario.setBounds(250, 43, 158, 26);
+			FechaFormulario.setBounds(265, 43, 158, 26);
 			contentPanel.add(FechaFormulario);
 		}
 		
-		JLabel lblListadoDeEnfermedades = new JLabel("Listado de citas");
-		lblListadoDeEnfermedades.setBounds(268, 73, 122, 26);
+		JLabel lblListadoDeEnfermedades = new JLabel("Listado de consultas en el sistema");
+		lblListadoDeEnfermedades.setBounds(217, 73, 255, 26);
 		contentPanel.add(lblListadoDeEnfermedades);
 		{
 			JPanel bnBotones = new JPanel();
@@ -161,23 +155,6 @@ public class FrmListadoCitas extends JDialog {
 			bnBotones.setBounds(12, 534, 611, 60);
 			getContentPane().add(bnBotones);
 			bnBotones.setLayout(null);
-			{
-				btnSeleccionar = new JButton("Seleccionar");
-				btnSeleccionar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						if(medico!=null && fechaCita!=null && cita!=null) {
-							dispose();
-							FrmConsulta frmAux = new FrmConsulta(paciente, medico, cita);
-							frmAux.setVisible(true);
-						}
-					}
-				});
-				btnSeleccionar.setEnabled(false);
-				btnSeleccionar.setBounds(389, 16, 111, 28);
-				btnSeleccionar.setActionCommand("OK");
-				bnBotones.add(btnSeleccionar);
-				getRootPane().setDefaultButton(btnSeleccionar);
-			}
 			{
 				btnCancelar = new JButton("Salir");
 				btnCancelar.setBounds(515, 16, 81, 28);
@@ -190,11 +167,10 @@ public class FrmListadoCitas extends JDialog {
 						}
 					}
 				});
-				btnCancelar.setActionCommand("Cancel");
 				bnBotones.add(btnCancelar);
 			}
 			{
-				JLabel lblCantidad = new JLabel("Cantidad de Citas:");
+				JLabel lblCantidad = new JLabel("Cantidad de Consultas:");
 				lblCantidad.setBounds(15, 20, 201, 20);
 				bnBotones.add(lblCantidad);
 			}
@@ -215,23 +191,10 @@ public class FrmListadoCitas extends JDialog {
 			JScrollPane scrlpnListado = new JScrollPane();
 			pnListado.add(scrlpnListado);
 			
-			tblListado = new JTable();			
-			tblListado.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					int selectRow = tblListado.getSelectedRow();
-					paciente = null;
-					if(selectRow!=-1) {
-						cita = Clinica.getInstance().buscarCitaMedicaPorCodigo(String.valueOf(tblListado.getValueAt(selectRow, 0)));
-						paciente = Clinica.getInstance().buscarPaciente(cita.getCedulaPersona());
-					}
-					if(paciente!=null) {
-						btnSeleccionar.setEnabled(true);
-					}
-				}
-			});
+			tblListado = new JTable();
+			tblListado.setEnabled(false);
 			model = new DefaultTableModel();
-			String[] headers = {"C\u00f3digo","Fecha","Paciente","Medico", "Estado", "Hora"};
+			String[] headers = {"C\u00f3digo","Fecha","Paciente","Medico", "Diagnostico"};
 			model.setColumnIdentifiers(headers);
 			tblListado.setRowHeight(25);
 			tblListado.setModel(model);
@@ -239,84 +202,47 @@ public class FrmListadoCitas extends JDialog {
 			scrlpnListado.setViewportView(tblListado);
 			
 		}
-		if(medico==null && fechaCita==null) {
-			loadListado(1);
-			tblListado.setEnabled(false);
-		}else if(medico!=null && fechaCita==null) {
-			loadListado(2);
-		}else if(medico==null && fechaCita!=null){
-			loadListado(3);
-		}else {
-			loadListado(4);
-		}
+		loadListado();
 		txtCantidad.setText(cantidadConsultas+" citas");
 		
 	}
-	public void loadListado(int opcion) {
+	public void loadListado() {
 		model.setRowCount(0);
 		cantidadConsultas = 0;
-		if(opcion==1) {
-			for (int i = 0; i < Clinica.getInstance().getMisCitasMedicas().size(); i++) {
-				cargarFilas(Clinica.getInstance().getMisCitasMedicas().get(i));
-			}
-		}else if(opcion==2) {
-			for (int i = 0; i < Clinica.getInstance().getMisCitasMedicas().size(); i++) {
-					if( (Clinica.getInstance().getMisCitasMedicas().get(i).getMedico().getNombre().equalsIgnoreCase(medico.getNombre())) ) {
-						cargarFilas(Clinica.getInstance().getMisCitasMedicas().get(i));
-				}
-			}
-		}else if(opcion==3) {
-			for (int i = 0; i < Clinica.getInstance().getMisCitasMedicas().size(); i++) {
-				if( (Clinica.getInstance().getMisCitasMedicas().get(i).getFechaCita().equals(fechaCita))) {
-					cargarFilas(Clinica.getInstance().getMisCitasMedicas().get(i));
-				}
-			}
-		}else {
-			for (int i = 0; i < Clinica.getInstance().getMisCitasMedicas().size(); i++) {
-				int dia = Clinica.getInstance().getMisCitasMedicas().get(i).getFechaCita().getDay();
-				int mes = Clinica.getInstance().getMisCitasMedicas().get(i).getFechaCita().getMonth();
-				int year = Clinica.getInstance().getMisCitasMedicas().get(i).getFechaCita().getYear();
-				if( (dia==(fechaCita.getDay())) && mes==fechaCita.getMonth() && year==fechaCita.getYear() &&
-						Clinica.getInstance().getMisCitasMedicas().get(i).getMedico().getNombre().equalsIgnoreCase(medico.getNombre())
-						&& Clinica.getInstance().getMisCitasMedicas().get(i).getEstadoCita().equalsIgnoreCase("En espera")) {
-					cargarFilas(Clinica.getInstance().getMisCitasMedicas().get(i));
-				}
+		for (int i = 0; i < Clinica.getInstance().getMisPacientes().size(); i++) {
+			for (int j = 0; j < Clinica.getInstance().getMisPacientes().get(i).getMisConsultas().size(); j++) {
+				cargarFilas(Clinica.getInstance().getMisPacientes().get(i), Clinica.getInstance().getMisPacientes().get(i).getMisConsultas().get(j));
 			}
 		}
 		
 	}
 	
-	public void cargarFilas(CitaMedica cita) {
+	public void cargarFilas(Paciente paciente, Consulta consulta) {
+		// {"C\u00f3digo","Fecha","Paciente","Medico", "Diagnostico"};
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
 		
-		row[0] = cita.getCodigoCita();
+		row[0] = consulta.getCodigoConsulta();
 		tblListado.getColumnModel().getColumn(0).setCellRenderer(tcr);
 		
 		SimpleDateFormat formatoFechaConsuta = new SimpleDateFormat("dd - MM - yyyy");
-		row[1] = formatoFechaConsuta.format(cita.getFechaCita());
+		row[1] = formatoFechaConsuta.format(consulta.getFechaConsulta());
 		tblListado.getColumnModel().getColumn(1).setCellRenderer(tcr);
 		
-		row[2] = cita.getNombrePersona();
+		row[2] = paciente.getNombre();
 		tblListado.getColumnModel().getColumn(2).setCellRenderer(tcr);
 		
-		row[3] = cita.getMedico().getNombre();
+		row[3] = consulta.getMedico().getNombre();
 		tblListado.getColumnModel().getColumn(3).setCellRenderer(tcr);
 		
-		row[4] = cita.getEstadoCita();
-		tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
-		
-		int hora = cita.getFechaCita().getHours();
-		String horario = "";
-		if(hora>=8 && hora<=11) {
-			horario="AM";
+		if(consulta.getEnfermedad()!=null) {
+			row[4] = consulta.getEnfermedad().getNombreEnfermedad();
 		}else {
-			horario="PM";
+			row[4] = consulta.getDiagnostico();
 		}
-		row[5] = hora+" - "+horario;
-		tblListado.getColumnModel().getColumn(5).setCellRenderer(tcr);
-		
+		tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
+
 		cantidadConsultas++;
 		model.addRow(row);
 	}

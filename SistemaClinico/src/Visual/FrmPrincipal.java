@@ -281,6 +281,12 @@ public class FrmPrincipal extends JFrame {
 		mnConsulta.add(spConsulta2);
 		
 		mnListadoConsultas = new JMenuItem("Listado de consultas");
+		mnListadoConsultas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoConsultas frmAux = new FrmListadoConsultas();
+				frmAux.setVisible(true);
+			}
+		});
 		mnListadoConsultas.setIcon(new ImageIcon(imagenListados));
 		mnListadoConsultas.setBackground(colorSubMenuFondo);
 		mnConsulta.add(mnListadoConsultas);
@@ -618,6 +624,11 @@ public class FrmPrincipal extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				pnAccesoDirectoVacunar.setBorder(null);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				FrmVacunar aux = new FrmVacunar();
+				aux.setVisible(true);
 			}
 		});
 		pnAccesoDirectoVacunar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

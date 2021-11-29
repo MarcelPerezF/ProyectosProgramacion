@@ -8,6 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import Logico.Clinica;
+import Logico.Paciente;
+import Logico.Vacuna;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -38,20 +43,28 @@ public class FrmVacunar extends JDialog {
 	private Image imagenVacuna= new ImageIcon(FrmVacunar.class.getResource("Imagenes/Vacunas.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
 	private Image imagenVacuna2= new ImageIcon(FrmVacunar.class.getResource("Imagenes/Vacunas.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 	private JTextField txtCodigoVacuna;
-	private JTextField txtNombreVacuna;
+	private JTextField txtNombrePaciente;
 	private JTextField txtTipoVacuna;
 	private JButton btnSalir;
 	private JButton btnGuardar;
 	private JButton btnPaciente;
 	private JButton btnVacuna;
-	private JTextField txtGripavac;
-	private JTextField txtGripavac_1;
+	private JTextField txtCedulaPaciente;
+	private JTextField txtNombreVacuna;
+	public static Paciente pacienteVacunar;
+	public static Vacuna vacunaAplicar;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
+			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
+					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
+			Clinica.getInstance().insertarPaciente(paciente1);
+			Vacuna vacuna = new Vacuna("V-1", "COVID", 2, "CONTAGIOSA", "DI");
+			Clinica.getInstance().insertarVacuna(vacuna);
+			
 			FrmVacunar dialog = new FrmVacunar();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -72,7 +85,7 @@ public class FrmVacunar extends JDialog {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea vacunar el paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 				}else if(opcion==1) {
 					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 				}
@@ -145,12 +158,12 @@ public class FrmVacunar extends JDialog {
 		lblNombreVacuna.setBounds(15, 21, 150, 20);
 		panelBody.add(lblNombreVacuna);
 		
-		txtNombreVacuna = new JTextField();
-		txtNombreVacuna.setEditable(false);
-		txtNombreVacuna.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtNombreVacuna.setColumns(10);
-		txtNombreVacuna.setBounds(164, 20, 284, 23);
-		panelBody.add(txtNombreVacuna);;
+		txtNombrePaciente = new JTextField();
+		txtNombrePaciente.setEditable(false);
+		txtNombrePaciente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		txtNombrePaciente.setColumns(10);
+		txtNombrePaciente.setBounds(164, 20, 284, 23);
+		panelBody.add(txtNombrePaciente);;
 		
 		JLabel lblEnfermedad = new JLabel("Tipo de vacuna:");
 		lblEnfermedad.setBounds(15, 164, 138, 20);
@@ -163,12 +176,12 @@ public class FrmVacunar extends JDialog {
 		txtTipoVacuna.setBounds(164, 163, 284, 23);
 		panelBody.add(txtTipoVacuna);
 		
-		txtGripavac = new JTextField();
-		txtGripavac.setEditable(false);
-		txtGripavac.setColumns(10);
-		txtGripavac.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtGripavac.setBounds(164, 54, 284, 23);
-		panelBody.add(txtGripavac);
+		txtCedulaPaciente = new JTextField();
+		txtCedulaPaciente.setEditable(false);
+		txtCedulaPaciente.setColumns(10);
+		txtCedulaPaciente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		txtCedulaPaciente.setBounds(164, 54, 284, 23);
+		panelBody.add(txtCedulaPaciente);
 		
 		JLabel lblNombreDePaciente = new JLabel("C\u00E9dula de Paciente:");
 		lblNombreDePaciente.setBounds(15, 56, 150, 20);
@@ -178,12 +191,12 @@ public class FrmVacunar extends JDialog {
 		lblNombreDeVacuna.setBounds(15, 132, 138, 20);
 		panelBody.add(lblNombreDeVacuna);
 		
-		txtGripavac_1 = new JTextField();
-		txtGripavac_1.setEditable(false);
-		txtGripavac_1.setColumns(10);
-		txtGripavac_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtGripavac_1.setBounds(164, 130, 284, 23);
-		panelBody.add(txtGripavac_1);
+		txtNombreVacuna = new JTextField();
+		txtNombreVacuna.setEditable(false);
+		txtNombreVacuna.setColumns(10);
+		txtNombreVacuna.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		txtNombreVacuna.setBounds(164, 130, 284, 23);
+		panelBody.add(txtNombreVacuna);
 		
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -193,12 +206,37 @@ public class FrmVacunar extends JDialog {
 		panelFooter.setLayout(null);
 		
 		btnPaciente = new JButton("Paciente");
+		btnPaciente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoPaciente frmAux = new FrmListadoPaciente(4);
+				frmAux.setVisible(true);
+				if(pacienteVacunar!=null) {
+					txtNombrePaciente.setText(pacienteVacunar.getNombre());
+					txtCedulaPaciente.setText(pacienteVacunar.getCedula());
+					btnVacuna.setEnabled(true);
+				}
+			}
+		});
 		btnPaciente.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnPaciente.setBackground(UIManager.getColor("Button.light"));
 		btnPaciente.setBounds(15, 17, 90, 29);
 		panelFooter.add(btnPaciente);
 		
 		btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Clinica.getInstance().ingresarVacunaPacienteHistorial(pacienteVacunar, vacunaAplicar);
+				if(vacunaAplicar.getCantidadVacunas()>1) {
+					JOptionPane.showMessageDialog(null, "Se ha ingresado la vacuna al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
+							JOptionPane.INFORMATION_MESSAGE);
+					dispose();
+				}else {
+					JOptionPane.showMessageDialog(null, "No se puede aplicar esta vacuna debido a que no hay suficientes!", "ERROR EN VACUNACI\u00d3N ",
+							JOptionPane.OK_OPTION);
+					dispose();
+				}
+			}
+		});
 		btnGuardar.setEnabled(false);
 		btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGuardar.setBackground(UIManager.getColor("Button.light"));
@@ -210,7 +248,7 @@ public class FrmVacunar extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea vacunar al paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
-					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.OK_OPTION);
+					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
 				}
 			}
@@ -221,6 +259,18 @@ public class FrmVacunar extends JDialog {
 		panelFooter.add(btnSalir);
 		
 		btnVacuna = new JButton("Vacuna");
+		btnVacuna.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoVacuna frmAux = new FrmListadoVacuna(true);
+				frmAux.setVisible(true);
+				if(vacunaAplicar!=null) {
+					txtCodigoVacuna.setText(vacunaAplicar.getCodigoVacunacion());
+					txtNombreVacuna.setText(vacunaAplicar.getNombreVacunacion());
+					txtTipoVacuna.setText(vacunaAplicar.getTipoVacuna());
+					btnGuardar.setEnabled(true);
+				}
+			}
+		});
 		btnVacuna.setEnabled(false);
 		btnVacuna.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnVacuna.setBackground(UIManager.getColor("Button.light"));
