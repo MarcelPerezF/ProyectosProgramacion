@@ -226,10 +226,13 @@ public class FrmVacunar extends JDialog {
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(vacunaAplicar.getCantidadVacunas()>1) {
-					Clinica.getInstance().ingresarVacunaPacienteHistorial(pacienteVacunar, vacunaAplicar);
-
-					JOptionPane.showMessageDialog(null, "Se ha ingresado la vacuna al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
-							JOptionPane.INFORMATION_MESSAGE);
+					try {
+						Clinica.getInstance().ingresarVacunaPacienteHistorial(pacienteVacunar, vacunaAplicar);
+						JOptionPane.showMessageDialog(null, "Se ha ingresado la vacuna al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
 					dispose();
 				}else {
 					JOptionPane.showMessageDialog(null, "No se puede aplicar esta vacuna debido a que no hay suficientes!", "ERROR EN VACUNACI\u00d3N ",

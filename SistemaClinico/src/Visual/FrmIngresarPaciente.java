@@ -36,6 +36,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FrmIngresarPaciente extends JDialog {
 
@@ -366,6 +368,15 @@ public class FrmIngresarPaciente extends JDialog {
 			pnBody.add(lblTelefono);
 			
 			txtTelefono = new JTextField();
+			txtTelefono.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyTyped(KeyEvent e) {
+					char c = e.getKeyChar();
+					if((!(Character.isDigit(c))&&(c!='-'))||(c==KeyEvent.VK_BACK_SPACE)||(c==KeyEvent.VK_DELETE)) {
+						e.consume();
+					}
+				}
+			});
 			txtTelefono.setColumns(10);
 			txtTelefono.setBounds(162, 88, 200, 22);
 			pnBody.add(txtTelefono);

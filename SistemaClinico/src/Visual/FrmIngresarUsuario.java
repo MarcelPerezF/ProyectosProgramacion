@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -17,6 +18,8 @@ import Logico.Medico;
 import Logico.Usuario;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.time.LocalDate;
@@ -208,9 +211,13 @@ public class FrmIngresarUsuario extends JDialog {
 							}else if(opcion==3) {
 								usuarioModificar.setUsuario(txtUsuario.getText());
 								usuarioModificar.setPassword(txtPassword.getText());
-							}							
-							Clinica.getInstance().modificarUsuario(usuarioModificar);
-							JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "MODIFICACI\u00d3N DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
+							}
+							try {
+								Clinica.getInstance().modificarUsuario(usuarioModificar);
+								JOptionPane.showMessageDialog(null, "Usuario modificado correctamente", "MODIFICACI\u00d3N DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
+							} catch (Exception e2) {
+								JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+							}
 							dispose();
 							FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
 							frmAux.setVisible(true);
@@ -333,13 +340,13 @@ public class FrmIngresarUsuario extends JDialog {
 		btnComprobar.setBounds(399, 62, 118, 43);
 		pnCredenciales.add(btnComprobar);
 		
-		txtPassword = new JTextField();
+		txtPassword = new JPasswordField();
 		txtPassword.setColumns(10);
 		txtPassword.setBounds(150, 71, 234, 23);
 		comprobarCampos(txtPassword, 2);
 		pnCredenciales.add(txtPassword);
 		
-		txtPasswordConfirmar = new JTextField();
+		txtPasswordConfirmar = new JPasswordField();
 		txtPasswordConfirmar.setColumns(10);
 		txtPasswordConfirmar.setBounds(150, 109, 234, 23);
 		comprobarCampos(txtPasswordConfirmar, 2);
@@ -483,6 +490,15 @@ public class FrmIngresarUsuario extends JDialog {
 		pnInformacionPersonal.add(lblTelefonoUsuario);
 		
 		txtTelefonoUsuario = new JTextField();
+		txtTelefonoUsuario.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if((!(Character.isDigit(c))&&(c!='-'))||(c==KeyEvent.VK_BACK_SPACE)||(c==KeyEvent.VK_DELETE)) {
+					e.consume();
+				}
+			}
+		});
 		txtTelefonoUsuario.setColumns(10);
 		txtTelefonoUsuario.setBounds(168, 106, 363, 23);
 		comprobarCampos(txtTelefonoUsuario, 1);

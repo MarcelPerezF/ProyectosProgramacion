@@ -35,6 +35,11 @@ import Logico.Enfermedad;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class FrmListadoEnfermedad extends JDialog {
 
@@ -53,6 +58,9 @@ public class FrmListadoEnfermedad extends JDialog {
 	private JPanel pnListadoEnfermedades;
 	private boolean lista = false;
 	private String code="";
+	private JTextField txtBusqueda;
+	private JButton btnBuscar;
+	private JComboBox cbxTipo;
 	
 	
 	//el parametro listado es falso cuando solo quiere ver la lista, de lo contrario es verdadero
@@ -78,7 +86,7 @@ public class FrmListadoEnfermedad extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setModal(true);
 		setResizable(false);
-		setBounds(100, 100, 780, 650);
+		setBounds(100, 100, 780, 742);
 		setIconImage(imagenEnfermedad);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
@@ -118,7 +126,7 @@ public class FrmListadoEnfermedad extends JDialog {
 		{
 			JPanel bnBotones = new JPanel();
 			bnBotones.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-			bnBotones.setBounds(12, 534, 730, 60);
+			bnBotones.setBounds(12, 614, 730, 60);
 			getContentPane().add(bnBotones);
 			bnBotones.setLayout(null);
 			{
@@ -173,12 +181,13 @@ public class FrmListadoEnfermedad extends JDialog {
 		
 		pnListadoEnfermedades = new JPanel();
 		pnListadoEnfermedades.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		pnListadoEnfermedades.setBounds(12, 148, 730, 370);
+		pnListadoEnfermedades.setBounds(12, 148, 730, 453);
 		getContentPane().add(pnListadoEnfermedades);
-		pnListadoEnfermedades.setLayout(new BorderLayout(0, 0));
+		pnListadoEnfermedades.setLayout(null);
 		{
 			JScrollPane scrlpnListadoEnfermedades = new JScrollPane();
-			pnListadoEnfermedades.add(scrlpnListadoEnfermedades, BorderLayout.CENTER);
+			scrlpnListadoEnfermedades.setBounds(0, 103, 728, 350);
+			pnListadoEnfermedades.add(scrlpnListadoEnfermedades);
 			
 			tblListadoEnfermedades = new JTable();
 			tblListadoEnfermedades.addMouseListener(new MouseAdapter() {
@@ -203,24 +212,116 @@ public class FrmListadoEnfermedad extends JDialog {
 			scrlpnListadoEnfermedades.setViewportView(tblListadoEnfermedades);
 			
 		}
-		loadEnfermedades();
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		panel.setBounds(12, 13, 706, 75);
+		pnListadoEnfermedades.add(panel);
+		panel.setLayout(null);
+		
+		JLabel label = new JLabel("Tipo de busqueda:");
+		label.setBounds(12, 26, 133, 23);
+		panel.add(label);
+		
+		cbxTipo = new JComboBox();
+		cbxTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadEnfermedades(1,"");
+			}
+		});
+		cbxTipo.setModel(new DefaultComboBoxModel(new String[] {"Codigo", "Nombre", "Tipo"}));
+		cbxTipo.setBounds(138, 26, 140, 23);
+		panel.add(cbxTipo);
+		
+		txtBusqueda = new JTextField();
+		txtBusqueda.getDocument().addDocumentListener(new DocumentListener() {			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				if(!txtBusqueda.getText().equalsIgnoreCase(""))
+					btnBuscar.setEnabled(true);
+				else
+					btnBuscar.setEnabled(false);				
+			}
+		});
+		txtBusqueda.setColumns(10);
+		txtBusqueda.setBounds(356, 26, 202, 23);
+		panel.add(txtBusqueda);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadEnfermedades(cbxTipo.getSelectedIndex()+2, txtBusqueda.getText());
+			}
+		});
+		btnBuscar.setEnabled(false);
+		btnBuscar.setBounds(570, 22, 124, 30);
+		panel.add(btnBuscar);
+		loadEnfermedades(1,"");
 	}
-	public void loadEnfermedades() {
+	public void loadEnfermedades(int tipo, String busqueda) {
+		int i=0;
 		model.setRowCount(0);
+		for(Enfermedad enfermedad : Clinica.getInstance().getMisEnfermedades()) {
+			switch (tipo) {
+			case 1:
+				cargarFilas(enfermedad);
+				i++;
+				break;
+			case 2:
+				if(enfermedad.getCodigoEnfermedad().equalsIgnoreCase(busqueda)) {
+					cargarFilas(enfermedad);
+					i++;
+				}
+				break;
+			case 3:
+				if(enfermedad.getNombreEnfermedad().equalsIgnoreCase(busqueda)) {
+					cargarFilas(enfermedad);
+					i++;
+				}
+				break;
+			case 4:
+				if(enfermedad.getTipoEnfermedad().equalsIgnoreCase(busqueda)) {
+					cargarFilas(enfermedad);
+					i++;
+				}
+				break;
+			}
+		}
+		txtCantEnfermedades.setText(""+i+" usuarios");
+	}
+	public void cargarFilas(Enfermedad enf) {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
-		for(Enfermedad enfermedad : Clinica.getInstance().getMisEnfermedades()) {
-			row[0] = enfermedad.getCodigoEnfermedad();
+		try {
+			row[0] = enf.getCodigoEnfermedad();
 			tblListadoEnfermedades.getColumnModel().getColumn(0).setCellRenderer(tcr);
-			row[1] = enfermedad.getNombreEnfermedad();
+			row[1] = enf.getNombreEnfermedad();
 			tblListadoEnfermedades.getColumnModel().getColumn(1).setCellRenderer(tcr);
-			row[2] = enfermedad.getTipoEnfermedad();
+			row[2] = enf.getTipoEnfermedad();
 			tblListadoEnfermedades.getColumnModel().getColumn(2).setCellRenderer(tcr);
-			row[3] = enfermedad.getDescripcionEnfermedad();
+			row[3] = enf.getDescripcionEnfermedad();
 			tblListadoEnfermedades.getColumnModel().getColumn(3).setCellRenderer(tcr);
 			model.addRow(row);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
-		
 	}
 }

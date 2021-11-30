@@ -290,23 +290,7 @@ public class FrmListadoCitas extends JDialog {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
-		
-		row[0] = cita.getCodigoCita();
-		tblListado.getColumnModel().getColumn(0).setCellRenderer(tcr);
-		
 		SimpleDateFormat formatoFechaConsuta = new SimpleDateFormat("dd - MM - yyyy");
-		row[1] = formatoFechaConsuta.format(cita.getFechaCita());
-		tblListado.getColumnModel().getColumn(1).setCellRenderer(tcr);
-		
-		row[2] = cita.getNombrePersona();
-		tblListado.getColumnModel().getColumn(2).setCellRenderer(tcr);
-		
-		row[3] = cita.getMedico().getNombre();
-		tblListado.getColumnModel().getColumn(3).setCellRenderer(tcr);
-		
-		row[4] = cita.getEstadoCita();
-		tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
-		
 		int hora = cita.getFechaCita().getHours();
 		String horario = "";
 		if(hora>=8 && hora<=11) {
@@ -314,10 +298,25 @@ public class FrmListadoCitas extends JDialog {
 		}else {
 			horario="PM";
 		}
-		row[5] = hora+" - "+horario;
-		tblListado.getColumnModel().getColumn(5).setCellRenderer(tcr);
-		
-		cantidadConsultas++;
-		model.addRow(row);
+		try {
+			row[0] = cita.getCodigoCita();
+			tblListado.getColumnModel().getColumn(0).setCellRenderer(tcr);
+			row[1] = formatoFechaConsuta.format(cita.getFechaCita());
+			tblListado.getColumnModel().getColumn(1).setCellRenderer(tcr);
+			row[2] = cita.getNombrePersona();
+			tblListado.getColumnModel().getColumn(2).setCellRenderer(tcr);
+			row[3] = cita.getMedico().getNombre();
+			tblListado.getColumnModel().getColumn(3).setCellRenderer(tcr);
+			row[4] = cita.getEstadoCita();
+			tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
+			row[5] = hora+" - "+horario;
+			tblListado.getColumnModel().getColumn(5).setCellRenderer(tcr);
+			
+			cantidadConsultas++;
+			model.addRow(row);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 	}
 }

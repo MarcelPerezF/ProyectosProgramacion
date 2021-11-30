@@ -149,12 +149,20 @@ public class FrmIngresarEnfermedad extends JDialog {
 						Enfermedad auxEnf = new Enfermedad(txtCodigoEnfermedad.getText(),txtNombreEnfermedad.getText()
 								,txtTipoEnfermedad.getText(),txtDescripcion.getText());
 						if(nuevo==null) {
-							Clinica.getInstance().insertarEnfermedades(auxEnf);
+							try {
+								Clinica.getInstance().insertarEnfermedades(auxEnf);
+								JOptionPane.showMessageDialog(null, "La enfermedad se ingreso", "Información",JOptionPane.INFORMATION_MESSAGE);
+							} catch (Exception e2) {
+								JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+							}
 							clean();
-							JOptionPane.showMessageDialog(null, "La enfermedad se ingreso", "Información",JOptionPane.INFORMATION_MESSAGE);
 						}else {
-							Clinica.getInstance().actualizarEnfermedad(auxEnf);
-							JOptionPane.showMessageDialog(null, "La enfermedad se actualizo", "Información",JOptionPane.INFORMATION_MESSAGE);
+							try {
+								Clinica.getInstance().actualizarEnfermedad(auxEnf);
+								JOptionPane.showMessageDialog(null, "La enfermedad se actualizo", "Información",JOptionPane.INFORMATION_MESSAGE);
+							} catch (Exception e2) {
+								JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+							}
 							FrmListadoEnfermedad auxLis = new FrmListadoEnfermedad(true, 1);
 							dispose();
 							auxLis.setVisible(true);

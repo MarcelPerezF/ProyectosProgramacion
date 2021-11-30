@@ -226,12 +226,15 @@ public class FrmConsulta extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				Consulta consulta = new Consulta(txtCodigoConsulta.getText(), txtSintomas.getText(), txtDiagnostico.getText(),
 						enfermedad, (Medico)medico);
-				Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta, cita);
-
-				if(enfermedad!=null) {
-					Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente, consulta);
+				try {
+					Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta, cita);
+					if(enfermedad!=null) {
+						Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente, consulta);
+					}
+					JOptionPane.showMessageDialog(null, "Se ha ingresado de manera correcta la consulta", "INGRESO DE CONSULTA", JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
 				}
-				JOptionPane.showMessageDialog(null, "Se ha ingresado de manera correcta la consulta", "INGRESO DE CONSULTA", JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 			}
 		});

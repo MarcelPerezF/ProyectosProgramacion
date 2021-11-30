@@ -148,9 +148,9 @@ public class FrmListadoCitaModificar extends JDialog {
 				btnSeleccionar = new JButton("Seleccionar");
 				btnSeleccionar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						dispose();
 						FrmModifcarCita aux = new FrmModifcarCita(opcion,citaMed);
 						aux.setVisible(true);
-						dispose();
 					}
 				});
 				btnSeleccionar.setEnabled(false);
@@ -206,11 +206,7 @@ public class FrmListadoCitaModificar extends JDialog {
 					btnSeleccionar.setEnabled(true);
 					code = (String) tblListaCitas.getValueAt(aux, 0);
 					citaMed = Clinica.getInstance().buscarCitaMedicaPorCodigo(code);
-					if(citaMed.getEstadoCita().equalsIgnoreCase("En espera")) {
-						btnSeleccionar.setEnabled(true);
-					}else {
-						btnSeleccionar.setEnabled(false);
-					}
+					btnSeleccionar.setEnabled(true);
 				}
 			}
 		});
@@ -233,6 +229,11 @@ public class FrmListadoCitaModificar extends JDialog {
 		panel_1.add(label);
 		
 		JComboBox cbxTipo = new JComboBox();
+		cbxTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadCitas(1,"");
+			}
+		});
 		cbxTipo.setModel(new DefaultComboBoxModel(new String[] {"Codigo", "Paciente", "Cedula", "Medico"}));
 		cbxTipo.setBounds(141, 29, 140, 23);
 		panel_1.add(cbxTipo);
@@ -270,7 +271,7 @@ public class FrmListadoCitaModificar extends JDialog {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadCitas(cbxTipo.getSelectedIndex(), txtBusqueda.getText());
+				loadCitas(cbxTipo.getSelectedIndex()+2, txtBusqueda.getText());
 			}
 		});
 		btnBuscar.setEnabled(false);
@@ -282,6 +283,7 @@ public class FrmListadoCitaModificar extends JDialog {
 
 	private void loadCitas(int select, String busqueda) {
 		int i=0;
+		model.setRowCount(0);
 		for (CitaMedica cita : Clinica.getInstance().getMisCitasMedicas()) {
 			switch (select) {
 			case 1:

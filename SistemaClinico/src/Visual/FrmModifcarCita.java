@@ -182,17 +182,30 @@ public class FrmModifcarCita extends JDialog {
 							if(aprobado) {
 								CitaMedica aux = cita;
 								aux.setFechaCita(de);
-								JOptionPane.showMessageDialog(null, "Se cambio el momento de la cita", "Información",JOptionPane.INFORMATION_MESSAGE);
-								Clinica.getInstance().modificarCitaMedica(aux);
+								try {
+									JOptionPane.showMessageDialog(null, "Se cambio el momento de la cita", "Información",JOptionPane.INFORMATION_MESSAGE);
+									Clinica.getInstance().modificarCitaMedica(aux);
+								} catch (Exception e2) {
+									JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+								}
 								dispose();
+								FrmListadoCitaModificar auxMod = new FrmListadoCitaModificar(1);
+								auxMod.setVisible(true);
 							}else {
 								JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
 							}
 						}else {
 							CitaMedica aux = cita;
 							aux.setEstadoCita("Cancelada");
-							JOptionPane.showMessageDialog(null, "Se cancelo la cita", "Informacion", JOptionPane.INFORMATION_MESSAGE);
-							Clinica.getInstance().modificarCitaMedica(aux);
+							try {
+								Clinica.getInstance().modificarCitaMedica(aux);
+								JOptionPane.showMessageDialog(null, "Se cancelo la cita", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+							} catch (Exception e2) {
+								JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
+							}
+							dispose();
+							FrmListadoCitaModificar auxMod = new FrmListadoCitaModificar(2);
+							auxMod.setVisible(true);
 						}
 					}
 				});
@@ -300,7 +313,7 @@ public class FrmModifcarCita extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if(btnEspera.isSelected()) {
 					btnCancelar.setSelected(false);
-					btnGuardar.setEnabled(false);
+					btnGuardar.setEnabled(true);
 				}
 			}
 		});
@@ -349,7 +362,11 @@ public class FrmModifcarCita extends JDialog {
 			}
 		}
 		cbxHora.setSelectedIndex(i);
-		btnEspera.setSelected(true);
+		if(cita.getEstadoCita().equalsIgnoreCase("En espera")) {
+			btnEspera.setSelected(true);
+		}else {
+			btnCancelar.setSelected(false);
+		}
 		if(opcion==1) {
 			dcFecha.setEnabled(true);
 			cbxHora.setEnabled(true);

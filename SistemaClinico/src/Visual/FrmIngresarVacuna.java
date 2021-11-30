@@ -259,8 +259,12 @@ public class FrmIngresarVacuna extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				Vacuna aux = new Vacuna(txtCodigoVacuna.getText(),txtNombreVacuna.getText()
 						,Integer.valueOf(spnCantidadVacunas.getValue().toString()),txtTipoVacuna.getText(),txtDescripcionVacuna.getText());
-				Clinica.getInstance().insertarVacuna(aux);
-				JOptionPane.showMessageDialog(null, "La vacuna se guardo", "Información",JOptionPane.INFORMATION_MESSAGE);
+				try {
+					Clinica.getInstance().insertarVacuna(aux);
+					JOptionPane.showMessageDialog(null, "La vacuna se guardo", "Información",JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+				}
 				clean();
 			}
 		});

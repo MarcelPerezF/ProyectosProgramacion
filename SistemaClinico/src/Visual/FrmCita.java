@@ -365,12 +365,16 @@ public class FrmCita extends JDialog {
 				}
 				if(aprobado) {
 					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medicoCita,creador,de);
-					Clinica.getInstance().insertarCitasMedicas(aux);
-					JOptionPane.showMessageDialog(null, "La cita se registro", "Información",JOptionPane.INFORMATION_MESSAGE);
-					clean();
+					try {
+						Clinica.getInstance().insertarCitasMedicas(aux);
+						JOptionPane.showMessageDialog(null, "La cita se registro", "Información",JOptionPane.INFORMATION_MESSAGE);
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+					}
 				}else {
 					JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
 				}
+				clean();
 			}
 		});
 		btnGuardarCita.setEnabled(false);

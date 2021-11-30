@@ -222,28 +222,29 @@ public class FrmListadoConsultas extends JDialog {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(SwingConstants.CENTER);
 		row = new Object[model.getColumnCount()];
-		
-		row[0] = consulta.getCodigoConsulta();
-		tblListado.getColumnModel().getColumn(0).setCellRenderer(tcr);
-		
 		SimpleDateFormat formatoFechaConsuta = new SimpleDateFormat("dd - MM - yyyy");
-		row[1] = formatoFechaConsuta.format(consulta.getFechaConsulta());
-		tblListado.getColumnModel().getColumn(1).setCellRenderer(tcr);
-		
-		row[2] = paciente.getNombre();
-		tblListado.getColumnModel().getColumn(2).setCellRenderer(tcr);
-		
-		row[3] = consulta.getMedico().getNombre();
-		tblListado.getColumnModel().getColumn(3).setCellRenderer(tcr);
-		
-		if(consulta.getEnfermedad()!=null) {
-			row[4] = consulta.getEnfermedad().getNombreEnfermedad();
-		}else {
-			row[4] = consulta.getDiagnostico();
-		}
-		tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
+		try {
+			row[0] = consulta.getCodigoConsulta();
+			tblListado.getColumnModel().getColumn(0).setCellRenderer(tcr);
+			row[1] = formatoFechaConsuta.format(consulta.getFechaConsulta());
+			tblListado.getColumnModel().getColumn(1).setCellRenderer(tcr);
+			row[2] = paciente.getNombre();
+			tblListado.getColumnModel().getColumn(2).setCellRenderer(tcr);
+			row[3] = consulta.getMedico().getNombre();
+			tblListado.getColumnModel().getColumn(3).setCellRenderer(tcr);
+			if(consulta.getEnfermedad()!=null) {
+				row[4] = consulta.getEnfermedad().getNombreEnfermedad();
+			}else {
+				row[4] = consulta.getDiagnostico();
+			}
+			tblListado.getColumnModel().getColumn(4).setCellRenderer(tcr);
 
-		cantidadConsultas++;
-		model.addRow(row);
+			cantidadConsultas++;
+			model.addRow(row);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+		
 	}
 }
