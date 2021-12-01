@@ -177,7 +177,7 @@ public class FrmModifcarCita extends JDialog {
 							de.setMinutes(0);
 							de.setSeconds(0);
 							for(CitaMedica cita2 : Clinica.getInstance().getMisCitasMedicas()) {
-								if(cita2.getFechaCita().getHours()==de.getHours()&&(cita2.getNombrePersona()==txtNombrePaciente.getText()
+								if(cita2.getFechaCita().getHours()==de.getHours()&&(cita2.getCedulaPersona()==txtCedulaPaciente.getText()
 										||cita2.getMedico()==cita.getMedico())&&cita2.getEstadoCita().equalsIgnoreCase("En espera")) {
 									aprobado=false;
 								}

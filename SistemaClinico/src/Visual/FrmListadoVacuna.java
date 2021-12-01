@@ -151,6 +151,7 @@ public class FrmListadoVacuna extends JDialog {
 			buttonPane.setLayout(null);
 			{
 				btnSelecciona = new JButton("Selecciona");
+				btnSelecciona.setEnabled(false);
 				btnSelecciona.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(vacunaSeleccionada!=null) {
@@ -165,11 +166,6 @@ public class FrmListadoVacuna extends JDialog {
 						}
 					}
 				});
-				if(lista==true) {
-					btnSelecciona.setEnabled(true);
-				}else {
-					btnSelecciona.setEnabled(false);
-				}
 				btnSelecciona.setBounds(451, 11, 111, 28);
 				btnSelecciona.setActionCommand("OK");
 				buttonPane.add(btnSelecciona);
@@ -281,7 +277,6 @@ public class FrmListadoVacuna extends JDialog {
 			tblListadoVacuna.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					
 					int selectRow = tblListadoVacuna.getSelectedRow();
 					if(selectRow!=-1) {
 						vacunaSeleccionada = Clinica.getInstance().buscarVacuna(String.valueOf(tblListadoVacuna.getValueAt(selectRow, 0)));
@@ -369,7 +364,6 @@ public class FrmListadoVacuna extends JDialog {
 			model.addRow(row);
 		} catch(Exception e) {
 			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
 		}
 	}
 	

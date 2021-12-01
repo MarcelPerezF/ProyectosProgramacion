@@ -316,7 +316,6 @@ public class FrmListadoCitas extends JDialog {
 			model.addRow(row);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error cargando los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
 		}
 	}
 }

@@ -260,6 +260,8 @@ public class FrmCita extends JDialog {
 					lblInformacion.setVisible(false);
 					btnLimpiar.setEnabled(true);
 					txtCedulaPaciente.setEditable(false);
+					btnRegistrar.setEnabled(false);
+					btnBuscar.setEnabled(false);
 				}
 			}
 		});
@@ -364,7 +366,7 @@ public class FrmCita extends JDialog {
 				de.setMinutes(0);
 				de.setSeconds(0);
 				for(CitaMedica cita : Clinica.getInstance().getMisCitasMedicas()) {
-					if(cita.getFechaCita().getHours()==de.getHours()&&(cita.getNombrePersona()==txtNombrePaciente.getText()
+					if(cita.getFechaCita().getHours()==de.getHours()&&(cita.getCedulaPersona()==txtCedulaPaciente.getText()
 							||cita.getMedico()==medicoCita)&&cita.getEstadoCita().equalsIgnoreCase("En espera")) {
 						aprobado=false;
 					}
@@ -441,5 +443,6 @@ public class FrmCita extends JDialog {
 		btnMedico.setEnabled(false);
 		btnRegistrar.setEnabled(false);
 		txtCedulaPaciente.setEditable(true);
+		btnBuscar.setEnabled(true);
 	}
 }

@@ -78,12 +78,11 @@ public class FrmSolicitarVacuna extends JDialog {
 				}
 			}
 		});
-		setModalityType(ModalityType.DOCUMENT_MODAL);
-		setLocationRelativeTo(null);
 		setIconImage(imagenVacuna);
 		setModal(true);
 		setResizable(false);
 		setBounds(100, 100, 462, 421);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
 		contentPanel.setBounds(12, 121, 418, 190);
 		contentPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
@@ -154,8 +153,12 @@ public class FrmSolicitarVacuna extends JDialog {
 				JButton btnSolicitar = new JButton("Solicitar");
 				btnSolicitar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						Clinica.getInstance().solicitarVacuna(vacunaSolicitar, Integer.valueOf(spnSolicitar.getValue().toString()));
-						JOptionPane.showMessageDialog(null, "Solicitud aprobada", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+						try {
+							Clinica.getInstance().solicitarVacuna(vacunaSolicitar, Integer.valueOf(spnSolicitar.getValue().toString()));
+							JOptionPane.showMessageDialog(null, "Solicitud aprobada", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+						} catch (Exception e2) {
+							JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
+						}
 						dispose();
 					}
 				});
