@@ -17,11 +17,15 @@ import javax.swing.JMenu;
 import java.awt.Color;
 
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import Logico.CitaMedica;
 import Logico.Clinica;
+import Logico.Enfermedad;
+import Logico.Medico;
+import Logico.Paciente;
 import Logico.Usuario;
+import Logico.Vacuna;
 
 import java.awt.Insets;
 
@@ -30,22 +34,21 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
-import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-
 import java.awt.Cursor;
-import javax.swing.JButton;
 
 public class FrmPrincipal extends JFrame {
 
@@ -54,6 +57,7 @@ public class FrmPrincipal extends JFrame {
 	public static String nombreUsuario;
 	public static String rolUsuario;
 	public static Usuario usuario;
+	private final String ficheroGuardar = "Respaldo/SistemaClinico.dat";
 	
 	//Constantes:
 	private final int sizeIcon = 35;
@@ -120,7 +124,6 @@ public class FrmPrincipal extends JFrame {
 	private JPanel pnFooter;
 	private JLabel lblFooter;
 	private static DefaultTableModel modeloTabla;
-	private static Object[] row;
 	
 	//Imagenes a utilizar
 	//Menus:
@@ -184,9 +187,11 @@ public class FrmPrincipal extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
+				guardarDatosSistema();
 				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
+		cargarDatosSistema();
 		
 		nombreUsuario = "Marcel Perez Fernandez";
 		rolUsuario = "Administrador";
@@ -252,6 +257,7 @@ public class FrmPrincipal extends JFrame {
 		mnSalisSistema = new JMenuItem("Salir del sistema");
 		mnSalisSistema.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				guardarDatosSistema();
 				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 			}
@@ -689,5 +695,106 @@ public class FrmPrincipal extends JFrame {
 		lblFooter.setBounds(dimension.width-(dimension.width/2)-200, 10, 500, 30);
 		pnFooter.add(lblFooter);
 		
+	}
+	
+	public void guardarDatosSistema() {
+		try {
+			
+			//Creamos el archivo para guardar los datos.
+			FileOutputStream guardandoDatos = new FileOutputStream(ficheroGuardar);
+			
+			//Creamos el fichero objeto del archivo para guardar.
+			ObjectOutputStream oos = new ObjectOutputStream(guardandoDatos);
+			
+			//Guardamos la cantidad de usuarios y luego guardamos cada uno de los usuarios.
+			oos.writeInt(Clinica.getInstance().getMisUsuarios().size());
+			for (Usuario usuario: Clinica.getInstance().getMisUsuarios()) {
+				oos.writeObject(usuario);
+			}
+			
+			//Guardamos la cantidad de vacunas y luego guardamos cada uno de las vacunas.
+			oos.writeInt(Clinica.getInstance().getMisVacunas().size());
+			for (Vacuna vacuna: Clinica.getInstance().getMisVacunas()) {
+				oos.writeObject(vacuna);
+			}
+			
+			//Guardamos la cantidad de enfermedades y luego guardamos cada una de las enfermedades.
+			oos.writeInt(Clinica.getInstance().getMisEnfermedades().size());
+			for (Enfermedad enfermedad: Clinica.getInstance().getMisEnfermedades()) {
+				oos.writeObject(enfermedad);
+			}
+			
+			//Guardamos la cantidad de citas medicas y luego guardamos cada una de las citas medicas.
+			oos.writeInt(Clinica.getInstance().getMisCitasMedicas().size());
+			for (CitaMedica citamedica: Clinica.getInstance().getMisCitasMedicas()) {
+				oos.writeObject(citamedica);
+			}
+			
+			//Guardamos la cantidad de pacientes y luego guardamos cada uno de los pacientes.
+			oos.writeInt(Clinica.getInstance().getMisPacientes().size());
+			for (Paciente paciente: Clinica.getInstance().getMisPacientes()) {
+				oos.writeObject(paciente);
+			}
+			
+			//Cerramos el fichero
+			oos.close();
+		}catch (IOException e2) {
+			System.out.println(e2.getMessage());
+		}
+		
+	}
+	
+	public void cargarDatosSistema() {
+		try {
+			
+			//Creamos el archivo donde esta la informacion.
+			FileInputStream recibiendoDatos = new FileInputStream(ficheroGuardar);
+			
+			//Creamos el fichero por el cual leeremos y guardaremos la informacion
+			ObjectInputStream oosLectura = new ObjectInputStream(recibiendoDatos);
+				
+			//Obtenemos la cantidad de usuarios, los leemos y guardamos.
+			int cantidadUsuarios = oosLectura.readInt();
+			for (int i = 0; i < cantidadUsuarios; i++) {
+				Usuario usuario = (Usuario)oosLectura.readObject();
+				Clinica.getInstance().insertarUsuario(usuario);			
+			}
+			
+			//Obtenemos la cantidad de vacunas, las leemos y guardamos.
+			int cantidadVacunas = oosLectura.readInt();
+			for (int i = 0; i < cantidadVacunas; i++) {
+				Vacuna vacuna = (Vacuna)oosLectura.readObject();
+				Clinica.getInstance().insertarVacuna(vacuna);		
+			}
+			
+			//Obtenemos la cantidad de enfermedades, las leemos y guardamos.
+			int cantidadEnfermedades = oosLectura.readInt();
+			for (int i = 0; i < cantidadEnfermedades; i++) {
+				Enfermedad enfermedad = (Enfermedad)oosLectura.readObject();
+				Clinica.getInstance().insertarEnfermedades(enfermedad);			
+			}
+			
+			//Obtenemos la citas medicas, las leemos y guardamos.
+			int cantidadCitasMedicas = oosLectura.readInt();
+			for (int i = 0; i < cantidadCitasMedicas; i++) {
+				CitaMedica citaMedica = (CitaMedica)oosLectura.readObject();
+				Clinica.getInstance().insertarCitasMedicas(citaMedica);	
+			}	
+			
+			//Obtenemos la cantidad de pacientes, los leemos y guardamos.
+			int cantidadPacientes = oosLectura.readInt();
+			for (int i = 0; i < cantidadPacientes; i++) {
+				Paciente paciente = (Paciente)oosLectura.readObject();
+				Clinica.getInstance().insertarPaciente(paciente);	
+			}	
+			
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

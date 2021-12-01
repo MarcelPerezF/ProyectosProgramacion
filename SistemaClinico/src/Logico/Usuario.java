@@ -1,6 +1,9 @@
 package Logico;
 
-public abstract class Usuario {
+import java.io.Serializable;
+
+public abstract class Usuario implements Serializable{
+	private static final long serialVersionUID = 1L;
 	/*
 	 Clase Usuario: esta clase se utiliza como base para las clases medico y empleado.
 	 Todo usuario tendra un codigo, tendra un id y tendra credenciales para entrar al sistema (usuario y password)

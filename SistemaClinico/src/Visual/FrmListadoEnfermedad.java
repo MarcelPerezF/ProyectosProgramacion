@@ -86,7 +86,7 @@ public class FrmListadoEnfermedad extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setModal(true);
 		setResizable(false);
-		setBounds(100, 100, 780, 742);
+		setBounds(100, 100, 780, 657);
 		setIconImage(imagenEnfermedad);
 		setLocationRelativeTo(null);
 		getContentPane().setLayout(null);
@@ -126,7 +126,7 @@ public class FrmListadoEnfermedad extends JDialog {
 		{
 			JPanel bnBotones = new JPanel();
 			bnBotones.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-			bnBotones.setBounds(12, 614, 730, 60);
+			bnBotones.setBounds(12, 545, 730, 60);
 			getContentPane().add(bnBotones);
 			bnBotones.setLayout(null);
 			{
@@ -181,12 +181,12 @@ public class FrmListadoEnfermedad extends JDialog {
 		
 		pnListadoEnfermedades = new JPanel();
 		pnListadoEnfermedades.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		pnListadoEnfermedades.setBounds(12, 148, 730, 453);
+		pnListadoEnfermedades.setBounds(12, 148, 730, 381);
 		getContentPane().add(pnListadoEnfermedades);
 		pnListadoEnfermedades.setLayout(null);
 		{
 			JScrollPane scrlpnListadoEnfermedades = new JScrollPane();
-			scrlpnListadoEnfermedades.setBounds(0, 103, 728, 350);
+			scrlpnListadoEnfermedades.setBounds(0, 103, 728, 268);
 			pnListadoEnfermedades.add(scrlpnListadoEnfermedades);
 			
 			tblListadoEnfermedades = new JTable();
@@ -303,7 +303,7 @@ public class FrmListadoEnfermedad extends JDialog {
 				break;
 			}
 		}
-		txtCantEnfermedades.setText(""+i+" usuarios");
+		txtCantEnfermedades.setText(""+i+" enfermedades");
 	}
 	public void cargarFilas(Enfermedad enf) {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
