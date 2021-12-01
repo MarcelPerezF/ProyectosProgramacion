@@ -105,7 +105,7 @@ public class FrmIngresarVacuna extends JDialog {
 
 		JPanel panelHeader = new JPanel();
 		panelHeader.setBorder(new LineBorder(new Color(0,0,0), 1));
-		panelHeader.setBackground(UIManager.getColor("Button.light"));
+		panelHeader.setBackground(Color.WHITE);
 		panelHeader.setBounds(10, 10, 463, 113);
 		contentPanel.add(panelHeader);
 		panelHeader.setLayout(null);

@@ -519,6 +519,7 @@ public class FrmPrincipal extends JFrame {
 		mnVacunas.add(separator);
 		
 		mnSolicitarVacuna = new JMenuItem("Solicitar Vacunas");
+		mnSolicitarVacuna.setBackground(Color.WHITE);
 		mnSolicitarVacuna.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FrmListadoVacuna aux = new FrmListadoVacuna(true,2);

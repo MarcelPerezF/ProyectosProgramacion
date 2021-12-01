@@ -44,6 +44,8 @@ import javax.swing.border.MatteBorder;
 import java.awt.FlowLayout;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FrmCita extends JDialog {
 

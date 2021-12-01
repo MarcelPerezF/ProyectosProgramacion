@@ -6,6 +6,12 @@ import java.awt.Image;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +31,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class FrmSolicitarVacuna extends JDialog {
 
@@ -44,7 +51,8 @@ public class FrmSolicitarVacuna extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmSolicitarVacuna dialog = new FrmSolicitarVacuna(null);
+			Vacuna v1 = new Vacuna("V-1","Julian",5,"Sanguineo","Hola que tal");
+			FrmSolicitarVacuna dialog = new FrmSolicitarVacuna(v1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -75,9 +83,9 @@ public class FrmSolicitarVacuna extends JDialog {
 		setIconImage(imagenVacuna);
 		setModal(true);
 		setResizable(false);
-		setBounds(100, 100, 462, 312);
+		setBounds(100, 100, 462, 421);
 		getContentPane().setLayout(null);
-		contentPanel.setBounds(12, 13, 418, 190);
+		contentPanel.setBounds(12, 121, 418, 190);
 		contentPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
@@ -139,7 +147,7 @@ public class FrmSolicitarVacuna extends JDialog {
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-			buttonPane.setBounds(84, 216, 288, 35);
+			buttonPane.setBounds(84, 324, 288, 35);
 			getContentPane().add(buttonPane);
 			buttonPane.setLayout(null);
 			{
@@ -174,6 +182,41 @@ public class FrmSolicitarVacuna extends JDialog {
 				buttonPane.add(btnSalir);
 			}
 		}
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		panel.setBounds(12, 13, 418, 95);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblImagen = new JLabel("");
+		lblImagen.setBounds(22, 6, 91, 82);
+		lblImagen.setIcon(new ImageIcon(imagenVacuna2));
+		panel.add(lblImagen);
+		{
+			JLabel lblSolicitudDeVacunas = new JLabel("SOLICITUD DE VACUNAS");
+			lblSolicitudDeVacunas.setFont(new Font("Arial", Font.BOLD, 16));
+			lblSolicitudDeVacunas.setBounds(115, 13, 212, 20);
+			panel.add(lblSolicitudDeVacunas);
+		}
+		{
+			Date fechaActual = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(fechaActual);
+			int dia = LocalDate.now().getDayOfMonth();
+			Month mes = LocalDate.now().getMonth();
+			String nombreMes = mes.getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+			int year = LocalDate.now().getYear();
+			JLabel lblFechaActualFormulario = new JLabel(dia+" de "+nombreMes+" del "+year);
+			lblFechaActualFormulario.setBounds(141, 36, 161, 25);
+			panel.add(lblFechaActualFormulario);
+		}
+		{
+			JLabel lblFormularioParaSolicitar = new JLabel("Formulario para solicitar vacunas");
+			lblFormularioParaSolicitar.setBounds(115, 62, 212, 20);
+			panel.add(lblFormularioParaSolicitar);
+		}
 		loadVacuna();
 	}
 
@@ -183,5 +226,4 @@ public class FrmSolicitarVacuna extends JDialog {
 		txtTipo.setText(vacunaSolicitar.getTipoVacuna());
 		txtCantActual.setText(""+vacunaSolicitar.getCantidadVacunas());
 	}
-	
 }
