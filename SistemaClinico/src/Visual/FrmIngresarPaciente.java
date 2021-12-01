@@ -197,8 +197,14 @@ public class FrmIngresarPaciente extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						fechaNacimiento = calNacimiento.getDate();
 						Paciente paciente = null;
-						
-						if(pacienteModificar==null) {
+						boolean aprobado=true;
+						Date fechaActual = new Date();
+						Date de = calNacimiento.getDate();
+						if((de.getDay()>fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
+								||(de.getYear()==fechaActual.getYear()&&de.getMonth()>fechaActual.getMonth())||de.getYear()>fechaActual.getYear()) {
+							aprobado=false;
+						}
+						if(pacienteModificar==null&&aprobado) {
 							try {
 								paciente = new Paciente(txtCodigoPaciente.getText(), txtCedula.getText(), 
 										txtNombre.getText(), genero, fechaNacimiento, txtDireccion.getText(), 
@@ -212,7 +218,7 @@ public class FrmIngresarPaciente extends JDialog {
 							} catch (Exception e2) {
 								JOptionPane.showMessageDialog(null, "Error al ingresar el paciente" ,"ERROR", JOptionPane.OK_OPTION);
 							}
-						}else {
+						}else if(aprobado){
 							try {
 								paciente = pacienteModificar;
 								paciente.setCedula(txtCedula.getText());
@@ -235,6 +241,8 @@ public class FrmIngresarPaciente extends JDialog {
 								JOptionPane.showMessageDialog(null, "El Paciente no se pudo modificar correctamente", "MODIFICACI\u00d3N DE PACIENTE", JOptionPane.OK_OPTION);
 								dispose();
 							}
+						}else {
+							JOptionPane.showMessageDialog(null, "No se puede agregar una fecha de un dia superior al actual", "Información",JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
 				});

@@ -151,12 +151,14 @@ public class FrmPrincipal extends JFrame {
 	private Image imagenVacunar = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunar.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenIngresarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/IngresarVacunas.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenInfoSistema = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/InfoSistema.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
+	private Image imagenSolicitarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunas3.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	
 	//Acceso Directo:
 	private Image imagenConsultaAccesoDirecto = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/ConsultaMedica.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenVacunasAccesoDirecto = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunas2.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenCitasAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Citas2.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenUsuarioAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/NuevoUsuario.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
+	private JMenuItem mnSolicitarVacuna;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -505,13 +507,26 @@ public class FrmPrincipal extends JFrame {
 		mnListadoVacunas = new JMenuItem("Listado Vacunas");
 		mnListadoVacunas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoVacuna aux = new FrmListadoVacuna(false);
+				FrmListadoVacuna aux = new FrmListadoVacuna(false,1);
 				aux.setVisible(true);
 			}
 		});
 		mnListadoVacunas.setIcon(new ImageIcon(imagenListados));
 		mnListadoVacunas.setBackground(colorSubMenuFondo);
 		mnVacunas.add(mnListadoVacunas);
+		
+		JSeparator separator = new JSeparator();
+		mnVacunas.add(separator);
+		
+		mnSolicitarVacuna = new JMenuItem("Solicitar Vacunas");
+		mnSolicitarVacuna.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FrmListadoVacuna aux = new FrmListadoVacuna(true,2);
+				aux.setVisible(true);
+			}
+		});
+		mnSolicitarVacuna.setIcon(new ImageIcon(imagenSolicitarVacuna));
+		mnVacunas.add(mnSolicitarVacuna);
 		
 		mnAcercaSistema = new JMenu("   Acerca del Sistema   ");
 		mnAcercaSistema.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

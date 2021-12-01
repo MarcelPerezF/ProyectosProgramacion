@@ -265,7 +265,7 @@ public class FrmVacunar extends JDialog {
 		btnVacuna = new JButton("Vacuna");
 		btnVacuna.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoVacuna frmAux = new FrmListadoVacuna(true);
+				FrmListadoVacuna frmAux = new FrmListadoVacuna(true,1);
 				frmAux.setVisible(true);
 				if(vacunaAplicar!=null) {
 					txtCodigoVacuna.setText(vacunaAplicar.getCodigoVacunacion());

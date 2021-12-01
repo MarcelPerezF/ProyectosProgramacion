@@ -257,6 +257,7 @@ public class FrmCita extends JDialog {
 					cbxEspecialidad.setEnabled(true);
 					lblInformacion.setVisible(false);
 					btnLimpiar.setEnabled(true);
+					txtCedulaPaciente.setEditable(false);
 				}
 			}
 		});
@@ -346,7 +347,9 @@ public class FrmCita extends JDialog {
 		btnGuardarCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean aprobado=true;
+				boolean aprobado2=true;
 				int hora=0;
+				Date fechaActual = new Date();
 				String tiempo=cbxTiempo.getSelectedItem().toString();
 				Date de = dcFecha.getDate();
 				if(tiempo.substring(6,8).equalsIgnoreCase("am")||tiempo.substring(0,2).equalsIgnoreCase("12")) {
@@ -359,11 +362,16 @@ public class FrmCita extends JDialog {
 				de.setMinutes(0);
 				de.setSeconds(0);
 				for(CitaMedica cita : Clinica.getInstance().getMisCitasMedicas()) {
-					if(cita.getFechaCita()==de&&cita.getEstadoCita().equalsIgnoreCase("En espera")) {
+					if(cita.getFechaCita().getHours()==de.getHours()&&(cita.getNombrePersona()==txtNombrePaciente.getText()
+							||cita.getMedico()==medicoCita)&&cita.getEstadoCita().equalsIgnoreCase("En espera")) {
 						aprobado=false;
 					}
 				}
-				if(aprobado) {
+				if((de.getDay()<fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
+						||(de.getYear()==fechaActual.getYear()&&de.getMonth()<fechaActual.getMonth())||de.getYear()<fechaActual.getYear()) {
+					aprobado2=false;
+				}
+				if(aprobado&&aprobado2) {
 					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medicoCita,creador,de);
 					try {
 						Clinica.getInstance().insertarCitasMedicas(aux);
@@ -371,10 +379,12 @@ public class FrmCita extends JDialog {
 					} catch (Exception e2) {
 						JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
 					}
+					clean();
+				}else if(aprobado2){
+					JOptionPane.showMessageDialog(null, "Esta hora esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
 				}else {
-					JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "No se puede hacer cita antes del dia actual", "Información",JOptionPane.INFORMATION_MESSAGE);
 				}
-				clean();
 			}
 		});
 		btnGuardarCita.setEnabled(false);
@@ -428,5 +438,6 @@ public class FrmCita extends JDialog {
 		btnGuardarCita.setEnabled(false);
 		btnMedico.setEnabled(false);
 		btnRegistrar.setEnabled(false);
+		txtCedulaPaciente.setEditable(true);
 	}
 }

@@ -207,6 +207,9 @@ public class FrmListadoCitaModificar extends JDialog {
 					code = (String) tblListaCitas.getValueAt(aux, 0);
 					citaMed = Clinica.getInstance().buscarCitaMedicaPorCodigo(code);
 					btnSeleccionar.setEnabled(true);
+					if(opcion==2&&citaMed.getEstadoCita().equalsIgnoreCase("Realizada")){
+						btnSeleccionar.setEnabled(false);
+					}
 				}
 			}
 		});

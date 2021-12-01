@@ -63,13 +63,14 @@ public class FrmListadoVacuna extends JDialog {
 	private Vacuna vacunaSeleccionada;
 	private JButton btnSelecciona;
 	private JButton btnSalir;
+	private int opcion;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmListadoVacuna dialog = new FrmListadoVacuna(true);
+			FrmListadoVacuna dialog = new FrmListadoVacuna(true,1);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -81,7 +82,9 @@ public class FrmListadoVacuna extends JDialog {
 	 * Create the dialog.
 	 */
 	//el parametro listado es falso cuando solo quiere ver la lista, de lo contrario es verdadero
-	public FrmListadoVacuna(boolean listado) {
+	//la opcion 1 es para vacunar, la opcion 2 es para solicitar mas vacuna;
+	public FrmListadoVacuna(boolean listado,int op) {
+		opcion=op;
 		lista=listado;
 		vacunaSeleccionada=null;
 		//Para controlar el boton de close.
@@ -151,8 +154,14 @@ public class FrmListadoVacuna extends JDialog {
 				btnSelecciona.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(vacunaSeleccionada!=null) {
-							dispose();
-							FrmVacunar.vacunaAplicar = vacunaSeleccionada;
+							if(opcion==1) {
+								dispose();
+								FrmVacunar.vacunaAplicar = vacunaSeleccionada;
+							}else {
+								dispose();
+								FrmSolicitarVacuna aux = new FrmSolicitarVacuna(vacunaSeleccionada);
+								aux.setVisible(true);
+							}
 						}
 					}
 				});

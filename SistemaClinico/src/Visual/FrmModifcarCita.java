@@ -162,6 +162,8 @@ public class FrmModifcarCita extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(opcion==1) {
 							boolean aprobado=true;
+							boolean aprobado2=true;
+							Date fechaActual = new Date();
 							int hora=0;
 							String tiempo=cbxHora.getSelectedItem().toString();
 							Date de = dcFecha.getDate();
@@ -174,12 +176,17 @@ public class FrmModifcarCita extends JDialog {
 							de.setHours(hora);
 							de.setMinutes(0);
 							de.setSeconds(0);
-							for(CitaMedica cita : Clinica.getInstance().getMisCitasMedicas()) {
-								if(cita.getFechaCita()==de&&cita.getEstadoCita().equalsIgnoreCase("En espera")) {
+							for(CitaMedica cita2 : Clinica.getInstance().getMisCitasMedicas()) {
+								if(cita2.getFechaCita().getHours()==de.getHours()&&(cita2.getNombrePersona()==txtNombrePaciente.getText()
+										||cita2.getMedico()==cita.getMedico())&&cita2.getEstadoCita().equalsIgnoreCase("En espera")) {
 									aprobado=false;
 								}
 							}
-							if(aprobado) {
+							if((de.getDay()<fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
+									||(de.getYear()==fechaActual.getYear()&&de.getMonth()<fechaActual.getMonth())||de.getYear()<fechaActual.getYear()) {
+								aprobado2=false;
+							}
+							if(aprobado&&aprobado2) {
 								CitaMedica aux = cita;
 								aux.setFechaCita(de);
 								try {
@@ -191,8 +198,10 @@ public class FrmModifcarCita extends JDialog {
 								dispose();
 								FrmListadoCitaModificar auxMod = new FrmListadoCitaModificar(1);
 								auxMod.setVisible(true);
+							}else if(aprobado2){
+								JOptionPane.showMessageDialog(null, "Esta hora esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
 							}else {
-								JOptionPane.showMessageDialog(null, "Esta hora ya esta ocupada", "Información",JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null, "No se puede hacer cita antes del dia actual", "Información",JOptionPane.INFORMATION_MESSAGE);
 							}
 						}else {
 							CitaMedica aux = cita;

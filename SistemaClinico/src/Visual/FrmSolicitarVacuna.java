@@ -1,0 +1,187 @@
+package Visual;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.Dialog.ModalityType;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+
+import Logico.Clinica;
+import Logico.Vacuna;
+
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class FrmSolicitarVacuna extends JDialog {
+
+	private final JPanel contentPanel = new JPanel();
+	private int sizeIcon = 35;
+	private Image imagenVacuna = new ImageIcon(FrmCita.class.getResource("Imagenes/Vacunas3.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
+	private Image imagenVacuna2 = new ImageIcon(FrmCita.class.getResource("Imagenes/Vacunas3.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+	private JTextField txtCodigo;
+	private JTextField txtNombre;
+	private JTextField txtTipo;
+	private JTextField txtCantActual;
+	private JButton btnSalir;
+	private Vacuna vacunaSolicitar;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			FrmSolicitarVacuna dialog = new FrmSolicitarVacuna(null);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public FrmSolicitarVacuna(Vacuna vacuna) {
+		vacunaSolicitar=vacuna;
+		setTitle("Solicitar Vacuna");
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea solicitar vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				if(opcion==0) {
+					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					JOptionPane.showMessageDialog(null, "Saliendo de solicitar vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+				}else if(opcion==1) {
+					setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				}
+			}
+		});
+		setModalityType(ModalityType.DOCUMENT_MODAL);
+		setLocationRelativeTo(null);
+		setIconImage(imagenVacuna);
+		setModal(true);
+		setResizable(false);
+		setBounds(100, 100, 462, 312);
+		getContentPane().setLayout(null);
+		contentPanel.setBounds(12, 13, 418, 190);
+		contentPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		getContentPane().add(contentPanel);
+		contentPanel.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Codigo de la vacuna:");
+		lblNewLabel.setBounds(12, 13, 128, 16);
+		contentPanel.add(lblNewLabel);
+		
+		txtCodigo = new JTextField();
+		txtCodigo.setEditable(false);
+		txtCodigo.setBounds(158, 10, 128, 22);
+		contentPanel.add(txtCodigo);
+		txtCodigo.setColumns(10);
+		{
+			txtNombre = new JTextField();
+			txtNombre.setEditable(false);
+			txtNombre.setColumns(10);
+			txtNombre.setBounds(158, 45, 194, 22);
+			contentPanel.add(txtNombre);
+		}
+		{
+			JLabel lblNombreDeLa = new JLabel("Nombre de la vacuna:");
+			lblNombreDeLa.setBounds(12, 48, 128, 16);
+			contentPanel.add(lblNombreDeLa);
+		}
+		{
+			txtTipo = new JTextField();
+			txtTipo.setEditable(false);
+			txtTipo.setColumns(10);
+			txtTipo.setBounds(158, 80, 194, 22);
+			contentPanel.add(txtTipo);
+		}
+		{
+			JLabel lblTipoDeLa = new JLabel("Tipo de la vacuna:");
+			lblTipoDeLa.setBounds(12, 83, 128, 16);
+			contentPanel.add(lblTipoDeLa);
+		}
+		{
+			txtCantActual = new JTextField();
+			txtCantActual.setEditable(false);
+			txtCantActual.setBounds(158, 115, 128, 22);
+			contentPanel.add(txtCantActual);
+			txtCantActual.setColumns(10);
+		}
+		{
+			JLabel lblCantidadActualDe = new JLabel("Cantidad actual:");
+			lblCantidadActualDe.setBounds(12, 118, 105, 16);
+			contentPanel.add(lblCantidadActualDe);
+		}
+		
+		JSpinner spnSolicitar = new JSpinner();
+		spnSolicitar.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		spnSolicitar.setBounds(158, 150, 128, 22);
+		contentPanel.add(spnSolicitar);
+		
+		JLabel lblCantidadSolicitar = new JLabel("Cantidad  solicitar:");
+		lblCantidadSolicitar.setBounds(12, 153, 128, 16);
+		contentPanel.add(lblCantidadSolicitar);
+		{
+			JPanel buttonPane = new JPanel();
+			buttonPane.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+			buttonPane.setBounds(84, 216, 288, 35);
+			getContentPane().add(buttonPane);
+			buttonPane.setLayout(null);
+			{
+				JButton btnSolicitar = new JButton("Solicitar");
+				btnSolicitar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Clinica.getInstance().solicitarVacuna(vacunaSolicitar, Integer.valueOf(spnSolicitar.getValue().toString()));
+						JOptionPane.showMessageDialog(null, "Solicitud aprobada", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+						dispose();
+					}
+				});
+				btnSolicitar.setBounds(45, 5, 89, 25);
+				btnSolicitar.setActionCommand("OK");
+				buttonPane.add(btnSolicitar);
+				getRootPane().setDefaultButton(btnSolicitar);
+			}
+			{
+				btnSalir = new JButton("Salir");
+				btnSalir.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea solicitar vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						if(opcion==0) {
+							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							JOptionPane.showMessageDialog(null, "Saliendo de solicitar vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+						}else if(opcion==1) {
+							setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+						}
+					}
+				});
+				btnSalir.setBounds(175, 5, 71, 25);
+				btnSalir.setActionCommand("Cancel");
+				buttonPane.add(btnSalir);
+			}
+		}
+		loadVacuna();
+	}
+
+	private void loadVacuna() {
+		txtCodigo.setText(vacunaSolicitar.getCodigoVacunacion());
+		txtNombre.setText(vacunaSolicitar.getNombreVacunacion());
+		txtTipo.setText(vacunaSolicitar.getTipoVacuna());
+		txtCantActual.setText(""+vacunaSolicitar.getCantidadVacunas());
+	}
+	
+}

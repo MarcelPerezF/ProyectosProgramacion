@@ -350,4 +350,20 @@ public class Clinica {
 		}
 		misCitasMedicas.set(i, citaMed);
 	}
+	
+	public void solicitarVacuna(Vacuna vacunaSolicitad,int cant) {
+		int i=0;
+		Vacuna aux=vacunaSolicitad;
+		aux.setCantidadVacunas(aux.getCantidadVacunas()+cant);
+		boolean encontrado=false;
+		for(Vacuna v : misVacunas) {
+			if(v==vacunaSolicitad) {
+				encontrado=true;
+			}
+			if(!encontrado) {
+				i++;
+			}
+		}
+		misVacunas.set(i, aux);
+	}
 }
