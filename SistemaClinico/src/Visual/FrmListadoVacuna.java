@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.border.MatteBorder;
 
 import Logico.Clinica;
+import Logico.Paciente;
 import Logico.Vacuna;
 
 import java.awt.Color;
@@ -290,14 +291,22 @@ public class FrmListadoVacuna extends JDialog {
 			tblListadoVacuna.setModel(model);
 		}
 		loadVacuna(0,"");
-
+		
 	}
 
 	private void loadVacuna(int opcion, String busqueda) {
 		model.setRowCount(0);
 		int i=0;
+		boolean noPuesta=true;
 		for(Vacuna vacuna : Clinica.getInstance().getMisVacunas()) {
-			switch(opcion) {
+			noPuesta=true;//Para que no le salga una vacuna ya puesta al paciente
+			for(Vacuna vacunita : FrmVacunar.pacienteVacunar.getHistorial().getMisVacunas()) {
+				if(vacuna==vacunita) {
+					noPuesta=false;
+				}
+			}
+			if(noPuesta) {
+				switch(opcion) {
 				case 0:
 					cargafilas(vacuna);
 					i++;
@@ -320,6 +329,7 @@ public class FrmListadoVacuna extends JDialog {
 					}
 					i++;
 					break;
+			}
 			}
 		}
 		txtNumeroVacunas.setText(""+i+" vacunas");
