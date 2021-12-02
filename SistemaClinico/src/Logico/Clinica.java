@@ -366,4 +366,20 @@ public class Clinica {
 		}
 		misVacunas.set(i, aux);
 	}
+
+	public Usuario comprobarLogin(String usuario, String password) {
+		Usuario usuarioEncontrado = null;
+		boolean encontrado = false;
+		int indiceUsuario = 0;
+		
+		while (!encontrado && indiceUsuario<misUsuarios.size()) {
+			if(misUsuarios.get(indiceUsuario).getUsuario().equals(usuario) 
+					&& misUsuarios.get(indiceUsuario).getPassword().equals(password)) {
+				usuarioEncontrado = misUsuarios.get(indiceUsuario);
+				encontrado=true;
+			}
+			indiceUsuario++;
+		}
+		return usuarioEncontrado;
+	}
 }

@@ -79,6 +79,7 @@ public class FrmIngresarUsuario extends JDialog {
 	private JComboBox cbxTipoEmpleado;
 	private JLabel lblTituloFormulario;
 	private JLabel lblDescripcionFormulario;
+	private int seguroSalir;
 	
 	private Usuario usuarioModificar = null;
 
@@ -87,7 +88,7 @@ public class FrmIngresarUsuario extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			FrmIngresarUsuario dialog = new FrmIngresarUsuario(1, null);
+			FrmIngresarUsuario dialog = new FrmIngresarUsuario(1, null, 0);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -95,37 +96,56 @@ public class FrmIngresarUsuario extends JDialog {
 		}
 	}
 	
-	public FrmIngresarUsuario(int opcion, Usuario usuario) {
+	public FrmIngresarUsuario(int opcion, Usuario usuario, int primerUsuario) {
 		//Para controlar el boton de close.
 		usuarioModificar = usuario;
+		seguroSalir = 0;
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if(opcion==1) {
-					int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
-					if(opcionAux==0) {
-						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						JOptionPane.showMessageDialog(null, "Saliendo de ingresar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-					}else if(opcionAux==1) {
+				if(primerUsuario!=1) {
+					if(opcion==1) {
+						int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						if(opcionAux==0) {
+							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							JOptionPane.showMessageDialog(null, "Saliendo de ingresar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+						}else if(opcionAux==1) {
+							setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+						}
+					}else{
+						int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea modificar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						if(opcionAux==0) {
+							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							JOptionPane.showMessageDialog(null, "Saliendo de modificar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+							FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
+							frmAux.setVisible(true);
+						}else if(opcionAux==1) {
+							setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+						}
+					}
+				}else {
+
+					if(seguroSalir==3) {
+						int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea ingresar el usuario y salir del sistema?", "Confirmar", JOptionPane.YES_NO_OPTION);
+						if(opcionAux==0) {
+							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							JOptionPane.showMessageDialog(null, "Saliendo de ingresar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+						}
+					}else {
+						JOptionPane.showMessageDialog(null, "Debe ingresar el primer usuario para ingresar al sistema", "Advertencia", JOptionPane.WARNING_MESSAGE);
+						seguroSalir++;
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
-				}else{
-					int opcionAux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea modificar el usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
-					if(opcionAux==0) {
-						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						JOptionPane.showMessageDialog(null, "Saliendo de modificar usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-						FrmListadoUsuarios frmAux = new FrmListadoUsuarios(opcion,"");
-						frmAux.setVisible(true);
-					}else if(opcionAux==1) {
-						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-					}
+						
 				}
 			}		
 		});
-		setModalityType(ModalityType.DOCUMENT_MODAL);
 		setTitle("Ingreso de Usuarios");
 		if(opcion!=1) {
 			setTitle("Modificaci\u00f3n de Usuarios");
+		}
+		if(primerUsuario==1) {
+			setTitle("INGRESO DEL PRIMER USUARIO");
 		}
 		setResizable(false);
 		setModal(true);
@@ -196,6 +216,10 @@ public class FrmIngresarUsuario extends JDialog {
 								Clinica.getInstance().insertarUsuario(usuarioAux);
 								JOptionPane.showMessageDialog(null, "Usuario ingresado correctamente", "INGRESO DE USUARIO", JOptionPane.INFORMATION_MESSAGE);
 								limpiarFormulario();
+								if(primerUsuario==1) {
+									FrmPrincipal.guardarDatosSistema();
+									dispose();
+								}
 							} catch (NullPointerException exception) {
 								JOptionPane.showMessageDialog(null, "No se pudo ingresar el usuario", "ERROR AL INGRESAR EL USUARIO", JOptionPane.OK_OPTION);
 								limpiarFormulario();
@@ -306,7 +330,7 @@ public class FrmIngresarUsuario extends JDialog {
 						JOptionPane.showMessageDialog(null, "El usuario ya existe!", "Usuario Existente", JOptionPane.OK_OPTION);
 						correcto = false;
 					}
-					if( !(txtPassword.getText().equalsIgnoreCase(txtPasswordConfirmar.getText()))) {
+					if( !(txtPassword.getText().equals(txtPasswordConfirmar.getText()))) {
 						JOptionPane.showMessageDialog(null, "Las contrase\u00f1as no coinciden!", "Contrase\u00f1as Diferentes", JOptionPane.OK_OPTION);
 						correcto =false;
 					}
@@ -363,6 +387,9 @@ public class FrmIngresarUsuario extends JDialog {
 		cbxTipoEmpleado = new JComboBox();
 		cbxTipoEmpleado.setVisible(false);
 		cbxTipoEmpleado.setModel(new DefaultComboBoxModel(new String[] {"Administrador", "Secretaria"}));
+		if(primerUsuario==1) {
+			cbxTipoEmpleado.setModel(new DefaultComboBoxModel(new String[] {"Administrador"}));
+		}
 		cbxTipoEmpleado.setBounds(188, 72, 309, 23);
 		pnTipoUsuario.add(cbxTipoEmpleado);
 		
@@ -394,6 +421,9 @@ public class FrmIngresarUsuario extends JDialog {
 		pnTipoUsuario.add(rdbtnEmpleado);
 		
 		rdbtnMedico = new JRadioButton("Medico");
+		if(primerUsuario==1) {
+			rdbtnMedico.setVisible(false);
+		}
 		rdbtnMedico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rdbtnMedico.isSelected()) {

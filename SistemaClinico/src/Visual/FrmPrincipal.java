@@ -40,11 +40,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 
@@ -56,8 +53,8 @@ public class FrmPrincipal extends JFrame {
 	//Variables publicas importantes:
 	public static String nombreUsuario;
 	public static String rolUsuario;
-	public static Usuario usuario;
-	private final String ficheroGuardar = "Respaldo/SistemaClinico.dat";
+	public static Usuario usuarioActual;//Para saber quien esta usando el sistema
+	private final static String ficheroGuardar = "Respaldo/SistemaClinico.dat";
 	
 	//Constantes:
 	private final int sizeIcon = 35;
@@ -150,7 +147,6 @@ public class FrmPrincipal extends JFrame {
 	private Image imagenPosponerCita = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Posponer.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenCancelarCita = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Cancelar.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenIngresarEnfermedad = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Enfermedades2.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
-	private Image imagenVacunar = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunar.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenIngresarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/IngresarVacunas.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenInfoSistema = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/InfoSistema.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenSolicitarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunas3.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
@@ -166,13 +162,9 @@ public class FrmPrincipal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-//					Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-//							"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-//					Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
-//							"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
-//					Clinica.getInstance().insertarPaciente(paciente1);
-//					Clinica.getInstance().insertarPaciente(paciente2);
-					FrmPrincipal frame = new FrmPrincipal();
+					Medico medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
+					Clinica.getInstance().insertarUsuario(medico);
+					FrmPrincipal frame = new FrmPrincipal(medico);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -181,7 +173,8 @@ public class FrmPrincipal extends JFrame {
 		});
 	}
 
-	public FrmPrincipal() {
+	public FrmPrincipal(Usuario usurioLogeado) {
+		usuarioActual = usurioLogeado;
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -189,12 +182,7 @@ public class FrmPrincipal extends JFrame {
 				guardarDatosSistema();
 				JOptionPane.showMessageDialog(null, "Saliendo del sistema", "Confirmar", JOptionPane.INFORMATION_MESSAGE);
 			}
-		});
-		cargarDatosSistema();
-		
-		nombreUsuario = "Marcel Perez Fernandez";
-		rolUsuario = "Administrador";
-		
+		});		
 		//Propiedades generales del JFrame (Menu Principal):
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension dimension=getToolkit().getScreenSize();
@@ -246,6 +234,15 @@ public class FrmPrincipal extends JFrame {
 		mnArchivo.add(spArchivo2);
 		
 		mnCerrarSesion = new JMenuItem("Cerras Sesion");
+		mnCerrarSesion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarDatosSistema();
+				JOptionPane.showMessageDialog(null, "Cerrando la sesion", "CERRANDO SESION", JOptionPane.INFORMATION_MESSAGE);
+				dispose();
+				FrmLoginSistema frmAux = new FrmLoginSistema(2);
+				frmAux.setVisible(true);
+			}
+		});
 		mnCerrarSesion.setBackground(colorSubMenuFondo);
 		mnCerrarSesion.setIcon(new ImageIcon(imagenCerrarSesion));
 		mnArchivo.add(mnCerrarSesion);
@@ -273,8 +270,8 @@ public class FrmPrincipal extends JFrame {
 		mnConsultar = new JMenuItem("Nueva Consulta");
 		mnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				usuario = Clinica.getInstance().buscarUsuario("402");
-				FrmListadoCitas frmAux = new FrmListadoCitas(usuario, new Date());
+				usuarioActual = Clinica.getInstance().buscarUsuario("402");
+				FrmListadoCitas frmAux = new FrmListadoCitas(usuarioActual, new Date());
 				frmAux.setVisible(true);
 			}
 		});
@@ -304,7 +301,7 @@ public class FrmPrincipal extends JFrame {
 		mnNuevoUsuario = new JMenuItem("Nuevo Usuario");
 		mnNuevoUsuario.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null);
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null, 0);
 				frmAux.setVisible(true);
 			}
 		});
@@ -396,7 +393,7 @@ public class FrmPrincipal extends JFrame {
 		mnNuevaCita = new JMenuItem("Nueva Cita");
 		mnNuevaCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmCita aux = new FrmCita(null);
+				FrmCita aux = new FrmCita(usuarioActual);
 				aux.setVisible(true);
 			}
 		});
@@ -592,8 +589,8 @@ public class FrmPrincipal extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				usuario = Clinica.getInstance().buscarUsuario("402");
-				FrmListadoCitas frmAux = new FrmListadoCitas(usuario, new Date());
+				usuarioActual = Clinica.getInstance().buscarUsuario("402");
+				FrmListadoCitas frmAux = new FrmListadoCitas(usuarioActual, new Date());
 				frmAux.setVisible(true);
 			}
 		});
@@ -637,7 +634,9 @@ public class FrmPrincipal extends JFrame {
 		lblImagenAccesoDirectoVacunar.setIcon(new ImageIcon(imagenVacunasAccesoDirecto));
 		pnAccesoDirectoVacunar.add(lblImagenAccesoDirectoVacunar);
 		
-		lblUsuarioSesion = new JLabel("Usuario: "+nombreUsuario+" ("+rolUsuario+")");
+		
+		
+		lblUsuarioSesion = new JLabel("Usuario: "+usuarioActual.getNombre()+" ("+Clinica.getInstance().tipoUsuario(usuarioActual)+")");
 		lblUsuarioSesion.setBounds(dimension.width-320, 10, 300, 20);
 		panelAccesoDirecto.add(lblUsuarioSesion);
 		
@@ -654,7 +653,7 @@ public class FrmPrincipal extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null);
+				FrmIngresarUsuario frmAux = new FrmIngresarUsuario(1, null,0);
 				frmAux.setVisible(true);
 			}
 		});
@@ -682,7 +681,7 @@ public class FrmPrincipal extends JFrame {
 		
 	}
 	
-	public void guardarDatosSistema() {
+	public static void guardarDatosSistema() {
 		try {
 			
 			//Creamos el archivo para guardar los datos.
@@ -727,59 +726,5 @@ public class FrmPrincipal extends JFrame {
 			System.out.println(e2.getMessage());
 		}
 		
-	}
-	
-	public void cargarDatosSistema() {
-		try {
-			
-			//Creamos el archivo donde esta la informacion.
-			FileInputStream recibiendoDatos = new FileInputStream(ficheroGuardar);
-			
-			//Creamos el fichero por el cual leeremos y guardaremos la informacion
-			ObjectInputStream oosLectura = new ObjectInputStream(recibiendoDatos);
-				
-			//Obtenemos la cantidad de usuarios, los leemos y guardamos.
-			int cantidadUsuarios = oosLectura.readInt();
-			for (int i = 0; i < cantidadUsuarios; i++) {
-				Usuario usuario = (Usuario)oosLectura.readObject();
-				Clinica.getInstance().insertarUsuario(usuario);			
-			}
-			
-			//Obtenemos la cantidad de vacunas, las leemos y guardamos.
-			int cantidadVacunas = oosLectura.readInt();
-			for (int i = 0; i < cantidadVacunas; i++) {
-				Vacuna vacuna = (Vacuna)oosLectura.readObject();
-				Clinica.getInstance().insertarVacuna(vacuna);		
-			}
-			
-			//Obtenemos la cantidad de enfermedades, las leemos y guardamos.
-			int cantidadEnfermedades = oosLectura.readInt();
-			for (int i = 0; i < cantidadEnfermedades; i++) {
-				Enfermedad enfermedad = (Enfermedad)oosLectura.readObject();
-				Clinica.getInstance().insertarEnfermedades(enfermedad);			
-			}
-			
-			//Obtenemos la citas medicas, las leemos y guardamos.
-			int cantidadCitasMedicas = oosLectura.readInt();
-			for (int i = 0; i < cantidadCitasMedicas; i++) {
-				CitaMedica citaMedica = (CitaMedica)oosLectura.readObject();
-				Clinica.getInstance().insertarCitasMedicas(citaMedica);	
-			}	
-			
-			//Obtenemos la cantidad de pacientes, los leemos y guardamos.
-			int cantidadPacientes = oosLectura.readInt();
-			for (int i = 0; i < cantidadPacientes; i++) {
-				Paciente paciente = (Paciente)oosLectura.readObject();
-				Clinica.getInstance().insertarPaciente(paciente);	
-			}	
-			
-		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println(e.getMessage());
-		}
 	}
 }

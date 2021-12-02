@@ -179,7 +179,7 @@ public class FrmListadoUsuarios extends JDialog {
 							dispose();
 						}else{
 							dispose();
-							FrmIngresarUsuario frmAux = new FrmIngresarUsuario(opcionListado, usuarioSeleccionado);
+							FrmIngresarUsuario frmAux = new FrmIngresarUsuario(opcionListado, usuarioSeleccionado, 0);
 							frmAux.setVisible(true);
 						}
 					}
