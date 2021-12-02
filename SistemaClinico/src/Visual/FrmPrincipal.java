@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Logico.CitaMedica;
 import Logico.Clinica;
+import Logico.Empleado;
 import Logico.Enfermedad;
 import Logico.Medico;
 import Logico.Paciente;
@@ -108,10 +109,8 @@ public class FrmPrincipal extends JFrame {
 	private JPanel panelAccesoDirecto;
 	private JPanel pnAccesoDirectoCita;
 	private JPanel pnAccesoDirectoConsulta;
-	private JPanel pnAccesoDirectoVacunar;
 	private JPanel pnAccesoDirectoUsuario;	
 	private JLabel lblImagenAccesoDirectoConsulta;
-	private JLabel lblImagenAccesoDirectoVacunar;
 	private JLabel lblImagenAccesoDirectoUsuario;
 	private JLabel lblImagenPanelCita;
 	private JLabel lblUsuarioSesion;
@@ -153,7 +152,6 @@ public class FrmPrincipal extends JFrame {
 	
 	//Acceso Directo:
 	private Image imagenConsultaAccesoDirecto = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/ConsultaMedica.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
-	private Image imagenVacunasAccesoDirecto = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunas2.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenCitasAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Citas2.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenUsuarioAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/NuevoUsuario.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private JMenuItem mnSolicitarVacuna;
@@ -162,8 +160,13 @@ public class FrmPrincipal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Medico medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
+					Medico medico = new Medico("1", "301", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
+					Empleado administrador = new Empleado("2", "302", 2, "admin", "admin", "Orlando M", "849", "RD", "algo@", "Hombre", "Administrador");
+					Empleado secretaria = new Empleado("3", "303", 3, "secre", "secre", "Ana Lopez", "859", "RD", "algo@", "Mujer", "Secretaria");
+					
 					Clinica.getInstance().insertarUsuario(medico);
+					Clinica.getInstance().insertarUsuario(administrador);
+					Clinica.getInstance().insertarUsuario(secretaria);
 					FrmPrincipal frame = new FrmPrincipal(medico);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -605,35 +608,6 @@ public class FrmPrincipal extends JFrame {
 		lblImagenAccesoDirectoConsulta.setIcon(new ImageIcon(imagenConsultaAccesoDirecto));
 		pnAccesoDirectoConsulta.add(lblImagenAccesoDirectoConsulta);
 		
-		pnAccesoDirectoVacunar = new JPanel();
-		pnAccesoDirectoVacunar.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				pnAccesoDirectoVacunar.setBorder(new BevelBorder(BevelBorder.LOWERED));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				pnAccesoDirectoVacunar.setBorder(null);
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				FrmVacunar aux = new FrmVacunar();
-				aux.setVisible(true);
-			}
-		});
-		pnAccesoDirectoVacunar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		pnAccesoDirectoVacunar.setLayout(null);
-		pnAccesoDirectoVacunar.setBorder(null);
-		pnAccesoDirectoVacunar.setBackground(new Color(239, 239, 239));
-		pnAccesoDirectoVacunar.setBounds(130, 5, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
-		panelAccesoDirecto.add(pnAccesoDirectoVacunar);
-		
-		lblImagenAccesoDirectoVacunar = new JLabel("");
-		lblImagenAccesoDirectoVacunar.setBackground(new Color(239, 239, 239));
-		lblImagenAccesoDirectoVacunar.setBounds(0, 0, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
-		lblImagenAccesoDirectoVacunar.setIcon(new ImageIcon(imagenVacunasAccesoDirecto));
-		pnAccesoDirectoVacunar.add(lblImagenAccesoDirectoVacunar);
-		
 		
 		
 		lblUsuarioSesion = new JLabel("Usuario: "+usuarioActual.getNombre()+" ("+Clinica.getInstance().tipoUsuario(usuarioActual)+")");
@@ -660,7 +634,7 @@ public class FrmPrincipal extends JFrame {
 		pnAccesoDirectoUsuario.setLayout(null);
 		pnAccesoDirectoUsuario.setBorder(null);
 		pnAccesoDirectoUsuario.setBackground(new Color(239, 239, 239));
-		pnAccesoDirectoUsuario.setBounds(190, 5, 30, 30);
+		pnAccesoDirectoUsuario.setBounds(130, 5, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
 		panelAccesoDirecto.add(pnAccesoDirectoUsuario);
 		
 		lblImagenAccesoDirectoUsuario = new JLabel("");
@@ -678,6 +652,8 @@ public class FrmPrincipal extends JFrame {
 		lblFooter = new JLabel("Sistema Clinico -  @Todos los derechos son reservados");
 		lblFooter.setBounds(dimension.width-(dimension.width/2)-200, 10, 500, 30);
 		pnFooter.add(lblFooter);
+		
+		accesosSistema(usuarioActual);
 		
 	}
 	
@@ -724,6 +700,44 @@ public class FrmPrincipal extends JFrame {
 			oos.close();
 		}catch (IOException e2) {
 			System.out.println(e2.getMessage());
+		}
+		
+	}
+	
+	public void accesosSistema(Usuario usuarioSistema) {
+		
+		String tipoUsuario = Clinica.getInstance().tipoUsuario(usuarioSistema);
+		
+		if(tipoUsuario.equalsIgnoreCase("Administrador")) {
+			
+			mnNuevaCita.setEnabled(false);
+			mnPosponerCita.setEnabled(false);
+			mnCancelarCita.setEnabled(false);
+			mnConsultar.setEnabled(false);
+			pnAccesoDirectoCita.setVisible(false);
+			pnAccesoDirectoConsulta.setVisible(false);
+			pnAccesoDirectoUsuario.setBounds(15, 5, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
+			
+		}else if(tipoUsuario.equalsIgnoreCase("Secretaria")){
+			
+			mnInfoClinica.setEnabled(false);
+			mnConsulta.setEnabled(false);
+			mnUsuarios.setEnabled(false);
+			mnPacientes.setEnabled(false);
+			mnEnfermedades.setEnabled(false);
+			mnVacunas.setEnabled(false);
+			pnAccesoDirectoConsulta.setVisible(false);
+			pnAccesoDirectoUsuario.setVisible(false);
+			
+		}else if(tipoUsuario.equalsIgnoreCase("Medico")) {
+			
+			mnInfoClinica.setEnabled(false);
+			mnUsuarios.setEnabled(false);
+			mnCitas.setEnabled(false);
+			pnAccesoDirectoCita.setVisible(false);
+			pnAccesoDirectoUsuario.setVisible(false);
+			pnAccesoDirectoConsulta.setBounds(15, 5, sizeIconAccesoDirecto, sizeIconAccesoDirecto);
+			
 		}
 		
 	}
