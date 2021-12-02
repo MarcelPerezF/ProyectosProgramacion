@@ -69,7 +69,6 @@ public class FrmCita extends JDialog {
 	private JButton btnSalir;
 	private JTextField txtTelefonoPaciente;
 	private JButton btnBuscar;
-	private JButton btnRegistrar;
 	private JLabel lblInformacion;
 	private String especialidad;
 	private JDateChooser dcFecha;
@@ -249,10 +248,11 @@ public class FrmCita extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				Paciente aux = Clinica.getInstance().buscarPaciente(txtCedulaPaciente.getText());
 				if(aux==null) {
-					btnRegistrar.setEnabled(true);
 					lblInformacion.setVisible(true);
 					txtNombrePaciente.setText("");
 					txtTelefonoPaciente.setText("");
+					txtNombrePaciente.setEditable(true);
+					txtTelefonoPaciente.setEditable(true);
 				}else {
 					txtNombrePaciente.setText(aux.getNombre());
 					txtTelefonoPaciente.setText(aux.getTelefono());
@@ -260,7 +260,6 @@ public class FrmCita extends JDialog {
 					lblInformacion.setVisible(false);
 					btnLimpiar.setEnabled(true);
 					txtCedulaPaciente.setEditable(false);
-					btnRegistrar.setEnabled(false);
 					btnBuscar.setEnabled(false);
 				}
 			}
@@ -268,18 +267,6 @@ public class FrmCita extends JDialog {
 		btnBuscar.setBackground(SystemColor.controlHighlight);
 		btnBuscar.setBounds(339, 65, 77, 23);
 		panelBody.add(btnBuscar);
-		
-		btnRegistrar = new JButton("Registrar");
-		btnRegistrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FrmIngresarPaciente aux = new FrmIngresarPaciente(null);
-				aux.setVisible(true);
-			}
-		});
-		btnRegistrar.setEnabled(false);
-		btnRegistrar.setBackground(SystemColor.controlHighlight);
-		btnRegistrar.setBounds(439, 65, 92, 23);
-		panelBody.add(btnRegistrar);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
@@ -304,6 +291,15 @@ public class FrmCita extends JDialog {
 		panel.add(lblTelefonoPaciente);
 		
 		txtTelefonoPaciente = new JTextField();
+		txtTelefonoPaciente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if((!(Character.isDigit(c))&&(c!='-'))||(c==KeyEvent.VK_BACK_SPACE)||(c==KeyEvent.VK_DELETE)) {
+					e.consume();
+				}
+			}
+		});
 		txtTelefonoPaciente.setEditable(false);
 		txtTelefonoPaciente.setColumns(10);
 		txtTelefonoPaciente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -441,7 +437,6 @@ public class FrmCita extends JDialog {
 		btnLimpiar.setEnabled(false);
 		btnGuardarCita.setEnabled(false);
 		btnMedico.setEnabled(false);
-		btnRegistrar.setEnabled(false);
 		txtCedulaPaciente.setEditable(true);
 		btnBuscar.setEnabled(true);
 	}

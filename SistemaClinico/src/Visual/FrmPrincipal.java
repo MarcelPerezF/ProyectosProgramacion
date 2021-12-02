@@ -101,7 +101,6 @@ public class FrmPrincipal extends JFrame {
 	private JMenuItem mnListadoEnfermedades;
 
 	private JMenu mnVacunas;
-	private JMenuItem mnVacunar;
 	private JMenuItem mnIngresarVacunas;
 	private JMenuItem mnListadoVacunas;
 	
@@ -481,20 +480,6 @@ public class FrmPrincipal extends JFrame {
 		mnVacunas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		mnVacunas.setIcon(new ImageIcon(imagenVacunas));
 		menuBar.add(mnVacunas);
-		
-		mnVacunar = new JMenuItem("Vacunar Paciente");
-		mnVacunar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FrmVacunar aux = new FrmVacunar();
-				aux.setVisible(true);
-			}
-		});
-		mnVacunar.setIcon(new ImageIcon(imagenVacunar));
-		mnVacunar.setBackground(colorSubMenuFondo);
-		mnVacunas.add(mnVacunar);
-		
-		JSeparator spVacunas1 = new JSeparator();
-		mnVacunas.add(spVacunas1);
 		
 		mnIngresarVacunas = new JMenuItem("Ingresar Vacuna");
 		mnIngresarVacunas.addActionListener(new ActionListener() {

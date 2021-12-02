@@ -40,24 +40,36 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.border.MatteBorder;
+import javax.swing.JTabbedPane;
+import javax.swing.JLayeredPane;
+import java.awt.SystemColor;
+import javax.swing.JEditorPane;
+import javax.swing.JCheckBox;
 
 public class FrmConsulta extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private int sizeIcon = 35;
-
+	private int sizeIcon2 = 18;
 	private Image imagenConsulta= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Consulta.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
 	private Image imagenConsulta2= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Consulta.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-	private JTextField txtCodigoConsulta;
-	private JTextField txtNombrePaciente;
-	private JTextField txtEnfermedad;
+	private Image imagenConsulta3= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Informacion2.png")).getImage().getScaledInstance(sizeIcon2, sizeIcon2, Image.SCALE_SMOOTH);
+	private Image imagenConsulta4= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Historial.png")).getImage().getScaledInstance(sizeIcon2, sizeIcon2, Image.SCALE_SMOOTH);
+	private Image imagenConsulta5= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Diagnostico.png")).getImage().getScaledInstance(sizeIcon2, sizeIcon2, Image.SCALE_SMOOTH);
 	public static Enfermedad enfermedad;
-	private JTextArea txtSintomas;
-	private JTextArea txtDiagnostico;
-	private JButton btnHistorial;
 	private JButton btnDiagnosticar;
 	private JButton btnGuardar;
+	private JTextField txtCodigoConsulta;
+	private JTextField textField_1;
+	private JTextField txtEnfermedad;
+	private JEditorPane txtSintomas;
+	private JEditorPane txtDiagnostico;
+	private JTabbedPane tabbedPane;
+	private JPanel pnlInformacion;
+	private JPanel pnlHistorial;
+	private JPanel pnlDiagnosticar;
 
 	public static void main(String[] args) {
 		try {
@@ -100,7 +112,7 @@ public class FrmConsulta extends JDialog {
 		setResizable(false);
 		setModal(true);
 		setTitle("Consultas");
-		setBounds(100, 100, 600, 650);
+		setBounds(100, 100, 600, 788);
 		setLocationRelativeTo(null);
 		setIconImage(imagenConsulta);
 		contentPanel.setBackground(new Color(240, 240, 240));
@@ -138,88 +150,14 @@ public class FrmConsulta extends JDialog {
 		
 		JLabel lblDescripcionFormulario = new JLabel("Formulario para consultas de los pacientes");
 		lblDescripcionFormulario.setBounds(184, 79, 300, 20);
-		panelHeader.add(lblDescripcionFormulario);
-		
-		JPanel panelBody = new JPanel();
-		panelBody.setBackground(UIManager.getColor("CheckBox.light"));
-		panelBody.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panelBody.setBounds(10, 139, 563, 377);
-		contentPanel.add(panelBody);
-		panelBody.setLayout(null);
-		
-		JLabel lblCodigoConsulta = new JLabel("C\u00F3digo Consulta:");
-		lblCodigoConsulta.setBounds(15, 27, 138, 20);
-		panelBody.add(lblCodigoConsulta);
-		
-		txtCodigoConsulta = new JTextField();
-		txtCodigoConsulta.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtCodigoConsulta.setEditable(false);
-		txtCodigoConsulta.setBounds(154, 26, 165, 23);
-		panelBody.add(txtCodigoConsulta);
-		txtCodigoConsulta.setColumns(10);
-		
-		JLabel lblNombrePaciente = new JLabel("Nombre Paciente:");
-		lblNombrePaciente.setBounds(15, 66, 138, 20);
-		panelBody.add(lblNombrePaciente);
-		
-		txtNombrePaciente = new JTextField();
-		txtNombrePaciente.setEditable(false);
-		txtNombrePaciente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtNombrePaciente.setColumns(10);
-		txtNombrePaciente.setBounds(154, 63, 394, 23);
-		panelBody.add(txtNombrePaciente);
-		
-		JLabel lblSintomas = new JLabel("Sintomas:");
-		lblSintomas.setBounds(15, 142, 138, 20);
-		panelBody.add(lblSintomas);;
-		
-		JScrollPane scrlpSintomas = new JScrollPane();
-		scrlpSintomas.setBounds(154, 102, 394, 100);
-		panelBody.add(scrlpSintomas);
-		
-		txtSintomas = new JTextArea();
-		scrlpSintomas.setViewportView(txtSintomas);
-		
-		JScrollPane scrlpDiagnostico = new JScrollPane();
-		scrlpDiagnostico.setBounds(154, 218, 394, 100);
-		panelBody.add(scrlpDiagnostico);
-		
-		txtDiagnostico = new JTextArea();
-		scrlpDiagnostico.setViewportView(txtDiagnostico);
-		
-		JLabel lblDiagnostico = new JLabel("Diagnostico:");
-		lblDiagnostico.setBounds(15, 258, 138, 20);
-		panelBody.add(lblDiagnostico);
-		
-		JLabel lblEnfermedad = new JLabel("Enfermedad:");
-		lblEnfermedad.setBounds(15, 341, 138, 20);
-		panelBody.add(lblEnfermedad);
-		
-		txtEnfermedad = new JTextField();
-		txtEnfermedad.setEnabled(false);
-		txtEnfermedad.setColumns(10);
-		txtEnfermedad.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		txtEnfermedad.setBounds(154, 338, 394, 23);
-		panelBody.add(txtEnfermedad);
+		panelHeader.add(lblDescripcionFormulario);;
 		
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelFooter.setBackground(UIManager.getColor("CheckBox.light"));
-		panelFooter.setBounds(10, 532, 563, 62);
+		panelFooter.setBounds(184, 665, 226, 62);
 		contentPanel.add(panelFooter);
 		panelFooter.setLayout(null);
-		
-		btnHistorial = new JButton("Historial");
-		btnHistorial.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FrmHistorialPaciente frmAux = new FrmHistorialPaciente(paciente);
-				frmAux.setVisible(true);
-			}
-		});
-		btnHistorial.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnHistorial.setBackground(UIManager.getColor("Button.light"));
-		btnHistorial.setBounds(29, 16, 142, 29);
-		panelFooter.add(btnHistorial);
 		
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
@@ -241,10 +179,90 @@ public class FrmConsulta extends JDialog {
 		btnGuardar.setEnabled(false);
 		btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGuardar.setBackground(UIManager.getColor("Button.light"));
-		btnGuardar.setBounds(393, 17, 142, 29);
+		btnGuardar.setBounds(42, 16, 142, 29);
 		panelFooter.add(btnGuardar);
 		
+		JPanel panel = new JPanel();
+		panel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		panel.setBounds(12, 136, 561, 516);
+		contentPanel.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		panel.add(tabbedPane, BorderLayout.CENTER);
+		
+		pnlInformacion = new JPanel();
+		tabbedPane.addTab("Informacion", new ImageIcon(imagenConsulta3), pnlInformacion, null);
+		
+		pnlHistorial = new JPanel();
+		tabbedPane.addTab("Historial", new ImageIcon(imagenConsulta4), pnlHistorial, null);
+		
+		pnlDiagnosticar = new JPanel();
+		pnlDiagnosticar.setLayout(null);
+		pnlDiagnosticar.setBorder(new LineBorder(new Color(0, 0, 0)));
+		pnlDiagnosticar.setBackground(SystemColor.controlHighlight);
+		tabbedPane.addTab("Diagnosticar", new ImageIcon(imagenConsulta5), pnlDiagnosticar, null);
+		
+		JLabel label = new JLabel("C\u00F3digo Consulta:");
+		label.setBounds(15, 27, 138, 20);
+		pnlDiagnosticar.add(label);
+		
+		txtCodigoConsulta = new JTextField();
+		txtCodigoConsulta.setText("C-P-1");
+		txtCodigoConsulta.setEditable(false);
+		txtCodigoConsulta.setColumns(10);
+		txtCodigoConsulta.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		txtCodigoConsulta.setBounds(154, 26, 165, 23);
+		pnlDiagnosticar.add(txtCodigoConsulta);
+		
+		JLabel label_1 = new JLabel("Nombre Paciente:");
+		label_1.setBounds(15, 66, 138, 20);
+		pnlDiagnosticar.add(label_1);
+		
+		textField_1 = new JTextField();
+		textField_1.setText((String) null);
+		textField_1.setEditable(false);
+		textField_1.setColumns(10);
+		textField_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		textField_1.setBounds(154, 63, 394, 23);
+		pnlDiagnosticar.add(textField_1);
+		
+		JLabel label_2 = new JLabel("Sintomas:");
+		label_2.setBounds(15, 142, 138, 20);
+		pnlDiagnosticar.add(label_2);
+		
+		JScrollPane scpSintomas = new JScrollPane();
+		scpSintomas.setBounds(154, 102, 394, 100);
+		pnlDiagnosticar.add(scpSintomas);
+		
+		txtSintomas = new JEditorPane();
+		scpSintomas.setViewportView(txtSintomas);
+		
+		JScrollPane scpDiagnosticar = new JScrollPane();
+		scpDiagnosticar.setBounds(154, 218, 394, 100);
+		pnlDiagnosticar.add(scpDiagnosticar);
+		
+		txtDiagnostico = new JEditorPane();
+		scpDiagnosticar.setViewportView(txtDiagnostico);
+		
+		JLabel label_3 = new JLabel("Diagnostico:");
+		label_3.setBounds(15, 258, 138, 20);
+		pnlDiagnosticar.add(label_3);
+		
+		JLabel label_4 = new JLabel("Enfermedad:");
+		label_4.setBounds(15, 341, 138, 20);
+		pnlDiagnosticar.add(label_4);
+		
+		txtEnfermedad = new JTextField();
+		txtEnfermedad.setEditable(false);
+		txtEnfermedad.setColumns(10);
+		txtEnfermedad.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		txtEnfermedad.setBounds(154, 338, 232, 23);
+		pnlDiagnosticar.add(txtEnfermedad);
+		
 		btnDiagnosticar = new JButton("Diagnosticar");
+		btnDiagnosticar.setBounds(398, 335, 142, 29);
+		pnlDiagnosticar.add(btnDiagnosticar);
 		btnDiagnosticar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FrmListadoEnfermedad frmAux = new FrmListadoEnfermedad(true, 2);
@@ -256,43 +274,14 @@ public class FrmConsulta extends JDialog {
 		});
 		btnDiagnosticar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnDiagnosticar.setBackground(UIManager.getColor("Button.light"));
-		btnDiagnosticar.setBounds(216, 16, 142, 29);
-		panelFooter.add(btnDiagnosticar);
 		
-		txtCodigoConsulta.setText("C-P-"+ (paciente.getMisConsultas().size()+1) );
-		txtNombrePaciente.setText(paciente.getNombre());
-		comprobarCampos(txtDiagnostico);
-		comprobarCampos(txtSintomas);
+		JCheckBox chHistorial = new JCheckBox("Desea guarda la consulta en el historial");
+		chHistorial.setBounds(15, 434, 253, 25);
+		pnlDiagnosticar.add(chHistorial);
 		
 	}
 	
 	private void comprobarCampos(JTextArea text) {
-		text.getDocument().addDocumentListener(new DocumentListener() {			
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				if( comprobarCampos() ) {
-					btnGuardar.setEnabled(true);
-				}else {
-					btnGuardar.setEnabled(false);
-				}
-			}	
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				if( comprobarCampos() ) {
-					btnGuardar.setEnabled(true);
-				}else {
-					btnGuardar.setEnabled(false);
-				}
-			}
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				if( comprobarCampos() ) {
-					btnGuardar.setEnabled(true);
-				}else {
-					btnGuardar.setEnabled(false);
-				}
-			}
-		});		
 	}
 	
 	public boolean comprobarCampos() {
