@@ -203,7 +203,7 @@ public class FrmListadoConsultas extends JDialog {
 			
 		}
 		loadListado();
-		txtCantidad.setText(cantidadConsultas+" citas");
+		txtCantidad.setText(cantidadConsultas+" consultas");
 		
 	}
 	public void loadListado() {

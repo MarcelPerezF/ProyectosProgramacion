@@ -185,6 +185,8 @@ public class FrmModifcarCita extends JDialog {
 							if((de.getDay()<fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
 									||(de.getYear()==fechaActual.getYear()&&de.getMonth()<fechaActual.getMonth())||de.getYear()<fechaActual.getYear()) {
 								aprobado2=false;
+							}else {
+								aprobado=true;
 							}
 							if(aprobado&&aprobado2) {
 								CitaMedica aux = cita;

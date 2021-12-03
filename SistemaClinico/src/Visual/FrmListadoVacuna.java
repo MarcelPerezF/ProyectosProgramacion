@@ -304,8 +304,8 @@ public class FrmListadoVacuna extends JDialog {
 		boolean noPuesta=true;
 		for(Vacuna vacuna : Clinica.getInstance().getMisVacunas()) {
 			noPuesta=true;//Para que no le salga una vacuna ya puesta al paciente
-			if(FrmVacunar.pacienteVacunar!=null) {
-				for(Vacuna vacunita : FrmVacunar.pacienteVacunar.getHistorial().getMisVacunas()) {
+			if(FrmConsulta.paciente!=null) {
+				for(Vacuna vacunita : FrmConsulta.paciente.getHistorial().getMisVacunas()) {
 					if(vacuna==vacunita) {
 						noPuesta=false;
 					}

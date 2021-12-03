@@ -224,8 +224,6 @@ public class FrmListadoCitas extends JDialog {
 					if(selectRow!=-1) {
 						cita = Clinica.getInstance().buscarCitaMedicaPorCodigo(String.valueOf(tblListado.getValueAt(selectRow, 0)));
 						paciente = Clinica.getInstance().buscarPaciente(cita.getCedulaPersona());
-					}
-					if(paciente!=null) {
 						btnSeleccionar.setEnabled(true);
 					}
 				}

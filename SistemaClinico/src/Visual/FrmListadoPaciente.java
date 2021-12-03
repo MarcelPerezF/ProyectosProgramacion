@@ -108,14 +108,6 @@ public class FrmListadoPaciente extends JDialog {
 					}else if(aux==1) {
 						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 					}
-				}else if(opcion==4) {
-					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea no seleccionar al paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
-					if(aux==0) {
-						setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						JOptionPane.showMessageDialog(null, "Saliendo del listado de usuarios", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
-					}else if(aux==1) {
-						setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-					}
 				}else {
 					int aux = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea no desea ver el historial del paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
 					if(aux==0) {
@@ -187,20 +179,16 @@ public class FrmListadoPaciente extends JDialog {
 						}
 						if(opcionListado==2) {
 							dispose();
-							FrmIngresarPaciente frmAux = new FrmIngresarPaciente(pacienteSeleccionado);
+							FrmIngresarPaciente frmAux = new FrmIngresarPaciente(pacienteSeleccionado,null);
 							frmAux.setVisible(true);
 						}
 						if(opcionListado==3) {
 							FrmHistorialPaciente frmAux =  new FrmHistorialPaciente(pacienteSeleccionado);
 							frmAux.setVisible(true);
 						}
-						if(opcionListado==4) {
-							dispose();
-							FrmVacunar.pacienteVacunar = pacienteSeleccionado;
-						}
 					}
 				});
-				if(opcionListado==2 || opcionListado==3 || opcionListado==4) {
+				if(opcionListado==2 || opcionListado==3 ) {
 					btnAuxiliar.setText("Seleccionar");
 				}
 				btnAuxiliar.setEnabled(false);

@@ -273,8 +273,9 @@ public class FrmPrincipal extends JFrame {
 		mnConsultar = new JMenuItem("Nueva Consulta");
 		mnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				usuarioActual = Clinica.getInstance().buscarUsuario("402");
-				FrmListadoCitas frmAux = new FrmListadoCitas(usuarioActual, new Date());
+				Usuario aux = Clinica.getInstance().buscarUsuario(usuarioActual.getCedulaUsuario());
+				Date fecha = new Date();
+				FrmListadoCitas frmAux = new FrmListadoCitas(aux, fecha);
 				frmAux.setVisible(true);
 			}
 		});

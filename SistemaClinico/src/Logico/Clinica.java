@@ -382,4 +382,16 @@ public class Clinica {
 		}
 		return usuarioEncontrado;
 	}
+	
+	public String generarCodigoConsulta() {
+		String codigo="";
+		int i=0;
+		for(CitaMedica cita: misCitasMedicas) {
+			if(cita.getEstadoCita().equalsIgnoreCase("Realizada")) {
+				i++;
+			}
+		}
+		codigo = "C-P-"+(i+1);
+		return codigo;
+	}
 }

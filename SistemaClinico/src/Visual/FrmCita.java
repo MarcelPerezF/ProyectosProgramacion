@@ -199,6 +199,16 @@ public class FrmCita extends JDialog {
 		panelBody.add(lblCedulaPaciente);
 		
 		txtCedulaPaciente = new JTextField();
+		txtCedulaPaciente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if(!txtCedulaPaciente.getText().equalsIgnoreCase("")&&!txtNombrePaciente.getText().equalsIgnoreCase("")&&!txtTelefonoPaciente.getText().equalsIgnoreCase("")) {
+					cbxEspecialidad.setEnabled(true);
+				}else {
+					cbxEspecialidad.setEnabled(false);
+				}
+			}
+		});
 		txtCedulaPaciente.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		txtCedulaPaciente.setColumns(10);
 		txtCedulaPaciente.setBounds(154, 65, 165, 23);
@@ -276,6 +286,16 @@ public class FrmCita extends JDialog {
 		panel.setLayout(null);
 		
 		txtNombrePaciente = new JTextField();
+		txtNombrePaciente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if(!txtCedulaPaciente.getText().equalsIgnoreCase("")&&!txtNombrePaciente.getText().equalsIgnoreCase("")&&!txtTelefonoPaciente.getText().equalsIgnoreCase("")) {
+					cbxEspecialidad.setEnabled(true);
+				}else {
+					cbxEspecialidad.setEnabled(false);
+				}
+			}
+		});
 		txtNombrePaciente.setEditable(false);
 		txtNombrePaciente.setBounds(142, 13, 382, 23);
 		panel.add(txtNombrePaciente);
@@ -297,6 +317,11 @@ public class FrmCita extends JDialog {
 				char c = e.getKeyChar();
 				if((!(Character.isDigit(c))&&(c!='-'))||(c==KeyEvent.VK_BACK_SPACE)||(c==KeyEvent.VK_DELETE)) {
 					e.consume();
+				}
+				if(!txtCedulaPaciente.getText().equalsIgnoreCase("")&&!txtNombrePaciente.getText().equalsIgnoreCase("")&&!txtTelefonoPaciente.getText().equalsIgnoreCase("")) {
+					cbxEspecialidad.setEnabled(true);
+				}else {
+					cbxEspecialidad.setEnabled(false);
 				}
 			}
 		});
@@ -344,6 +369,7 @@ public class FrmCita extends JDialog {
 		panelFooter.add(btnLimpiar);
 		
 		btnGuardarCita = new JButton("Guardar");
+		btnGuardarCita.setEnabled(false);
 		btnGuardarCita.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				boolean aprobado=true;
@@ -368,8 +394,10 @@ public class FrmCita extends JDialog {
 					}
 				}
 				if((de.getDay()<fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
-						||(de.getYear()==fechaActual.getYear()&&de.getMonth()<fechaActual.getMonth())||de.getYear()<fechaActual.getYear()) {
+						||(de.getYear()==fechaActual.getYear()&&de.getMonth()<fechaActual.getMonth())||(de.getYear()<fechaActual.getYear())) {
 					aprobado2=false;
+				}else {
+					aprobado2=true;
 				}
 				if(aprobado&&aprobado2) {
 					CitaMedica aux = new CitaMedica(txtCodigoCita.getText(),txtNombrePaciente.getText(),txtCedulaPaciente.getText(),txtTelefonoPaciente.getText(),medicoCita,creador,de);
@@ -387,7 +415,6 @@ public class FrmCita extends JDialog {
 				}
 			}
 		});
-		btnGuardarCita.setEnabled(false);
 		btnGuardarCita.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnGuardarCita.setBackground(UIManager.getColor("Button.light"));
 		btnGuardarCita.setBounds(293, 16, 89, 29);

@@ -24,6 +24,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JRadioButton;
 import com.toedter.calendar.JCalendar;
 
+import Logico.CitaMedica;
 import Logico.Clinica;
 import Logico.Paciente;
 
@@ -79,7 +80,7 @@ public class FrmIngresarPaciente extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			FrmIngresarPaciente dialog = new FrmIngresarPaciente(null);
+			FrmIngresarPaciente dialog = new FrmIngresarPaciente(null,null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -90,7 +91,7 @@ public class FrmIngresarPaciente extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public FrmIngresarPaciente(Paciente paciente) {
+	public FrmIngresarPaciente(Paciente paciente, CitaMedica auxCita) {
 		pacienteModificar = paciente;
 		//opcion:1 -->Ingresar paciente.
 		//opcion:2 -->Modificar paciente.
@@ -203,6 +204,8 @@ public class FrmIngresarPaciente extends JDialog {
 						if((de.getDay()>fechaActual.getDay()&&de.getYear()==fechaActual.getYear()&&de.getMonth()==fechaActual.getMonth())
 								||(de.getYear()==fechaActual.getYear()&&de.getMonth()>fechaActual.getMonth())||de.getYear()>fechaActual.getYear()) {
 							aprobado=false;
+						}else {
+							aprobado=true;
 						}
 						if(pacienteModificar==null&&aprobado) {
 							try {
@@ -213,6 +216,7 @@ public class FrmIngresarPaciente extends JDialog {
 										txtReligion.getText(), cbxTipoSangre.getSelectedItem().toString(), 
 										txtProfesion.getText());
 								Clinica.getInstance().insertarPaciente(paciente);
+								FrmConsulta.paciente=paciente;
 								JOptionPane.showMessageDialog(null, "El Paciente se ingreso en el sistema correctamente", "INGRESO DE PACIENTE", JOptionPane.INFORMATION_MESSAGE);
 								dispose();
 							} catch (Exception e2) {
@@ -487,9 +491,14 @@ public class FrmIngresarPaciente extends JDialog {
 			if(paciente!=null) {
 				cargarDatosModificar();
 			}
+			if(auxCita!=null) {
+				txtCedula.setText(auxCita.getCedulaPersona());
+				txtTelefono.setText(auxCita.getTelefonoPersona());
+				txtNombre.setText(auxCita.getNombrePersona());
+			}
 		}
 	}
-	
+
 	private void comprobarCampos(JTextField text) {
 		text.getDocument().addDocumentListener(new DocumentListener() {			
 			@Override
