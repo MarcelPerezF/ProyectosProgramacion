@@ -57,7 +57,7 @@ public class FrmVacunar extends JDialog {
 	private JButton btnGuardar;
 	private JButton btnVacuna;
 	public static Vacuna vacunaAplicar;
-	private ArrayList<Vacuna> vacuna;
+	public static ArrayList<Vacuna> vacuna = new ArrayList<Vacuna>();
 	private static DefaultTableModel modeloVacunas;
 	private static Object[] rowVacunas;
 	private JTable tblVacunas;
@@ -196,7 +196,7 @@ public class FrmVacunar extends JDialog {
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(vacunaAplicar.getCantidadVacunas()>1) {
+				if(vacuna.size()>0) {
 					try {
 						FrmConsulta.vacunas=vacuna;
 						JOptionPane.showMessageDialog(null, "Se ha ingresado las vacunas al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
@@ -238,8 +238,10 @@ public class FrmVacunar extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				FrmListadoVacuna frmAux = new FrmListadoVacuna(true,1);
 				frmAux.setVisible(true);
-				if(vacunaAplicar!=null) {;
+				if(vacunaAplicar!=null) {
 					btnGuardar.setEnabled(true);
+					vacuna.add(vacunaAplicar);
+					loadVacunas();
 				}
 			}
 		});
@@ -263,10 +265,12 @@ public class FrmVacunar extends JDialog {
 				}
 				vacuna.remove(i);
 				btnEliminar.setEnabled(false);
+				FrmConsulta.vacunas=vacuna;
+				loadVacunas();
 			}
 		});
 		btnEliminar.setEnabled(false);
-		btnEliminar.setBackground(SystemColor.controlHighlight);
+		btnEliminar.setBackground(UIManager.getColor("Button.light"));
 		btnEliminar.setBounds(137, 17, 89, 29);
 		panelFooter.add(btnEliminar);
 		loadVacunas();

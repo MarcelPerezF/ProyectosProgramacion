@@ -271,6 +271,8 @@ public class FrmCita extends JDialog {
 					btnLimpiar.setEnabled(true);
 					txtCedulaPaciente.setEditable(false);
 					btnBuscar.setEnabled(false);
+					txtNombrePaciente.setEditable(false);
+					txtTelefonoPaciente.setEditable(false);
 				}
 			}
 		});

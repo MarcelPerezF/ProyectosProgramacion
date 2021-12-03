@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -64,7 +65,6 @@ public class FrmListadoVacuna extends JDialog {
 	private JButton btnSelecciona;
 	private JButton btnSalir;
 	private int opcion;
-
 	/**
 	 * Launch the application.
 	 */
@@ -95,6 +95,9 @@ public class FrmListadoVacuna extends JDialog {
 						if(opcion==0) {
 							setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+							if(vacunaSeleccionada==null) {
+								FrmVacunar.vacunaAplicar=null;
+							}
 						}else if(opcion==1) {
 							setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 						}
@@ -156,8 +159,8 @@ public class FrmListadoVacuna extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(vacunaSeleccionada!=null) {
 							if(opcion==1) {
-								dispose();
 								FrmVacunar.vacunaAplicar = vacunaSeleccionada;
+								dispose();
 							}else {
 								dispose();
 								FrmSolicitarVacuna aux = new FrmSolicitarVacuna(vacunaSeleccionada);
@@ -179,6 +182,9 @@ public class FrmListadoVacuna extends JDialog {
 						int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir del listado de vacunas?", "Confirmar", JOptionPane.YES_NO_OPTION);
 						if(opcion==0) {
 							JOptionPane.showMessageDialog(null, "Saliendo del listado de vacunas", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
+							if(vacunaSeleccionada==null) {
+								FrmVacunar.vacunaAplicar=null;
+							}
 							dispose();
 						}
 					}
@@ -309,6 +315,11 @@ public class FrmListadoVacuna extends JDialog {
 					if(vacuna==vacunita) {
 						noPuesta=false;
 					}
+				}
+			}
+			for(Vacuna vacunita : FrmVacunar.vacuna) {
+				if(vacuna==vacunita) {
+					noPuesta=false;
 				}
 			}
 			if(noPuesta) {

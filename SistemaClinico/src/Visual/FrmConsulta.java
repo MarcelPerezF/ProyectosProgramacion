@@ -74,7 +74,7 @@ public class FrmConsulta extends JDialog {
 	private Image imagenPersona= new ImageIcon(FrmConsulta.class.getResource("Imagenes/Persona.png")).getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
 	public static Enfermedad enfermedad;
 	public static Paciente paciente;
-	public static ArrayList<Vacuna> vacunas;
+	public static ArrayList<Vacuna> vacunas = new ArrayList<Vacuna>();
 	private JButton btnDiagnosticar;
 	private JButton btnGuardar;
 	private JTextField txtCodigoConsulta;
@@ -212,11 +212,11 @@ public class FrmConsulta extends JDialog {
 						enfermedad, (Medico)medico);
 				try {
 					Clinica.getInstance().ingresarConsultaPaciente(paciente, consulta, cita);
+					for(Vacuna v1:vacunas) {
+						Clinica.getInstance().ingresarVacunaPacienteHistorial(paciente, v1);
+					}
 					if(chHistorial.isSelected()) {
 						Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente, consulta);
-						for(Vacuna v1:vacunas) {
-							Clinica.getInstance().ingresarVacunaPacienteHistorial(paciente, v1);
-						}
 					}
 					JOptionPane.showMessageDialog(null, "Se ha ingresado de manera correcta la consulta", "INGRESO DE CONSULTA", JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception e2) {
@@ -616,10 +616,6 @@ public class FrmConsulta extends JDialog {
 		lblSuministrarVacuna.setBounds(15, 380, 138, 20);
 		pnlDiagnosticar.add(lblSuministrarVacuna);
 		loadPaciente();
-		if(paciente!=null) {
-			cargarTablaConsultas();
-			cargarTablaVacunas();
-		}
 	}
 
 	private void loadPaciente() {
@@ -652,6 +648,12 @@ public class FrmConsulta extends JDialog {
 			tbpTabs.setEnabled(true);
 			txtNombrePaciente2.setText(paciente.getNombre());
 			txtNombrePaciente3.setText(paciente.getNombre());
+			if(paciente.getMisConsultas().size()!=0) {
+				cargarTablaConsultas();
+			}
+			if(paciente.getHistorial().getMisVacunas().size()!=0) {
+				cargarTablaVacunas();
+			}
 		}
 		
 	}
@@ -674,8 +676,13 @@ public class FrmConsulta extends JDialog {
 	        rowConsultas[2] = paciente.getHistorial().getMisConsultas().get(i).getDiagnostico();
 	        tblConsultas.getColumnModel().getColumn(2).setCellRenderer(tcr);
 	        
-	        rowConsultas[3] = paciente.getHistorial().getMisConsultas().get(i).getEnfermedad().getNombreEnfermedad();
-	        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        if(paciente.getHistorial().getMisConsultas().get(i).getEnfermedad()!=null) {
+	        	rowConsultas[3] = paciente.getHistorial().getMisConsultas().get(i).getEnfermedad().getNombreEnfermedad();
+		        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        }else {
+	        	rowConsultas[3] = "";
+		        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        }
 	        
 	        rowConsultas[4] = paciente.getHistorial().getMisConsultas().get(i).getMedico().getNombre();
 	        tblConsultas.getColumnModel().getColumn(4).setCellRenderer(tcr);

@@ -90,7 +90,7 @@ public class FrmLoginSistema extends JFrame implements Runnable{
 		if(opcion==1) {
 			cargarDatosSistema();
 		}
-		
+		setIconImage(imagenLogin);
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 507, 300);
