@@ -247,12 +247,10 @@ public class FrmHistorialPaciente extends JDialog {
 			txtReligion.setText(pacienteHistorial.getReligion());
 			cargarTablaConsultas();
 			cargarTablaVacunas();
-			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "No se pudo mostrar la informaci\u00f3n del paciente seleccionado", "Error", JOptionPane.OK_OPTION);			
 			dispose();
 		}
-		
 	}
 	
 	public void cargarTablaConsultas() {
@@ -273,8 +271,13 @@ public class FrmHistorialPaciente extends JDialog {
 	        rowConsultas[2] = pacienteHistorial.getHistorial().getMisConsultas().get(i).getDiagnostico();
 	        tblConsultas.getColumnModel().getColumn(2).setCellRenderer(tcr);
 	        
-	        rowConsultas[3] = pacienteHistorial.getHistorial().getMisConsultas().get(i).getEnfermedad().getNombreEnfermedad();
-	        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        if(pacienteHistorial.getHistorial().getMisConsultas().get(i).getEnfermedad()!=null) {
+	        	rowConsultas[3] = pacienteHistorial.getHistorial().getMisConsultas().get(i).getEnfermedad().getNombreEnfermedad();
+		        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        }else {
+	        	rowConsultas[3] = "";
+		        tblConsultas.getColumnModel().getColumn(3).setCellRenderer(tcr);
+	        }
 	        
 	        rowConsultas[4] = pacienteHistorial.getHistorial().getMisConsultas().get(i).getMedico().getNombre();
 	        tblConsultas.getColumnModel().getColumn(4).setCellRenderer(tcr);

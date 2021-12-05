@@ -159,8 +159,13 @@ public class FrmListadoVacuna extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						if(vacunaSeleccionada!=null) {
 							if(opcion==1) {
-								FrmVacunar.vacunaAplicar = vacunaSeleccionada;
-								dispose();
+								if(vacunaSeleccionada.getCantidadVacunas()>1) {
+									FrmVacunar.vacunaAplicar = vacunaSeleccionada;
+									dispose();
+								}else {
+									FrmVacunar.vacunaAplicar = null;
+									JOptionPane.showMessageDialog(null, "Debe ingresar mas vacuna de este tipo", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+								}
 							}else {
 								dispose();
 								FrmSolicitarVacuna aux = new FrmSolicitarVacuna(vacunaSeleccionada);
