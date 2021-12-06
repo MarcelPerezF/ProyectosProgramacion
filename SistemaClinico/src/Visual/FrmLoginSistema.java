@@ -64,9 +64,6 @@ public class FrmLoginSistema extends JFrame implements Runnable{
 	private JLabel lblImagenTitulo;
 	private final String ficheroGuardar = "src/Fichero/SistemaClinico.dat";
 	
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
