@@ -54,7 +54,6 @@ public class FrmVacunar extends JDialog {
 	private Image imagenVacuna= new ImageIcon(FrmVacunar.class.getResource("Imagenes/Vacunas.png")).getImage().getScaledInstance(sizeIcon, sizeIcon, Image.SCALE_SMOOTH);
 	private Image imagenVacuna2= new ImageIcon(FrmVacunar.class.getResource("Imagenes/Vacunas.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
 	private JButton btnSalir;
-	private JButton btnGuardar;
 	private JButton btnVacuna;
 	public static Vacuna vacunaAplicar;
 	public static ArrayList<Vacuna> vacuna = new ArrayList<Vacuna>();
@@ -63,7 +62,7 @@ public class FrmVacunar extends JDialog {
 	private JTable tblVacunas;
 	private JButton btnEliminar;
 	private Vacuna auxVacuna;
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -95,7 +94,7 @@ public class FrmVacunar extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea vacunar el paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\\u00e1s seguro de que desea salir?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
@@ -189,39 +188,14 @@ public class FrmVacunar extends JDialog {
 		JPanel panelFooter = new JPanel();
 		panelFooter.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panelFooter.setBackground(UIManager.getColor("CheckBox.light"));
-		panelFooter.setBounds(56, 382, 476, 62);
+		panelFooter.setBounds(115, 382, 358, 62);
 		contentPanel.add(panelFooter);
 		panelFooter.setLayout(null);
-		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(vacuna.size()>0) {
-					try {
-						FrmConsulta.vacunas=vacuna;
-						JOptionPane.showMessageDialog(null, "Se ha ingresado las vacunas al paciente de manera satisfactoria!", "VACUNACI\u00d3N EXITOSA",
-								JOptionPane.INFORMATION_MESSAGE);
-					} catch (Exception e2) {
-						JOptionPane.showMessageDialog(null, "Error en guardar los datos", "ERROR", JOptionPane.ERROR_MESSAGE);
-					}
-					dispose();
-				}else {
-					JOptionPane.showMessageDialog(null, "No se puede aplicar esta vacuna debido a que no hay suficientes!", "ERROR EN VACUNACI\u00d3N ",
-							JOptionPane.OK_OPTION);
-					dispose();
-				}
-			}
-		});
-		btnGuardar.setEnabled(false);
-		btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnGuardar.setBackground(UIManager.getColor("Button.light"));
-		btnGuardar.setBounds(258, 17, 89, 29);
-		panelFooter.add(btnGuardar);
 		
 		btnSalir = new JButton("Salir");
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que no desea vacunar al paciente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Est\u00e1s seguro de que desea salir?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if(opcion==0) {
 					JOptionPane.showMessageDialog(null, "Saliendo de vacunar pacientes", "Saliendo", JOptionPane.INFORMATION_MESSAGE);
 					dispose();
@@ -230,7 +204,7 @@ public class FrmVacunar extends JDialog {
 		});
 		btnSalir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnSalir.setBackground(UIManager.getColor("Button.light"));
-		btnSalir.setBounds(379, 17, 89, 29);
+		btnSalir.setBounds(260, 17, 89, 29);
 		panelFooter.add(btnSalir);
 		
 		btnVacuna = new JButton("Vacunas");
@@ -239,7 +213,6 @@ public class FrmVacunar extends JDialog {
 				FrmListadoVacuna frmAux = new FrmListadoVacuna(true,1);
 				frmAux.setVisible(true);
 				if(vacunaAplicar!=null) {
-					btnGuardar.setEnabled(true);
 					vacuna.add(vacunaAplicar);
 					loadVacunas();
 				}
@@ -265,7 +238,6 @@ public class FrmVacunar extends JDialog {
 				}
 				vacuna.remove(i);
 				btnEliminar.setEnabled(false);
-				FrmConsulta.vacunas=vacuna;
 				loadVacunas();
 			}
 		});
@@ -301,4 +273,5 @@ public class FrmVacunar extends JDialog {
 			}
 		}
 	}
+	
 }

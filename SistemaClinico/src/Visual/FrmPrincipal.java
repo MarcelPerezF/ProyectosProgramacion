@@ -43,7 +43,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 import java.awt.Cursor;
@@ -55,7 +59,11 @@ public class FrmPrincipal extends JFrame {
 	public static String nombreUsuario;
 	public static String rolUsuario;
 	public static Usuario usuarioActual;//Para saber quien esta usando el sistema
-	private final static String ficheroGuardar = "Respaldo/SistemaClinico.dat";
+	private final static String ficheroGuardar = "src/Fichero/SistemaClinico.dat";
+	private final static String socketGuardar = "Respaldo/SistemaClinicoRespaldo.dat";
+	private static Socket socketCliente = null;
+	private static ObjectInputStream EntradaSocket;
+	private static ObjectOutputStream SalidaSocket;
 	
 	//Constantes:
 	private final int sizeIcon = 35;
@@ -149,12 +157,14 @@ public class FrmPrincipal extends JFrame {
 	private Image imagenIngresarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/IngresarVacunas.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenInfoSistema = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/InfoSistema.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	private Image imagenSolicitarVacuna = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Vacunas3.png")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
+	private Image imagenRespaldo = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Respaldo.jpeg")).getImage().getScaledInstance(sizeIconMin, sizeIconMin, Image.SCALE_SMOOTH);
 	
 	//Acceso Directo:
 	private Image imagenConsultaAccesoDirecto = new ImageIcon(FrmPrincipal.class.getResource("Imagenes/ConsultaMedica.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenCitasAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/Citas2.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private Image imagenUsuarioAccesoDirecto= new ImageIcon(FrmPrincipal.class.getResource("Imagenes/NuevoUsuario.png")).getImage().getScaledInstance(sizeIconAccesoDirecto, sizeIconAccesoDirecto, Image.SCALE_SMOOTH);
 	private JMenuItem mnSolicitarVacuna;
+	private JMenuItem mnRespaldo;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -169,6 +179,7 @@ public class FrmPrincipal extends JFrame {
 					Clinica.getInstance().insertarUsuario(secretaria);
 					FrmPrincipal frame = new FrmPrincipal(medico);
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -232,6 +243,115 @@ public class FrmPrincipal extends JFrame {
 		mnInfoClinica.setBackground(colorSubMenuFondo);
 		mnInfoClinica.setIcon(new ImageIcon(imagenClinica));
 		mnArchivo.add(mnInfoClinica);
+		
+		JSeparator separator_1 = new JSeparator();
+		mnArchivo.add(separator_1);
+		
+		mnRespaldo = new JMenuItem("Respaldo");
+		mnRespaldo.setIcon(new ImageIcon(imagenRespaldo));
+		mnRespaldo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcion = JOptionPane.showConfirmDialog(null, "Esta seguro que desea hacer un respaldo de la informacion?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				if(opcion==0) {
+					InetAddress direccionIP;
+					try {
+						direccionIP = InetAddress.getLocalHost();
+						socketCliente = new Socket(direccionIP, 8000);
+						SalidaSocket = new ObjectOutputStream(socketCliente.getOutputStream());
+						
+						int cantidadUsuarios = Clinica.getInstance().getMisUsuarios().size();
+						SalidaSocket.writeInt(cantidadUsuarios);
+						for (int i = 0; i < cantidadUsuarios; i++) {
+							SalidaSocket.writeObject(Clinica.getInstance().getMisUsuarios().get(i));
+						}
+						
+						int cantidadVacunas = Clinica.getInstance().getMisVacunas().size();
+						SalidaSocket.writeInt(cantidadVacunas);
+						for (int i = 0; i < cantidadVacunas; i++) {
+							SalidaSocket.writeObject(Clinica.getInstance().getMisVacunas().get(i));
+						}
+						
+						int cantidadEnfermedad = Clinica.getInstance().getMisEnfermedades().size();
+						SalidaSocket.writeInt(cantidadEnfermedad );
+						for (int i = 0; i < cantidadEnfermedad; i++) {
+							SalidaSocket.writeObject(Clinica.getInstance().getMisEnfermedades().get(i));
+						}
+						
+						int cantidadCitasMedicas = Clinica.getInstance().getMisCitasMedicas().size();
+						SalidaSocket.writeInt(cantidadCitasMedicas);
+						for (int i = 0; i < cantidadCitasMedicas; i++) {
+							SalidaSocket.writeObject(Clinica.getInstance().getMisCitasMedicas().get(i));
+						}
+						
+						int cantidadPacientes = Clinica.getInstance().getMisPacientes().size();
+						SalidaSocket.writeInt(cantidadPacientes);
+						for (int i = 0; i < cantidadPacientes; i++) {
+							SalidaSocket.writeObject(Clinica.getInstance().getMisPacientes().get(i));
+						}
+						
+						
+					} catch (UnknownHostException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
+					while (true) {
+						
+						try {
+							EntradaSocket = new ObjectInputStream(socketCliente.getInputStream());
+							FileOutputStream guardandoDatosRespaldo = new FileOutputStream(socketGuardar);
+							ObjectOutputStream oos = new ObjectOutputStream(guardandoDatosRespaldo);
+							
+							int cantidadUsuarios = EntradaSocket.readInt();
+							oos.writeInt(cantidadUsuarios);
+							for (int i = 0; i < cantidadUsuarios; i++) {
+								Object usuario = EntradaSocket.readObject();
+								oos.writeObject(usuario);
+							}
+							
+							int cantidadVacunas = EntradaSocket.readInt();
+							oos.writeInt(cantidadVacunas);
+							for (int i = 0; i < cantidadVacunas; i++) {
+								Object vacuna = EntradaSocket.readObject();
+								oos.writeObject(vacuna);
+							}
+							
+							int cantidadEnfermedades= EntradaSocket.readInt();
+							oos.writeInt(cantidadEnfermedades);
+							for (int i = 0; i < cantidadEnfermedades; i++) {
+								Object enfermedad = EntradaSocket.readObject();
+								oos.writeObject(enfermedad);
+							}
+							
+							int cantidadCitasMedicas = EntradaSocket.readInt();
+							oos.writeInt(cantidadCitasMedicas);
+							for (int i = 0; i < cantidadCitasMedicas; i++) {
+								Object citamedica = EntradaSocket.readObject();
+								oos.writeObject(citamedica);
+							}
+							
+							int cantidadPaciente = EntradaSocket.readInt();
+							oos.writeInt(cantidadPaciente);
+							for (int i = 0; i < cantidadPaciente; i++) {
+								Object paciente = EntradaSocket.readObject();
+								oos.writeObject(paciente);
+							}
+							
+							oos.close();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						} catch (ClassNotFoundException e1) {
+							e1.printStackTrace();
+						}
+					}
+					
+					
+				}
+			}
+		});
+		mnRespaldo.setBackground(Color.WHITE);
+		mnArchivo.add(mnRespaldo);
 		
 		JSeparator spArchivo2 = new JSeparator();
 		mnArchivo.add(spArchivo2);

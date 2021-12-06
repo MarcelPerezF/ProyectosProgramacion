@@ -62,7 +62,7 @@ public class FrmLoginSistema extends JFrame implements Runnable{
 	private JButton btnIngresar;
 	private JButton btnLimpiar;
 	private JLabel lblImagenTitulo;
-	private final String ficheroGuardar = "Respaldo/SistemaClinico.dat";
+	private final String ficheroGuardar = "src/Fichero/SistemaClinico.dat";
 	
 	/**
 	 * Launch the application.
