@@ -1,13 +1,17 @@
 package Socket;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Vector;
 
 public class Servidor {
-	
-	public static Vector usuarios = new Vector();
+	static ObjectInputStream Lectura;
+	static ObjectOutputStream Escritura;
+	static FileOutputStream respaldoServidor;
+	static ObjectOutputStream guardandoRespaldo;
 	
 	public static void main(String args[]) {
 		
@@ -18,12 +22,19 @@ public class Servidor {
 			
 			while (true) {
 				Socket cliente = servidorSocket.accept();
-				Flujo f = new Flujo(cliente);
-				Thread t = new Thread(f);
-				t.start();
+				Lectura = new ObjectInputStream((cliente.getInputStream()));
+				respaldoServidor = new FileOutputStream("Respaldo/SistemaClinicoRespaldo.dat");
+				guardandoRespaldo = new ObjectOutputStream(respaldoServidor);
+				
+				guardandoRespaldo.writeObject(Lectura.readObject());
+				
+				guardandoRespaldo.close();
+			
 			}
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		

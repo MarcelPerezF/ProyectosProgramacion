@@ -1,10 +1,12 @@
 package Logico;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Clinica {
+public class Clinica implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Paciente> misPacientes;
 	private ArrayList<Usuario> misUsuarios;
 	private ArrayList<CitaMedica> misCitasMedicas;
@@ -393,5 +395,9 @@ public class Clinica {
 		}
 		codigo = "C-P-"+(i+1);
 		return codigo;
+	}
+
+	public static void setClinica(Clinica temporal) {
+		Clinica.instanciaGlobal = temporal;		
 	}
 }

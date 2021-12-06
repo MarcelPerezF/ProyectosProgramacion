@@ -177,7 +177,7 @@ public class FrmPrincipal extends JFrame {
 					Clinica.getInstance().insertarUsuario(medico);
 					Clinica.getInstance().insertarUsuario(administrador);
 					Clinica.getInstance().insertarUsuario(secretaria);
-					FrmPrincipal frame = new FrmPrincipal(medico);
+					FrmPrincipal frame = new FrmPrincipal(administrador);
 					frame.setVisible(true);
 					
 				} catch (Exception e) {
@@ -258,95 +258,13 @@ public class FrmPrincipal extends JFrame {
 						direccionIP = InetAddress.getLocalHost();
 						socketCliente = new Socket(direccionIP, 8000);
 						SalidaSocket = new ObjectOutputStream(socketCliente.getOutputStream());
-						
-						int cantidadUsuarios = Clinica.getInstance().getMisUsuarios().size();
-						SalidaSocket.writeInt(cantidadUsuarios);
-						for (int i = 0; i < cantidadUsuarios; i++) {
-							SalidaSocket.writeObject(Clinica.getInstance().getMisUsuarios().get(i));
-						}
-						
-						int cantidadVacunas = Clinica.getInstance().getMisVacunas().size();
-						SalidaSocket.writeInt(cantidadVacunas);
-						for (int i = 0; i < cantidadVacunas; i++) {
-							SalidaSocket.writeObject(Clinica.getInstance().getMisVacunas().get(i));
-						}
-						
-						int cantidadEnfermedad = Clinica.getInstance().getMisEnfermedades().size();
-						SalidaSocket.writeInt(cantidadEnfermedad );
-						for (int i = 0; i < cantidadEnfermedad; i++) {
-							SalidaSocket.writeObject(Clinica.getInstance().getMisEnfermedades().get(i));
-						}
-						
-						int cantidadCitasMedicas = Clinica.getInstance().getMisCitasMedicas().size();
-						SalidaSocket.writeInt(cantidadCitasMedicas);
-						for (int i = 0; i < cantidadCitasMedicas; i++) {
-							SalidaSocket.writeObject(Clinica.getInstance().getMisCitasMedicas().get(i));
-						}
-						
-						int cantidadPacientes = Clinica.getInstance().getMisPacientes().size();
-						SalidaSocket.writeInt(cantidadPacientes);
-						for (int i = 0; i < cantidadPacientes; i++) {
-							SalidaSocket.writeObject(Clinica.getInstance().getMisPacientes().get(i));
-						}
-						
+						SalidaSocket.writeObject(Clinica.getInstance());
 						
 					} catch (UnknownHostException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
-					
-					while (true) {
-						
-						try {
-							EntradaSocket = new ObjectInputStream(socketCliente.getInputStream());
-							FileOutputStream guardandoDatosRespaldo = new FileOutputStream(socketGuardar);
-							ObjectOutputStream oos = new ObjectOutputStream(guardandoDatosRespaldo);
-							
-							int cantidadUsuarios = EntradaSocket.readInt();
-							oos.writeInt(cantidadUsuarios);
-							for (int i = 0; i < cantidadUsuarios; i++) {
-								Object usuario = EntradaSocket.readObject();
-								oos.writeObject(usuario);
-							}
-							
-							int cantidadVacunas = EntradaSocket.readInt();
-							oos.writeInt(cantidadVacunas);
-							for (int i = 0; i < cantidadVacunas; i++) {
-								Object vacuna = EntradaSocket.readObject();
-								oos.writeObject(vacuna);
-							}
-							
-							int cantidadEnfermedades= EntradaSocket.readInt();
-							oos.writeInt(cantidadEnfermedades);
-							for (int i = 0; i < cantidadEnfermedades; i++) {
-								Object enfermedad = EntradaSocket.readObject();
-								oos.writeObject(enfermedad);
-							}
-							
-							int cantidadCitasMedicas = EntradaSocket.readInt();
-							oos.writeInt(cantidadCitasMedicas);
-							for (int i = 0; i < cantidadCitasMedicas; i++) {
-								Object citamedica = EntradaSocket.readObject();
-								oos.writeObject(citamedica);
-							}
-							
-							int cantidadPaciente = EntradaSocket.readInt();
-							oos.writeInt(cantidadPaciente);
-							for (int i = 0; i < cantidadPaciente; i++) {
-								Object paciente = EntradaSocket.readObject();
-								oos.writeObject(paciente);
-							}
-							
-							oos.close();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (ClassNotFoundException e1) {
-							e1.printStackTrace();
-						}
-					}
-					
-					
 				}
 			}
 		});
@@ -779,46 +697,17 @@ public class FrmPrincipal extends JFrame {
 	}
 	
 	public static void guardarDatosSistema() {
-		try {
-			
+		try {			
 			//Creamos el archivo para guardar los datos.
 			FileOutputStream guardandoDatos = new FileOutputStream(ficheroGuardar);
 			
 			//Creamos el fichero objeto del archivo para guardar.
-			ObjectOutputStream oos = new ObjectOutputStream(guardandoDatos);
+			ObjectOutputStream guardando = new ObjectOutputStream(guardandoDatos);
 			
-			//Guardamos la cantidad de usuarios y luego guardamos cada uno de los usuarios.
-			oos.writeInt(Clinica.getInstance().getMisUsuarios().size());
-			for (Usuario usuario: Clinica.getInstance().getMisUsuarios()) {
-				oos.writeObject(usuario);
-			}
-			
-			//Guardamos la cantidad de vacunas y luego guardamos cada uno de las vacunas.
-			oos.writeInt(Clinica.getInstance().getMisVacunas().size());
-			for (Vacuna vacuna: Clinica.getInstance().getMisVacunas()) {
-				oos.writeObject(vacuna);
-			}
-			
-			//Guardamos la cantidad de enfermedades y luego guardamos cada una de las enfermedades.
-			oos.writeInt(Clinica.getInstance().getMisEnfermedades().size());
-			for (Enfermedad enfermedad: Clinica.getInstance().getMisEnfermedades()) {
-				oos.writeObject(enfermedad);
-			}
-			
-			//Guardamos la cantidad de citas medicas y luego guardamos cada una de las citas medicas.
-			oos.writeInt(Clinica.getInstance().getMisCitasMedicas().size());
-			for (CitaMedica citamedica: Clinica.getInstance().getMisCitasMedicas()) {
-				oos.writeObject(citamedica);
-			}
-			
-			//Guardamos la cantidad de pacientes y luego guardamos cada uno de los pacientes.
-			oos.writeInt(Clinica.getInstance().getMisPacientes().size());
-			for (Paciente paciente: Clinica.getInstance().getMisPacientes()) {
-				oos.writeObject(paciente);
-			}
+			guardando.writeObject(Clinica.getInstance());
 			
 			//Cerramos el fichero
-			oos.close();
+			guardando.close();
 		}catch (IOException e2) {
 			System.out.println(e2.getMessage());
 		}

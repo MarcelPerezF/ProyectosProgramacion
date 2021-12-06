@@ -323,40 +323,9 @@ public class FrmLoginSistema extends JFrame implements Runnable{
 			//Creamos el fichero por el cual leeremos y guardaremos la informacion
 			ObjectInputStream oosLectura = new ObjectInputStream(recibiendoDatos);
 				
-			//Obtenemos la cantidad de usuarios, los leemos y guardamos.
-			int cantidadUsuarios = oosLectura.readInt();
-			for (int i = 0; i < cantidadUsuarios; i++) {
-				Usuario usuario = (Usuario)oosLectura.readObject();
-				Clinica.getInstance().insertarUsuario(usuario);			
-			}
+			Clinica temporal = (Clinica)oosLectura.readObject();
 			
-			//Obtenemos la cantidad de vacunas, las leemos y guardamos.
-			int cantidadVacunas = oosLectura.readInt();
-			for (int i = 0; i < cantidadVacunas; i++) {
-				Vacuna vacuna = (Vacuna)oosLectura.readObject();
-				Clinica.getInstance().insertarVacuna(vacuna);		
-			}
-			
-			//Obtenemos la cantidad de enfermedades, las leemos y guardamos.
-			int cantidadEnfermedades = oosLectura.readInt();
-			for (int i = 0; i < cantidadEnfermedades; i++) {
-				Enfermedad enfermedad = (Enfermedad)oosLectura.readObject();
-				Clinica.getInstance().insertarEnfermedades(enfermedad);			
-			}
-			
-			//Obtenemos la citas medicas, las leemos y guardamos.
-			int cantidadCitasMedicas = oosLectura.readInt();
-			for (int i = 0; i < cantidadCitasMedicas; i++) {
-				CitaMedica citaMedica = (CitaMedica)oosLectura.readObject();
-				Clinica.getInstance().insertarCitasMedicas(citaMedica);	
-			}	
-			
-			//Obtenemos la cantidad de pacientes, los leemos y guardamos.
-			int cantidadPacientes = oosLectura.readInt();
-			for (int i = 0; i < cantidadPacientes; i++) {
-				Paciente paciente = (Paciente)oosLectura.readObject();
-				Clinica.getInstance().insertarPaciente(paciente);	
-			}
+			Clinica.setClinica(temporal);
 			
 			//Cerramos el fichero
 			oosLectura.close();
@@ -371,9 +340,12 @@ public class FrmLoginSistema extends JFrame implements Runnable{
 				JOptionPane.showMessageDialog(null, "A CONTINUACI\u00d3N INGRESE SUS CREDENCIALES", "INFORMACI\u00d3N", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}catch (IOException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.out.println("Fichero no encontrado");
 		} catch (ClassNotFoundException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
+			System.out.println("Clase no encontrada");
+
 		}
 	}
 }
