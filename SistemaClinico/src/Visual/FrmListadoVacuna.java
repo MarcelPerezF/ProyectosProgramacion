@@ -164,7 +164,7 @@ public class FrmListadoVacuna extends JDialog {
 									dispose();
 								}else {
 									FrmVacunar.vacunaAplicar = null;
-									JOptionPane.showMessageDialog(null, "Debe ingresar mas vacuna de este tipo", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+									JOptionPane.showMessageDialog(null, "No se puede aplicar esta vacuna debido a que no hay suficientes!", "Informacion", JOptionPane.INFORMATION_MESSAGE);
 								}
 							}else {
 								dispose();
