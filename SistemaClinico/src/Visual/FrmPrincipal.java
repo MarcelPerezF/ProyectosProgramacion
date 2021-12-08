@@ -60,9 +60,7 @@ public class FrmPrincipal extends JFrame {
 	public static String rolUsuario;
 	public static Usuario usuarioActual;//Para saber quien esta usando el sistema
 	private final static String ficheroGuardar = "src/Fichero/SistemaClinico.dat";
-	private final static String socketGuardar = "Respaldo/SistemaClinicoRespaldo.dat";
 	private static Socket socketCliente = null;
-	private static ObjectInputStream EntradaSocket;
 	private static ObjectOutputStream SalidaSocket;
 	
 	//Constantes:
@@ -238,7 +236,7 @@ public class FrmPrincipal extends JFrame {
 						socketCliente = new Socket(direccionIP, 8000);
 						SalidaSocket = new ObjectOutputStream(socketCliente.getOutputStream());
 						SalidaSocket.writeObject(Clinica.getInstance());
-						
+						JOptionPane.showMessageDialog(null, "Se ha hecho el respaldo correctamente","Informacion",JOptionPane.INFORMATION_MESSAGE);
 					} catch (UnknownHostException e1) {
 						e1.printStackTrace();
 					} catch (IOException e1) {

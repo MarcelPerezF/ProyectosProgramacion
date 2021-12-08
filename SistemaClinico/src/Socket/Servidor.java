@@ -9,7 +9,6 @@ import java.net.Socket;
 
 public class Servidor {
 	static ObjectInputStream Lectura;
-	static ObjectOutputStream Escritura;
 	static FileOutputStream respaldoServidor;
 	static ObjectOutputStream guardandoRespaldo;
 	

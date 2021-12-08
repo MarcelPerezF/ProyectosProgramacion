@@ -45,6 +45,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ScrollPaneConstants;
 
 public class FrmListadoVacuna extends JDialog {
 
@@ -282,7 +283,7 @@ public class FrmListadoVacuna extends JDialog {
 					if(selectRow!=-1) {
 						vacunaSeleccionada = Clinica.getInstance().buscarVacuna(String.valueOf(tblListadoVacuna.getValueAt(selectRow, 0)));
 					}
-					if(vacunaSeleccionada!=null) {
+					if(vacunaSeleccionada!=null&&lista==true) {
 						btnSelecciona.setEnabled(true);
 					}
 				}
