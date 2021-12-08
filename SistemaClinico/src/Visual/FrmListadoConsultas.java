@@ -56,43 +56,6 @@ public class FrmListadoConsultas extends JDialog {
 	private JPanel pnListado;
 	private int cantidadConsultas;
 	
-	public static void main(String[] args) {
-		try { 
-			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			Paciente paciente2 = new Paciente("1", "402", "Marcededeede", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			
-			Clinica.getInstance().insertarPaciente(paciente1);
-			Clinica.getInstance().insertarPaciente(paciente2);
-			
-			Usuario medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
-			Usuario medico2 = new Medico("1", "302", 1, "med", "med", "Jose", "829", "RD", "algo@", "Hombre", "Cirugia");
-			Clinica.getInstance().insertarUsuario(medico);
-			Clinica.getInstance().insertarUsuario(medico2);
-			
-			CitaMedica cita1 = new CitaMedica("1", "Marc", "402", "829", medico, medico, new Date(34, 3, 2));
-			CitaMedica cita2 = new CitaMedica("2", "Marc", "402", "829", medico2, medico, new Date(45, 3, 1));
-			Date fecha = new Date(121, 10, 28, 8, 4, 4);
-			CitaMedica cita3 = new CitaMedica("3", "Marcededeede", "402", "829", medico, medico, fecha);
-			CitaMedica cita4 = new CitaMedica("4", "Marc", "402", "829", medico2, medico, new Date(32, 8, 5));
-			Clinica.getInstance().insertarCitasMedicas(cita1);
-			Clinica.getInstance().insertarCitasMedicas(cita2);
-			Clinica.getInstance().insertarCitasMedicas(cita3);
-			Clinica.getInstance().insertarCitasMedicas(cita4);
-			Consulta consulta = new Consulta("C-P-1", "NINGUNO", "SI", new Enfermedad("1", "Covid", "", ""), (Medico) medico);
-			Clinica.getInstance().ingresarConsultaPacienteHistorial(paciente1, consulta);
-			Clinica.getInstance().ingresarConsultaPaciente(paciente1, consulta, cita1);
-			
-			FrmListadoConsultas dialog = new FrmListadoConsultas(); 
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
-			dialog.setVisible(true); 
-		} catch (Exception e) { 
-			e.printStackTrace(); 
-		} 
-	}
-
-	
 	public FrmListadoConsultas() {
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {

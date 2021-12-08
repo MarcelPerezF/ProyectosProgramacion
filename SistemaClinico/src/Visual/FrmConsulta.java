@@ -113,26 +113,6 @@ public class FrmConsulta extends JDialog {
 	private static Object[] rowConsultas;
 	private static Object[] rowVacunas;
 	private JCheckBox chHistorial;
-
-	public static void main(String[] args) {
-		try {
-			Enfermedad enfermedad = new Enfermedad("E-1", "Covid", "Contagiosa", "Virus contagioso covid");
-			Clinica.getInstance().insertarEnfermedades(enfermedad);
-			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			Medico medico = new Medico("1", "302", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
-			Clinica.getInstance().insertarUsuario(medico);
-			CitaMedica cita = new CitaMedica("C-1", "Marc", "402", "829", medico, medico, new Date());
-			Clinica.getInstance().insertarCitasMedicas(cita);
-			FrmConsulta dialog = new FrmConsulta(paciente1, medico, cita);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Create the dialog.
 	 */

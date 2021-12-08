@@ -57,16 +57,6 @@ public class FrmListadoPacientesDetallado extends JDialog {
 	private JTextField txtGenero;
 	private JTextField txtEdadPaciente;
 	private JTextField txtDireccion;
-	
-	public static void main(String[] args) {
-		try {
-			FrmListadoPacientesDetallado dialog = new FrmListadoPacientesDetallado(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public FrmListadoPacientesDetallado(Paciente pacienteSeleccionado) {
 		paciente = pacienteSeleccionado;

@@ -86,16 +86,6 @@ public class FrmIngresarUsuario extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			FrmIngresarUsuario dialog = new FrmIngresarUsuario(1, null, 0);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public FrmIngresarUsuario(int opcion, Usuario usuario, int primerUsuario) {
 		//Para controlar el boton de close.
 		usuarioModificar = usuario;

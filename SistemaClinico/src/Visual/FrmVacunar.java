@@ -66,23 +66,6 @@ public class FrmVacunar extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			Clinica.getInstance().insertarPaciente(paciente1);
-			Vacuna vacuna = new Vacuna("V-1", "COVID", 2, "CONTAGIOSA", "DI");
-			Clinica.getInstance().insertarVacuna(vacuna);
-			
-			FrmVacunar dialog = new FrmVacunar(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Create the dialog.
 	 */

@@ -49,17 +49,6 @@ public class FrmSolicitarVacuna extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			Vacuna v1 = new Vacuna("V-1","Julian",5,"Sanguineo","Hola que tal");
-			FrmSolicitarVacuna dialog = new FrmSolicitarVacuna(v1);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Create the dialog.
 	 */

@@ -70,22 +70,6 @@ public class FrmListadoPaciente extends JDialog {
 	private JComboBox cbxBusqueda;
 	Paciente pacienteSeleccionado;
 
-	public static void main(String[] args) {
-		try {
-			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			Paciente paciente2 = new Paciente("2", "403", "Marc", "Mujer", new Date(), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero", "Catolico", "O-", "Estudiante");
-			Clinica.getInstance().insertarPaciente(paciente1);
-			Clinica.getInstance().insertarPaciente(paciente2);
-			FrmListadoPaciente dialog = new FrmListadoPaciente(2);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public FrmListadoPaciente(int opcion) {
 		opcionListado = opcion;
 		//Para controlar el boton de close.
