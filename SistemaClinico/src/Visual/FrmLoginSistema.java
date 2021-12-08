@@ -3,6 +3,7 @@ package Visual;
 import java.awt.EventQueue;
 import java.awt.Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
