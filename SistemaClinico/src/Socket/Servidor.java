@@ -17,6 +17,7 @@ public class Servidor {
 		ServerSocket servidorSocket = null;
 		
 		try {
+			//Creacion de servidor
 			servidorSocket = new ServerSocket(8000);
 			
 			while (true) {

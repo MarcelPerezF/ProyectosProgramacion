@@ -514,7 +514,7 @@ public class FrmPrincipal extends JFrame {
 		mnListadoVacunas = new JMenuItem("Listado Vacunas");
 		mnListadoVacunas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrmListadoVacuna aux = new FrmListadoVacuna(false,1);
+				FrmListadoVacuna aux = new FrmListadoVacuna(false,1); 
 				aux.setVisible(true);
 			}
 		});
