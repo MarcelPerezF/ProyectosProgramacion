@@ -25,17 +25,6 @@ public class FrmInformacionSistema extends JDialog {
 	private JButton btnAceptar;
 	private JTextArea txtDescripcion;
 	private Image imagenInformacionSistema = new ImageIcon(FrmInformacionSistema.class.getResource("Imagenes/InfoSistema.png")).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-
-	
-	public static void main(String[] args) {
-		try {
-			FrmInformacionSistema dialog = new FrmInformacionSistema();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public FrmInformacionSistema() {
 		setTitle(".:. Informaci\u00F3n del Sistema .:.");

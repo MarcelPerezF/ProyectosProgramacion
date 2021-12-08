@@ -69,21 +69,6 @@ public class FrmListadoUsuarios extends JDialog {
 	private JComboBox cbxTipoBusqueda;
 	private JComboBox cbxBusqueda;
 	private String especialidad;
-	
-	
-	public static void main(String[] args) {
-		try {
-			Usuario usuario = new Medico("U1", "402", 1, "1", "2", "Carl", "849", "RD", "", "Hombre", "Cirujano");
-			Usuario usuario2 = new Empleado("U2", "403", 2, "3", "4", "Sofi", "829", "RD", "", "Mujer", "Administrador");
-			Clinica.getInstance().insertarUsuario(usuario);
-			Clinica.getInstance().insertarUsuario(usuario2);
-			FrmListadoUsuarios dialog = new FrmListadoUsuarios(4,"Cirujano");
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public FrmListadoUsuarios(int opcionListado, String especial) {
 		opcion = opcionListado;

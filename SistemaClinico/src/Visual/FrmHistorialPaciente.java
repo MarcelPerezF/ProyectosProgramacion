@@ -64,18 +64,6 @@ public class FrmHistorialPaciente extends JDialog {
 	private static DefaultTableModel modeloVacunas;
 	private static Object[] rowConsultas;
 	private static Object[] rowVacunas;
-	
-	public static void main(String[] args) {
-		try {
-			Paciente paciente1 = new Paciente("1", "402", "Marc", "Hombre", new Date(102, 8, 6), "RD", "829",
-					"marc@", "Ninguna", "Dominicano", "Soltero(a)", "Catolico", "A+", "Estudiante");
-			FrmHistorialPaciente dialog = new FrmHistorialPaciente(paciente1);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public FrmHistorialPaciente(Paciente pacienteAux) {
 		pacienteHistorial = pacienteAux;

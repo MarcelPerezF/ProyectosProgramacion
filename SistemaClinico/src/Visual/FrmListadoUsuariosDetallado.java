@@ -53,16 +53,6 @@ public class FrmListadoUsuariosDetallado extends JDialog {
 	private JButton btnAceptar;
 	private Usuario usuario;
 	private JLabel lblEspecialidad_Cargo;
-	
-	public static void main(String[] args) {
-		try {
-			FrmListadoUsuariosDetallado dialog = new FrmListadoUsuariosDetallado(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public FrmListadoUsuariosDetallado(Usuario usuarioSeleccionado) {
 		usuario = usuarioSeleccionado;

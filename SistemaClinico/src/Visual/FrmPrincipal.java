@@ -166,27 +166,6 @@ public class FrmPrincipal extends JFrame {
 	private JMenuItem mnSolicitarVacuna;
 	private JMenuItem mnRespaldo;
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Medico medico = new Medico("1", "301", 1, "med", "med", "Antonio", "829", "RD", "algo@", "Hombre", "Cirugia");
-					Empleado administrador = new Empleado("2", "302", 2, "admin", "admin", "Orlando M", "849", "RD", "algo@", "Hombre", "Administrador");
-					Empleado secretaria = new Empleado("3", "303", 3, "secre", "secre", "Ana Lopez", "859", "RD", "algo@", "Mujer", "Secretaria");
-					
-					Clinica.getInstance().insertarUsuario(medico);
-					Clinica.getInstance().insertarUsuario(administrador);
-					Clinica.getInstance().insertarUsuario(secretaria);
-					FrmPrincipal frame = new FrmPrincipal(administrador);
-					frame.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	public FrmPrincipal(Usuario usurioLogeado) {
 		usuarioActual = usurioLogeado;
 		//Para controlar el boton de close.

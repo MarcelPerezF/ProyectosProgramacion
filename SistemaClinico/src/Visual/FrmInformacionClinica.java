@@ -57,17 +57,6 @@ public class FrmInformacionClinica extends JDialog {
 	private JLabel lblCantidadEnfermedades;
 	private JTextField txtCantidadEnfermedades;
 
-	
-	public static void main(String[] args) {
-		try {
-			FrmInformacionClinica dialog = new FrmInformacionClinica();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public FrmInformacionClinica() {
 		//Para controlar el boton de close.
 		addWindowListener(new WindowAdapter() {
